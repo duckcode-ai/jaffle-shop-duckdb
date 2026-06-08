@@ -1,12 +1,14 @@
 .venv
 venv
+node_modules/
 .env
 env
 
 target/
 dbt_packages/
 logs/
-profiles.yml
+*.duckdb
+*.duckdb.wal
 
 .DS_Store
 
@@ -14,3 +16,23 @@ profiles.yml
 
 .ruff_cache
 __pycache__
+
+# DQL
+dql-manifest.json
+.dql/runs/
+.dql/cache/
+.dql/imports/
+.dql/local/
+*.dqlnb.run.json
+*.dql.run.json
+*.run.json
+
+# Local DQL/Node test workspace files; not part of this dbt-DuckDB repo.
+/.nvmrc
+/apps/
+/blocks/
+/dql.config.json
+/notebooks/
+/package.json
+/package-lock.json
+/semantic-layer/
