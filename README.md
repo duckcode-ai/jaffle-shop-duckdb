@@ -6,7 +6,7 @@ warehouse setup so the project can run from a local DuckDB database file.
 
 ## Prerequisites
 
-- Python 3.9 or newer
+- Python 3.9 through 3.13
 - Git
 - Optional: [Task](https://taskfile.dev/) if you want to use `Taskfile.yml`
 
@@ -18,6 +18,13 @@ Clone the repo and run the setup script:
 git clone <your-repo-url> jaffle-shop-duckdb
 cd jaffle-shop-duckdb
 ./setup.sh
+```
+
+If your machine's default `python3` is Python 3.14 or newer, choose a supported
+Python explicitly:
+
+```bash
+PYTHON=python3.13 ./setup.sh
 ```
 
 The setup script creates a virtual environment, installs `dbt-duckdb`, installs

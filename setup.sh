@@ -4,14 +4,40 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 DB_PATH="${DBT_DUCKDB_PATH:-jaffle_shop.duckdb}"
+PYTHON_BIN="${PYTHON:-python3}"
 
-if ! command -v python3 >/dev/null 2>&1; then
-  echo "python3 is required but was not found on PATH." >&2
+if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
+  echo "${PYTHON_BIN} is required but was not found on PATH." >&2
+  exit 1
+fi
+
+PYTHON_VERSION="$("$PYTHON_BIN" - <<'PY'
+import sys
+print(f"{sys.version_info.major}.{sys.version_info.minor}")
+PY
+)"
+
+PYTHON_SUPPORTED="$("$PYTHON_BIN" - <<'PY'
+import sys
+print(int((3, 9) <= sys.version_info[:2] < (3, 14)))
+PY
+)"
+
+if [ "$PYTHON_SUPPORTED" != "1" ]; then
+  cat >&2 <<EOF
+Python ${PYTHON_VERSION} is not supported by this dbt-DuckDB setup.
+
+Use Python 3.9 through 3.13. If your default python3 is newer, run:
+  PYTHON=python3.13 ./setup.sh
+
+Or install Python 3.13 first, for example:
+  brew install python@3.13
+EOF
   exit 1
 fi
 
 echo "Creating local Python virtual environment..."
-python3 -m venv .venv
+"$PYTHON_BIN" -m venv .venv
 
 echo "Installing Python dependencies..."
 .venv/bin/python -m pip install --upgrade pip --progress-bar off
