@@ -1,19 +1,22 @@
-# Jaffle Shop DuckDB
+# Jaffle Shop DuckDB + DQL
 
-This is a local DuckDB version of the dbt Jaffle Shop sample project. It keeps
-the original seed data and dbt models, but removes the dbt Cloud and cloud
-warehouse setup so the project can run from a local DuckDB database file.
+This is a local DuckDB version of the dbt Jaffle Shop sample project, with a
+[DQL](https://github.com/duckcode-ai/dql) **governed-analytics layer** built on
+top. dbt models the data; DQL turns the answers into certified, reusable,
+git-tracked blocks — with an App dashboard, notebooks, and full lineage.
 
-> **🟢 You're on the `with-dql` branch.** On top of the standard dbt project,
-> this branch adds a [DQL](https://github.com/duckcode-ai/dql) workspace under
-> [`dql/`](./dql) — two certified analytics blocks, an App with a dashboard,
-> and full lineage from the dbt models. After `./setup.sh`:
+> **🟢 Two-minute tour.** After `./setup.sh` (below):
 > ```bash
 > cd dql && npm install && npm run notebook   # http://127.0.0.1:3474
 > ```
-> Then open **Blocks**, **Apps**, and **Lineage** in the left rail, and follow
-> [`dql/TUTORIAL.md`](./dql/TUTORIAL.md) to build your own block.
-> The plain dbt-only project lives on `main`.
+> Then open the left rail:
+> - **Blocks** — 10 certified analytics blocks (revenue, customers, products)
+> - **Apps → Jaffle Analytics** — an executive dashboard (revenue $671.4K,
+>   orders 61,948, AOV $10.84, customers 935, plus charts)
+> - **Lineage** — `raw → dbt models → certified blocks → App`
+>
+> The full guided tour and a hands-on "build your own block" walkthrough are in
+> [`dql/TUTORIAL.md`](./dql/TUTORIAL.md).
 
 ## Prerequisites
 
