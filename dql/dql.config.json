@@ -1,0 +1,20 @@
+{
+  "project": "dql",
+  "connections": {
+    "default": {
+      "driver": "duckdb",
+      "filepath": "../jaffle_shop.duckdb"
+    }
+  },
+  "semanticLayer": {
+    "provider": "dql",
+    "path": "semantic-layer"
+  },
+  "dbt": {
+    "projectDir": "..",
+    "manifestPath": "target/manifest.json"
+  },
+  "governance": {
+    "required_fields": ["domain", "owner", "description"]
+  }
+}

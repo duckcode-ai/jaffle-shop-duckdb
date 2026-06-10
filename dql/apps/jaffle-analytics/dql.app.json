@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "id": "jaffle-analytics",
+  "name": "Jaffle Analytics",
+  "description": "Jaffle Analytics — consumption surface for revenue",
+  "visibility": "shared",
+  "domain": "revenue",
+  "groups": [],
+  "lifecycle": "draft",
+  "owners": [
+    "analytics@jaffle.shop"
+  ],
+  "tags": [],
+  "members": [
+    {
+      "userId": "analytics@jaffle.shop",
+      "displayName": "analytics@jaffle.shop",
+      "roles": [
+        "owner"
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "id": "owner",
+      "displayName": "Owner",
+      "description": "Full access to all dashboards and configuration."
+    },
+    {
+      "id": "analyst",
+      "displayName": "Analyst",
+      "description": "Can view and run dashboards, propose new blocks."
+    },
+    {
+      "id": "viewer",
+      "displayName": "Viewer",
+      "description": "Read-only access to certified dashboards."
+    }
+  ],
+  "policies": [
+    {
+      "id": "team-execute",
+      "domain": "revenue",
+      "minClassification": "internal",
+      "allowedRoles": [
+        "viewer",
+        "analyst",
+        "owner"
+      ],
+      "accessLevel": "execute",
+      "enabled": true
+    }
+  ],
+  "rlsBindings": [],
+  "schedules": [],
+  "homepage": {
+    "type": "dashboard",
+    "id": "overview"
+  }
+}

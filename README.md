@@ -4,6 +4,17 @@ This is a local DuckDB version of the dbt Jaffle Shop sample project. It keeps
 the original seed data and dbt models, but removes the dbt Cloud and cloud
 warehouse setup so the project can run from a local DuckDB database file.
 
+> **🟢 You're on the `with-dql` branch.** On top of the standard dbt project,
+> this branch adds a [DQL](https://github.com/duckcode-ai/dql) workspace under
+> [`dql/`](./dql) — two certified analytics blocks, an App with a dashboard,
+> and full lineage from the dbt models. After `./setup.sh`:
+> ```bash
+> cd dql && npm install && npm run notebook   # http://127.0.0.1:3474
+> ```
+> Then open **Blocks**, **Apps**, and **Lineage** in the left rail, and follow
+> [`dql/TUTORIAL.md`](./dql/TUTORIAL.md) to build your own block.
+> The plain dbt-only project lives on `main`.
+
 ## Prerequisites
 
 - Python 3.9 through 3.13

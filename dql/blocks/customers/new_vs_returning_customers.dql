@@ -1,0 +1,37 @@
+// dql-format: 1
+
+block "new_vs_returning_customers" {
+  domain      = "customers"
+  type        = "custom"
+  status      = "certified"
+  owner       = "analytics@jaffle.shop"
+  description = "Customer count and lifetime spend split by new vs. returning, from the dbt customers mart."
+  tags        = ["customers", "segmentation", "kpi"]
+
+  llmContext = "Use this block for questions about new vs. returning customers, customer mix, or repeat-customer behavior. customer_type comes from the dbt customers mart: 'new' = a single lifetime order, 'returning' = more than one. Reports both the customer count and total lifetime spend per type."
+  examples = [
+    { question = "How many new vs returning customers do we have?" },
+    { question = "What share of revenue comes from returning customers?" }
+  ]
+  invariants = ["customers >= 0", "lifetime_spend >= 0"]
+
+  query = """
+    SELECT
+      customer_type,
+      COUNT(*)            AS customers,
+      SUM(lifetime_spend) AS lifetime_spend
+    FROM dev.customers
+    GROUP BY 1
+    ORDER BY lifetime_spend DESC
+  """
+
+  visualization {
+    chart = "bar"
+    x     = "customer_type"
+    y     = "lifetime_spend"
+  }
+
+  tests {
+    assert row_count >= 1
+  }
+}

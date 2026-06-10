@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "id": "overview",
+  "metadata": {
+    "title": "Jaffle Analytics — Overview",
+    "description": "Monthly revenue trend and new-vs-returning customer mix.",
+    "domain": "revenue",
+    "visibility": "shared",
+    "lifecycle": "review",
+    "tags": ["revenue", "customers", "overview"]
+  },
+  "layout": {
+    "kind": "grid",
+    "cols": 12,
+    "rowHeight": 80,
+    "items": [
+      {
+        "i": "revenue-trend",
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 4,
+        "title": "Revenue by month",
+        "block": { "blockId": "revenue_by_month" },
+        "viz": { "type": "line", "options": { "x": "month", "y": "revenue" } }
+      },
+      {
+        "i": "customer-mix",
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 4,
+        "title": "New vs. returning (lifetime spend)",
+        "block": { "blockId": "new_vs_returning_customers" },
+        "viz": { "type": "bar", "options": { "x": "customer_type", "y": "lifetime_spend" } }
+      }
+    ]
+  }
+}
