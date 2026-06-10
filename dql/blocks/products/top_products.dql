@@ -1,0 +1,27 @@
+// dql-format: 1
+
+block "top_products" {
+  domain      = "products"
+  type        = "custom"
+  status      = "certified"
+  owner       = "analytics@jaffle.shop"
+  description = "Top 10 products by revenue, with units sold."
+  tags        = ["products", "ranking"]
+  llmContext  = "Top products by revenue: groups the order_items mart by product_name, sums product_price as revenue and counts rows as units, top 10. Use for 'best selling' / 'top product' questions."
+  examples = [{ question = "What are our top selling products?" }]
+  query = """
+    SELECT product_name, SUM(product_price) AS revenue, COUNT(*) AS units
+    FROM dev.order_items
+    GROUP BY 1
+    ORDER BY revenue DESC
+    LIMIT 10
+  """
+  visualization {
+    chart = "bar"
+    x     = "product_name"
+    y     = "revenue"
+  }
+  tests {
+    assert row_count >= 1
+  }
+}

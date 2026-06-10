@@ -1,70 +1,75 @@
 # Build your first DQL block (hands-on)
 
-This branch already has a working DQL workspace: two certified blocks
-(`revenue_by_month`, `new_vs_returning_customers`) and a **Jaffle Analytics**
-App. Use them as a reference, then build a third block yourself and watch it
-flow through certification, the dashboard, lineage, and the agent.
+This branch ships a working DQL workspace: **10 certified blocks** across three
+domains and a **Jaffle Analytics** App with an executive dashboard. Use them as
+a reference, then build one more block yourself and watch it flow through
+certification, the dashboard, lineage, and the agent.
 
-> Time: ~15 minutes. You'll need the workspace running — from this `dql/`
-> folder: `npm install` then `npm run notebook` (opens
-> <http://127.0.0.1:3474>).
+> Time: ~15 minutes. From this `dql/` folder: `npm install` then
+> `npm run notebook` (opens <http://127.0.0.1:3474>).
 
 The dbt warehouse is already built (`../jaffle_shop.duckdb`) and synced. If you
-ever rebuild dbt, re-run `npm run sync` to refresh the imported DAG.
+rebuild dbt, re-run `npm run sync` to refresh the imported DAG.
 
 ---
 
 ## What's already here
 
-| Block | Domain | Reads from |
-|---|---|---|
-| `revenue_by_month` | revenue | `dev.orders` |
-| `new_vs_returning_customers` | customers | `dev.customers` |
+| Domain | Blocks |
+|---|---|
+| **revenue** | `total_revenue`, `total_orders`, `avg_order_value`, `revenue_by_month`, `revenue_by_location`, `food_vs_drink_revenue` |
+| **customers** | `total_customers`, `new_vs_returning_customers`, `top_customers` |
+| **products** | `top_products` |
 
-Open **Blocks** in the left rail to inspect them, and **Apps → Jaffle
-Analytics** to see them composed into a dashboard. **Lineage** shows the full
-path from `raw_orders` through the dbt models to each block.
+Open **Blocks** in the left rail to inspect them, **Apps → Jaffle Analytics**
+to see them composed into the executive dashboard, and **Lineage** for the full
+graph from `raw_orders` through the dbt models to every block.
 
 ---
 
 ## Step 1 — Create a block
 
-You'll build **average order value** (AOV), a single-number KPI.
+You'll add **revenue by weekday** — a real question ("which day sells most?")
+that isn't in the set yet.
 
-In the notebook UI: **Blocks → + New → SQL Block**. Name it
-`avg_order_value`, domain `revenue`. Or just create the file directly at
-`blocks/revenue/avg_order_value.dql`:
+In the notebook UI: **Blocks → + New → SQL Block**, name it
+`revenue_by_weekday`, domain `revenue`. Or create the file directly at
+`blocks/revenue/revenue_by_weekday.dql`:
 
 ```dql
 // dql-format: 1
 
-block "avg_order_value" {
+block "revenue_by_weekday" {
   domain      = "revenue"
   type        = "custom"
   status      = "draft"
   owner       = "you@your-company.com"
-  description = "Average order value in dollars, across all orders."
-  tags        = ["revenue", "kpi"]
-  llmContext  = "Single-value KPI: the average order_total across all orders in the dbt orders mart. Use for 'what is our average order value / AOV' questions."
+  description = "Revenue by day of week, to spot weekly seasonality."
+  tags        = ["revenue", "seasonality"]
+  llmContext  = "Revenue grouped by day of week from the dbt orders mart, to reveal which weekdays drive the most sales."
   examples = [
-    { question = "What is our average order value?" }
+    { question = "Which day of the week makes the most revenue?" }
   ]
   query = """
-    SELECT ROUND(AVG(order_total), 2) AS avg_order_value
+    SELECT dayname(ordered_at) AS weekday, SUM(order_total) AS revenue
     FROM dev.orders
+    GROUP BY 1
+    ORDER BY revenue DESC
   """
   visualization {
-    chart = "single_value"
+    chart = "bar"
+    x     = "weekday"
+    y     = "revenue"
   }
   tests {
-    assert row_count == 1
+    assert row_count >= 1
   }
 }
 ```
 
 > **Two syntax rules worth knowing now:** a block may use **one** triple-quoted
 > (`"""…"""`) string — reserve it for `query` and keep `llmContext` on a single
-> line. And `assert` takes a bare column name (`assert row_count == 1`), not a
+> line. And `assert` takes a bare column name (`assert row_count >= 1`), not a
 > function call.
 
 ---
@@ -72,17 +77,17 @@ block "avg_order_value" {
 ## Step 2 — Run and certify it
 
 ```bash
-npx dql certify blocks/revenue/avg_order_value.dql
+npx dql certify blocks/revenue/revenue_by_weekday.dql
 ```
 
 You should see the metadata checks pass and the assertion run against the real
 warehouse:
 
 ```
-  Block: "avg_order_value"
+  Block: "revenue_by_weekday"
   Status: ✓ CERTIFIABLE
   Tests (1 assertions):
-    ✓ assert row_count == 1 (actual: 1)
+    ✓ assert row_count >= 1 (actual: 7)
 ```
 
 Set `status = "certified"` in the file (the certify gate is what earns it).
@@ -99,15 +104,15 @@ runs, tests pass.
 ## Step 3 — Add it to the dashboard
 
 Open `apps/jaffle-analytics/dashboards/overview.dqld` and add a tile to the
-`items` array:
+`items` array (pick a free row, e.g. `y: 14`):
 
 ```json
 {
-  "i": "aov",
-  "x": 0, "y": 4, "w": 4, "h": 2,
-  "title": "Average order value",
-  "block": { "blockId": "avg_order_value" },
-  "viz": { "type": "single_value" }
+  "i": "weekday",
+  "x": 0, "y": 14, "w": 6, "h": 4,
+  "title": "Revenue by weekday",
+  "block": { "blockId": "revenue_by_weekday" },
+  "viz": { "type": "bar", "options": { "x": "weekday", "y": "revenue" } }
 }
 ```
 
@@ -118,7 +123,7 @@ npx dql app build
 ```
 
 `Built 1 app(s), 1 dashboard(s)` with no unresolved-ref warning means the tile
-is wired. Reopen **Apps → Jaffle Analytics** — your KPI renders live.
+is wired. Reopen **Apps → Jaffle Analytics** — your chart renders live.
 
 ---
 
@@ -126,7 +131,7 @@ is wired. Reopen **Apps → Jaffle Analytics** — your KPI renders live.
 
 ```bash
 npx dql compile
-npx dql lineage --block avg_order_value
+npx dql lineage --block revenue_by_weekday
 ```
 
 The block now traces back through `dev.orders` → the dbt `orders` model → its
@@ -142,21 +147,21 @@ If you've configured an LLM provider (Settings, or an `ANTHROPIC_API_KEY` /
 
 ```bash
 npx dql agent reindex
-npx dql agent ask "what is our average order value?"
+npx dql agent ask "which weekday makes the most revenue?"
 ```
 
 It should answer **from your certified block** and cite it — not improvise
-SQL. Ask something no block covers ("how many orders included food?") and the
-answer is flagged *Uncertified* and saved as a draft under `blocks/_drafts/`,
-ready for you to review and certify. That's the loop: trusted answers compound.
+SQL. Ask something no block covers and the answer is flagged *Uncertified* and
+saved as a draft under `blocks/_drafts/`, ready for you to review and certify.
+That's the loop: trusted answers compound.
 
 ---
 
 ## Where to go next
 
-- More block ideas on this dataset: orders per day, food-vs-drink mix, revenue
-  by customer cohort, top customers by lifetime spend.
-- A **semantic block** on the dbt MetricFlow metrics this project already ships
+- More ideas on this dataset: orders per day, repeat-purchase rate, revenue by
+  customer cohort, average items per order.
+- A **semantic block** on the dbt MetricFlow metrics this project ships
   (`npm run sync` imported 19 of them) — see the
   [DQL docs](https://github.com/duckcode-ai/dql/blob/main/docs/tutorials/02-authoring-blocks.md).
 - Do this same flow on **your own dbt repo**: `npx create-dql-app@latest dql`

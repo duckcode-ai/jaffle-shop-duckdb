@@ -1,0 +1,22 @@
+// dql-format: 1
+
+block "total_revenue" {
+  domain      = "revenue"
+  type        = "custom"
+  status      = "certified"
+  owner       = "analytics@jaffle.shop"
+  description = "Total gross revenue across all orders and locations (incl. tax)."
+  tags        = ["revenue", "kpi"]
+  llmContext  = "Headline KPI: total gross revenue = SUM(order_total) over the dbt orders mart, all locations and all time. Use for 'total revenue' / 'how much have we made' questions."
+  examples = [{ question = "What is our total revenue?" }]
+  query = """
+    SELECT SUM(order_total) AS total_revenue
+    FROM dev.orders
+  """
+  visualization {
+    chart = "single_value"
+  }
+  tests {
+    assert row_count == 1
+  }
+}

@@ -1,0 +1,22 @@
+// dql-format: 1
+
+block "total_customers" {
+  domain      = "customers"
+  type        = "custom"
+  status      = "certified"
+  owner       = "analytics@jaffle.shop"
+  description = "Total number of distinct customers."
+  tags        = ["customers", "kpi"]
+  llmContext  = "Headline KPI: total customer count = COUNT(*) over the dbt customers mart (one row per customer). Use for 'how many customers' questions."
+  examples = [{ question = "How many customers do we have?" }]
+  query = """
+    SELECT COUNT(*) AS total_customers
+    FROM dev.customers
+  """
+  visualization {
+    chart = "single_value"
+  }
+  tests {
+    assert row_count == 1
+  }
+}

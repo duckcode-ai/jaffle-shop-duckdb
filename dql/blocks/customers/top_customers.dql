@@ -1,0 +1,24 @@
+// dql-format: 1
+
+block "top_customers" {
+  domain      = "customers"
+  type        = "custom"
+  status      = "certified"
+  owner       = "analytics@jaffle.shop"
+  description = "Top 10 customers by lifetime spend, with order counts."
+  tags        = ["customers", "ranking", "loyalty"]
+  llmContext  = "Highest-value customers: orders the dbt customers mart by lifetime_spend descending, top 10, showing customer_name, lifetime_spend and count_lifetime_orders. Use for 'best customers' / 'who spends the most' questions."
+  examples = [{ question = "Who are our most valuable customers?" }]
+  query = """
+    SELECT customer_name, lifetime_spend, count_lifetime_orders
+    FROM dev.customers
+    ORDER BY lifetime_spend DESC
+    LIMIT 10
+  """
+  visualization {
+    chart = "table"
+  }
+  tests {
+    assert row_count >= 1
+  }
+}

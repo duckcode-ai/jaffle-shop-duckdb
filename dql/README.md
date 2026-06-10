@@ -1,34 +1,45 @@
-# dql
+# Jaffle Shop — DQL workspace
 
-A DQL project, scaffolded by `create-dql-app`.
+A [DQL](https://github.com/duckcode-ai/dql) analytics layer on top of the
+Jaffle Shop dbt project. dbt owns the models; DQL adds **certified analytics
+blocks**, an **App** with an executive dashboard, and end-to-end **lineage**
+from raw sources through the dbt DAG to every answer.
 
-## Connect your warehouse
-
-Edit `dql.config.json` — DQL ships 15 drivers out of the box:
-[docs/reference/connectors.md](https://github.com/duckcode-ai/dql/blob/main/docs/reference/connectors.md).
-The default connection is in-memory DuckDB, so dropping a CSV into the project
-and querying it with `read_csv_auto('./file.csv')` works with zero setup.
+## Run it
 
 ```bash
 npm install
-npm run doctor
+npm run notebook     # http://127.0.0.1:3474
 ```
 
-## Start the notebook
+The default connection points at the dbt-built `../jaffle_shop.duckdb`, and the
+dbt DAG is already synced. If you rebuild dbt, run `npm run sync` to refresh.
 
-```bash
-npm run notebook
+Open the left rail:
+- **Blocks** — 10 certified blocks (revenue, customers, products)
+- **Apps → Jaffle Analytics** — the executive dashboard (revenue, orders, AOV,
+  customers, locations, product mix, top customers)
+- **Lineage** — `raw → dbt models → certified blocks → App`
+
+## What's inside
+
+| Domain | Blocks |
+|---|---|
+| **revenue** | `total_revenue`, `total_orders`, `avg_order_value`, `revenue_by_month`, `revenue_by_location`, `food_vs_drink_revenue` |
+| **customers** | `total_customers`, `new_vs_returning_customers`, `top_customers` |
+| **products** | `top_products` |
+
+```
+blocks/        certified .dql blocks, by domain
+apps/          the Jaffle Analytics App + dashboard page
+notebooks/     a welcome notebook exploring the marts
+dql.config.json  connection + dbt wiring
 ```
 
-## Have a dbt project?
+## Build your own block
 
-Point `dql.config.json` at it (auto-wired if a sibling dbt project was
-detected at scaffold time), then:
-
-```bash
-dbt parse          # inside the dbt project
-npx dql sync dbt   # import models + lineage into DQL
-```
-
-No dbt project handy? Try the example repo:
-[github.com/duckcode-ai/jaffle-shop-duckdb](https://github.com/duckcode-ai/jaffle-shop-duckdb).
+Follow [`TUTORIAL.md`](./TUTORIAL.md) — a ~15-minute hands-on: create a block,
+certify it against the real warehouse, add it to the dashboard, trace its
+lineage, and ask the agent. It's the same flow you'd run on **your own dbt
+repo**: `npx create-dql-app@latest dql` inside it, point the config at your
+warehouse, `npm run sync`.

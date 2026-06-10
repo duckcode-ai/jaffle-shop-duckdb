@@ -1,0 +1,22 @@
+// dql-format: 1
+
+block "avg_order_value" {
+  domain      = "revenue"
+  type        = "custom"
+  status      = "certified"
+  owner       = "analytics@jaffle.shop"
+  description = "Average order value in dollars, across all orders."
+  tags        = ["revenue", "kpi"]
+  llmContext  = "Single-value KPI: average order_total across all orders in the dbt orders mart. Use for 'average order value' / 'AOV' questions."
+  examples = [{ question = "What is our average order value?" }]
+  query = """
+    SELECT ROUND(AVG(order_total), 2) AS avg_order_value
+    FROM dev.orders
+  """
+  visualization {
+    chart = "single_value"
+  }
+  tests {
+    assert row_count == 1
+  }
+}

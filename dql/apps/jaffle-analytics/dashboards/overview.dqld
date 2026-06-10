@@ -2,12 +2,12 @@
   "version": 1,
   "id": "overview",
   "metadata": {
-    "title": "Jaffle Analytics — Overview",
-    "description": "Monthly revenue trend and new-vs-returning customer mix.",
+    "title": "Jaffle Shop — Executive Overview",
+    "description": "Revenue, orders, customers, locations and product mix across all stores.",
     "domain": "revenue",
     "visibility": "shared",
     "lifecycle": "review",
-    "tags": ["revenue", "customers", "overview"]
+    "tags": ["revenue", "customers", "products", "executive"]
   },
   "layout": {
     "kind": "grid",
@@ -15,24 +15,67 @@
     "rowHeight": 80,
     "items": [
       {
-        "i": "revenue-trend",
-        "x": 0,
-        "y": 0,
-        "w": 8,
-        "h": 4,
+        "i": "kpi-revenue", "x": 0, "y": 0, "w": 3, "h": 2,
+        "title": "Revenue",
+        "block": { "blockId": "total_revenue" },
+        "viz": { "type": "single_value", "options": { "format": "currency" } }
+      },
+      {
+        "i": "kpi-orders", "x": 3, "y": 0, "w": 3, "h": 2,
+        "title": "Orders",
+        "block": { "blockId": "total_orders" },
+        "viz": { "type": "single_value" }
+      },
+      {
+        "i": "kpi-aov", "x": 6, "y": 0, "w": 3, "h": 2,
+        "title": "Avg order value",
+        "block": { "blockId": "avg_order_value" },
+        "viz": { "type": "single_value", "options": { "format": "currency" } }
+      },
+      {
+        "i": "kpi-customers", "x": 9, "y": 0, "w": 3, "h": 2,
+        "title": "Customers",
+        "block": { "blockId": "total_customers" },
+        "viz": { "type": "single_value" }
+      },
+
+      {
+        "i": "revenue-trend", "x": 0, "y": 2, "w": 8, "h": 4,
         "title": "Revenue by month",
         "block": { "blockId": "revenue_by_month" },
         "viz": { "type": "line", "options": { "x": "month", "y": "revenue" } }
       },
       {
-        "i": "customer-mix",
-        "x": 8,
-        "y": 0,
-        "w": 4,
-        "h": 4,
-        "title": "New vs. returning (lifetime spend)",
+        "i": "food-drink", "x": 8, "y": 2, "w": 4, "h": 4,
+        "title": "Food vs. drink revenue",
+        "block": { "blockId": "food_vs_drink_revenue" },
+        "viz": { "type": "bar", "options": { "x": "category", "y": "revenue" } }
+      },
+
+      {
+        "i": "by-location", "x": 0, "y": 6, "w": 6, "h": 4,
+        "title": "Revenue by location",
+        "block": { "blockId": "revenue_by_location" },
+        "viz": { "type": "bar", "options": { "x": "location_name", "y": "revenue" } }
+      },
+      {
+        "i": "top-products", "x": 6, "y": 6, "w": 6, "h": 4,
+        "title": "Top products by revenue",
+        "block": { "blockId": "top_products" },
+        "viz": { "type": "bar", "options": { "x": "product_name", "y": "revenue" } }
+      },
+
+      {
+        "i": "customer-mix", "x": 0, "y": 10, "w": 4, "h": 4,
+        "title": "New vs. returning",
         "block": { "blockId": "new_vs_returning_customers" },
         "viz": { "type": "bar", "options": { "x": "customer_type", "y": "lifetime_spend" } }
+      },
+      {
+        "i": "top-customers", "x": 4, "y": 10, "w": 8, "h": 4,
+        "title": "Top customers by lifetime spend",
+        "block": { "blockId": "top_customers" },
+        "viz": { "type": "table" }
       }
     ]
   }

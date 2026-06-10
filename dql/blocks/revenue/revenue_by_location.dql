@@ -1,0 +1,27 @@
+// dql-format: 1
+
+block "revenue_by_location" {
+  domain      = "revenue"
+  type        = "custom"
+  status      = "certified"
+  owner       = "analytics@jaffle.shop"
+  description = "Gross revenue by store location, highest first."
+  tags        = ["revenue", "location", "geography"]
+  llmContext  = "Revenue split by store location: joins the dbt orders mart to the locations mart on location_id and sums order_total per location_name. Use for 'which location/store makes the most' questions. Locations include Philadelphia, Brooklyn, Chicago, San Francisco, New Orleans."
+  examples = [{ question = "Which location has the highest revenue?" }]
+  query = """
+    SELECT l.location_name, SUM(o.order_total) AS revenue
+    FROM dev.orders o
+    JOIN dev.locations l USING (location_id)
+    GROUP BY 1
+    ORDER BY revenue DESC
+  """
+  visualization {
+    chart = "bar"
+    x     = "location_name"
+    y     = "revenue"
+  }
+  tests {
+    assert row_count >= 1
+  }
+}
