@@ -3,13 +3,13 @@
   "version": 1,
   "metadata": {
     "title": "Jaffle Shop — Welcome",
-    "description": "Explore the dbt marts and the two certified blocks shipped on this branch."
+    "description": "Explore the dbt marts behind the certified blocks."
   },
   "cells": [
     {
       "id": "intro",
       "type": "markdown",
-      "source": "# Jaffle Shop + DQL\n\nThis `with-dql` branch adds a DQL workspace on top of the standard Jaffle Shop dbt project. The connection points at the dbt-built `jaffle_shop.duckdb`, the dbt DAG is synced, and there are two **certified blocks** plus a **Jaffle Analytics** App.\n\nRun the cells below, open **Blocks** and **Apps** in the left rail, then follow [`TUTORIAL.md`](../TUTORIAL.md) to build the rest yourself."
+      "source": "# Jaffle Shop + DQL\n\nThis workspace adds a DQL governed-analytics layer on top of the standard Jaffle Shop dbt project. The connection points at the dbt-built `jaffle_shop.duckdb`, the dbt DAG is synced, and there are **10 certified blocks** plus a **Jaffle Analytics** App with an executive dashboard.\n\nRun the cells below, open **Blocks**, **Apps**, and **Lineage** in the left rail, then follow [`TUTORIAL.md`](../TUTORIAL.md) for a guided tour and to build your own block."
     },
     {
       "title": "Revenue by month (raw query)",
