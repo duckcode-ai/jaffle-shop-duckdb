@@ -1,0 +1,48 @@
+kind: datalex_contract
+id: supplier
+domain: customer
+owner: ''
+business_definition: >-
+  A supplier represents the business partner or provider associated with products, supply availability, and procurement
+  context.
+grain:
+  - name: one row per supplier
+    definition: Certified analytics grain for supplier.
+accepted_sources:
+  - name: customers
+    type: dbt_model
+    path: models/marts/customers.yml
+    confidence: medium
+    rationale: Candidate source inferred from supplier and customer.
+  - name: stg_customers
+    type: dbt_model
+    path: models/staging/stg_customers.yml
+    confidence: medium
+    rationale: Candidate source inferred from supplier and customer.
+metrics:
+  - name: supplier_count
+    definition: Count of supplier records.
+    allowed_aggregations:
+      - count
+dimensions:
+  - name: supplier_status
+    definition: Lifecycle/status slice for supplier.
+required_tests:
+  - name: not_null
+    definition: The primary supplier identifier must be populated.
+  - name: accepted_sources
+    definition: DQL blocks must query accepted sources from this contract.
+certification_policy:
+  required_approvals: 1
+  reviewers: []
+  allow_self_approval: false
+lineage:
+  conceptual_entity: supplier
+  logical_entities: []
+  physical_models:
+    - customers
+    - stg_customers
+status: draft
+open_questions:
+  - Assign a business owner before certification.
+  - Confirm grain, formulas, and dimensions with the domain reviewer.

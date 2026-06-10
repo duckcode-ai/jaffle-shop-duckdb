@@ -1,0 +1,35 @@
+kind: diagram
+name: customer_360_view
+title: Customer 360 View
+layer: conceptual
+domain: customer
+entities:
+  - name: Customer
+    type: concept
+    description: A governed business identity representing a customer across orders, spend, loyalty, and support context.
+    domain: customer_analytics
+    subject_area: Customer Analytics
+    x: 173
+    'y': 174
+    width: 280
+  - name: Order
+    type: concept
+    description: A customer purchase event including order date, fulfillment status, revenue, and order line detail.
+    domain: commerce
+    subject_area: Commerce
+    x: 748
+    'y': 163
+    width: 280
+relationships:
+  - name: customer_to_order
+    from:
+      entity: Customer
+      field: ''
+    to:
+      entity: Order
+      field: ''
+    cardinality: one_to_many
+    description: >-
+      A customer can place many orders; each order belongs to exactly one customer for revenue, retention, and customer
+      360 analysis.
+    rationale: xxxxxxxxxxx

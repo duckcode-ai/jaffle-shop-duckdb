@@ -1,0 +1,36 @@
+kind: datalex_contract
+id: customer
+domain: customer_analytics
+owner: Maya - FP&A Data Analyst
+business_definition: A governed business identity representing a customer across orders, spend, loyalty, and support context.
+grain:
+  - name: one row per customer
+    definition: ''
+accepted_sources:
+  - name: customers
+    type: dbt_model
+    confidence: medium
+    rationale: Added from contract editor.
+metrics:
+  - name: customer_count
+    definition: ''
+    allowed_aggregations:
+      - sum
+      - avg
+      - count
+dimensions:
+  - name: customer_status
+    definition: ''
+required_tests:
+  - name: not_null
+    definition: ''
+certification_policy:
+  required_approvals: 1
+  reviewers:
+    - Maya - FP&A Data Analyst
+  allow_self_approval: false
+lineage:
+  conceptual_entity: Customer
+  logical_entities: []
+  physical_models: []
+status: draft

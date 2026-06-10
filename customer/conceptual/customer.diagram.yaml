@@ -1,0 +1,147 @@
+kind: diagram
+name: customer_360_view
+title: Customer 360 View of Purchase History and Value
+layer: conceptual
+domain: Customer
+description: >-
+  This model provides a comprehensive, unified view of customer interactions, encompassing their purchase history
+  (orders and items), associated products, the locations where purchases occurred, and the underlying supply costs. It
+  is designed to calculate and track lifetime value metrics for strategic business analysis.
+entities:
+  - name: customer
+    type: concept
+    label: Customer
+    description: >-
+      Represents an individual who places orders with the company. This entity tracks key demographic information and
+      calculated lifetime value metrics.
+    domain: Customer
+    subject_area: Customer Profile & Value
+  - name: order
+    type: concept
+    label: Order
+    description: >-
+      A single transaction placed by a customer, containing aggregated details such as total cost, date, and fulfillment
+      status.
+    domain: Sales & Transactions
+    subject_area: Transaction History
+  - name: order_item
+    type: concept
+    label: Order Item
+    description: >-
+      Represents a specific product or service purchased within a single order transaction. This is the granular line
+      item detail.
+    domain: Product Fulfillment
+    subject_area: Line Item Detail
+  - name: product
+    type: concept
+    label: Product
+    description: Defines an individual sellable good or service (SKU) that can be purchased by a customer.
+    domain: Inventory & Catalog
+    subject_area: Product Master Data
+  - name: location
+    type: concept
+    label: Location
+    description: Represents the physical store or point of sale where the order was placed or fulfilled.
+    domain: Geography & Operations
+    subject_area: Store Management
+  - name: supply_cost
+    type: concept
+    label: Supply Cost
+    description: >-
+      Tracks the cost incurred by the business to procure or prepare goods used in fulfilling an order, linking
+      operational expenses to sales.
+    domain: Finance & Operations
+    subject_area: Cost of Goods Sold (COGS)
+  - name: supplier
+    type: concept
+    label: Supplier
+    description: >-
+      A supplier represents the business partner or provider associated with products, supply availability, and
+      procurement context.
+    domain: customer
+    subject_area: customer
+  - name: lifetime_value
+    type: concept
+    label: Lifetime Value
+    description: >-
+      Lifetime value represents the accumulated commercial value attributed to a customer over the customer
+      relationship.
+    domain: customer
+    subject_area: customer
+    x: 805
+    'y': 668
+relationships:
+  - name: customer_order
+    from:
+      entity: customer
+      field: ''
+    to:
+      entity: order
+      field: ''
+    cardinality: business_relationship
+    description: Customer places Order in the business workflow.
+    rationale: Included so the conceptual model reads as a connected business flow for review.
+  - name: order_order_item
+    from:
+      entity: order
+      field: ''
+    to:
+      entity: order_item
+      field: ''
+    cardinality: business_relationship
+    description: Order contains Order Item in the business workflow.
+    rationale: Included so the conceptual model reads as a connected business flow for review.
+  - name: order_item_product
+    from:
+      entity: order_item
+      field: ''
+    to:
+      entity: product
+      field: ''
+    cardinality: business_relationship
+    description: Order Item references Product in the business workflow.
+    rationale: Included so the conceptual model reads as a connected business flow for review.
+  - name: order_location
+    from:
+      entity: order
+      field: ''
+    to:
+      entity: location
+      field: ''
+    cardinality: business_relationship
+    description: Order ships to Location in the business workflow.
+    rationale: Included so the conceptual model reads as a connected business flow for review.
+  - name: customer_lifetime_value
+    from:
+      entity: customer
+      field: ''
+    to:
+      entity: lifetime_value
+      field: ''
+    cardinality: business_relationship
+    description: Customer has Lifetime Value in the business workflow.
+    rationale: Included so the conceptual model reads as a connected business flow for review.
+  - name: supplier_product
+    from:
+      entity: supplier
+      field: ''
+    to:
+      entity: product
+      field: ''
+    cardinality: business_relationship
+    description: Supplier supplies Product in the business workflow.
+    rationale: Included so the conceptual model reads as a connected business flow for review.
+  - name: order_is_costed_by_supply
+    from:
+      entity: order
+      field: ''
+    to:
+      entity: supply_cost
+      field: ''
+    cardinality: 1:N
+    description: >-
+      An Order's total fulfillment cost is determined by the associated Supply Cost records, linking revenue to
+      operational expense.
+    rationale: >-
+      This relationship ensures that every recorded sale (Order) can be traced back to its corresponding supply
+      expenses, enabling accurate gross margin calculation and COGS tracking.

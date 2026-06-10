@@ -1,0 +1,31 @@
+version: '1.0'
+layer: conceptual
+domain: customer
+entities:
+  - name: Customer
+    description: Details about individuals who purchase items from the shop.
+    relationships:
+      - to: Order
+        kind: one_to_many
+        via: placing an order
+    x: 144
+    'y': 432
+  - name: Order
+    description: A single transaction record detailing a set of purchased items at a specific time and location.
+    relationships:
+      - to: Customer
+        kind: many_to_one
+        via: belonging to a customer
+      - to: Product
+        kind: many_to_many
+        via: containing one or more products (via order line items)
+    x: 556
+    'y': 528
+  - name: Product
+    description: An item available for sale, which can be either food or drink.
+    relationships:
+      - to: Order
+        kind: many_to_many
+        via: being included in an order
+    x: 947
+    'y': 374

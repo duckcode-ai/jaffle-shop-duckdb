@@ -1,0 +1,16 @@
+{
+  "dqlnbVersion": 1,
+  "version": 1,
+  "title": "Notebook Release QA",
+  "metadata": {
+    "title": "Notebook Release QA",
+    "createdWith": "datalex-cloud"
+  },
+  "cells": [
+    {
+      "id": "intro",
+      "type": "markdown",
+      "content": "# Notebook Release QA\n\nWelcome to your new notebook. Add SQL or DQL cells below."
+    }
+  ]
+}
