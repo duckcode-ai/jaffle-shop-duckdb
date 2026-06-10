@@ -1,0 +1,21 @@
+{
+  "dqlnbVersion": 1,
+  "version": 1,
+  "title": "Untitled Notebook",
+  "metadata": {
+    "title": "Untitled Notebook",
+    "savedWith": "datalex-cloud"
+  },
+  "cells": [
+    {
+      "id": "cell-1-1781058630700",
+      "type": "markdown",
+      "content": "### Start authoring\n\n1. **Write a SQL or DQL cell** below — type `FROM ` and the dropdown lists your indexed dbt models.\n2. **Press `⌘ Enter`** to run the cell.\n3. **Use `Build with form`** to turn a working query into a certified block.\n4. **Press `⌘K`** to search across blocks, models, and entities."
+    },
+    {
+      "id": "cell-2-1781058630700",
+      "type": "sql",
+      "content": "-- Tip: type FROM <space> to autocomplete from your project's\n-- indexed tables. Hover any name for type + description.\nSELECT 1 AS placeholder"
+    }
+  ]
+}
