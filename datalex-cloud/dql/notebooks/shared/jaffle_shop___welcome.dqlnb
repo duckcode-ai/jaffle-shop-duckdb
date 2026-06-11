@@ -21,7 +21,7 @@
     {
       "id": "customer_mix",
       "type": "sql",
-      "content": "SELECT customer_type, COUNT(*) AS customers, SUM(lifetime_spend) AS lifetime_spend\nFROM dev.customers\nGROUP BY 1 ORDER BY lifetime_spend DESC",
+      "content": "SELECT customer_type, COUNT(*) AS customers, SUM(lifetime_spend) AS lifetime_spend\nFROM customers\nGROUP BY 1 ORDER BY lifetime_spend DESC",
       "name": "Customer mix"
     }
   ]
