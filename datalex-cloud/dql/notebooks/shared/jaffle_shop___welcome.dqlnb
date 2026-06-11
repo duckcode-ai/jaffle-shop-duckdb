@@ -19,9 +19,19 @@
       "name": "Revenue by month (raw query)"
     },
     {
+      "id": "cell-4-1781199838092",
+      "type": "dql",
+      "content": "// dql-format: 1\n\nblock \"top_customers\" {\n  domain      = \"customers\"\n  type        = \"custom\"\n  status      = \"certified\"\n  owner       = \"analytics@jaffle.shop\"\n  description = \"Top 10 customers by lifetime spend, with order counts.\"\n  tags        = [\"customers\", \"ranking\", \"loyalty\"]\n  llmContext  = \"Highest-value customers: orders the dbt customers mart by lifetime_spend descending, top 10, showing customer_name, lifetime_spend and count_lifetime_orders. Use for 'best customers' / 'who spends the most' questions.\"\n  examples = [{ question = \"Who are our most valuable customers?\" }]\n  query = \"\"\"\n    SELECT customer_name, lifetime_spend, count_lifetime_orders\n    FROM dev.customers\n    ORDER BY lifetime_spend DESC\n    LIMIT 10\n  \"\"\"\n  visualization {\n    chart = \"table\"\n  }\n  tests {\n    assert row_count >= 1\n  }\n}\n"
+    },
+    {
+      "id": "cell-3-1781199835874",
+      "type": "chart",
+      "content": "-- Replace with your own table. This example generates sample data.\nSELECT unnest(['Q1','Q2','Q3','Q4']) AS quarter,\n       unnest([42500, 58300, 61200, 74100]) AS revenue"
+    },
+    {
       "id": "customer_mix",
       "type": "sql",
-      "content": "SELECT customer_type, COUNT(*) AS customers, SUM(lifetime_spend) AS lifetime_spend\nFROM customers\nGROUP BY 1 ORDER BY lifetime_spend DESC",
+      "content": "SELECT customer_type, COUNT(*) AS customers, SUM(lifetime_spend) AS lifetime_spend\nFROM dev.customers\nGROUP BY 1 ORDER BY lifetime_spend DESC",
       "name": "Customer mix"
     }
   ]
