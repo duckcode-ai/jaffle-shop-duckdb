@@ -12,30 +12,14 @@ answers.
 
 ## The Trust Flow
 
-```mermaid
-flowchart LR
-  ask["Business questions<br/>revenue, customers, products"] --> dbt["dbt + DuckDB<br/>models, tests, metrics"]
-  dbt --> ai["DataLex AI draft<br/>proposal packs"]
-  ai --> review["Human review<br/>grain, owner, assumptions"]
-  review --> cert["Certified contracts<br/>accepted definitions"]
-  cert --> manifest["DataLex manifest<br/>trusted handoff"]
-  manifest --> blocks["DQL blocks<br/>contract-bound SQL"]
-  blocks --> app["Growth Command Center<br/>stakeholder app"]
-  blocks --> notebook["Notebook research<br/>draft to certified"]
-  blocks --> agent["AI answers<br/>certified or review-required"]
-  app --> ci["CI checks<br/>dbt, DataLex, DQL"]
-  notebook --> ci
-  agent --> ci
+> Click the diagram to open the full-size SVG in a browser tab, where you can
+> zoom or use full-screen mode.
 
-  classDef businessClass fill:#fdf2f8,stroke:#db2777,color:#1f2937
-  classDef dbtClass fill:#fef3c7,stroke:#d97706,color:#1f2937
-  classDef datalexClass fill:#eef2ff,stroke:#4f46e5,color:#1f2937
-  classDef dqlClass fill:#ecfdf5,stroke:#059669,color:#1f2937
-  class ask businessClass
-  class dbt dbtClass
-  class ai,review,cert,manifest datalexClass
-  class blocks,app,notebook,agent,ci dqlClass
-```
+<p align="center">
+  <a href="../../assets/architecture/jaffle-flow.svg">
+    <img src="../../assets/architecture/jaffle-flow.svg" alt="Jaffle Shop tutorial flow from business questions to dbt evidence, DataLex contracts, DQL blocks, app, notebook, agent, and CI" width="100%" />
+  </a>
+</p>
 
 ## Setup
 

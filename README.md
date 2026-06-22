@@ -13,31 +13,14 @@ This repo is the reference story for the two OSS projects: AI drafts the
 governance work, humans certify it, and DQL serves only the trusted layer to
 stakeholders and agents.
 
-```mermaid
-flowchart LR
-  ask["Jaffle leadership<br/>growth questions"] --> dbt["dbt + DuckDB<br/>orders, customers, products"]
-  dbt --> evidence["dbt evidence<br/>manifest, YAML, tests, metrics"]
-  evidence --> proposals["DataLex AI proposals<br/>revenue, customer, product packs"]
-  proposals --> review["Human review<br/>grain, owner, assumptions"]
-  review --> contracts["Certified DataLex contracts<br/>10 accepted definitions"]
-  contracts --> handoff["datalex-manifest.json<br/>trust handoff"]
-  handoff --> blocks["DQL certified blocks<br/>contract-bound SQL"]
-  blocks --> app["Growth Command Center<br/>executive app"]
-  blocks --> notebook["Notebook research<br/>draft to certified path"]
-  blocks --> agent["Governed AI answers<br/>certified or review-required"]
-  app --> ci["CI gate<br/>dbt, DataLex, DQL verify"]
-  notebook --> ci
-  agent --> ci
+> Click the diagram to open the full-size SVG in a browser tab, where you can
+> zoom or use full-screen mode.
 
-  classDef businessClass fill:#fdf2f8,stroke:#db2777,color:#1f2937
-  classDef dbtClass fill:#fef3c7,stroke:#d97706,color:#1f2937
-  classDef datalexClass fill:#eef2ff,stroke:#4f46e5,color:#1f2937
-  classDef dqlClass fill:#ecfdf5,stroke:#059669,color:#1f2937
-  class ask businessClass
-  class dbt,evidence dbtClass
-  class proposals,review,contracts,handoff datalexClass
-  class blocks,app,notebook,agent,ci dqlClass
-```
+<p align="center">
+  <a href="docs/assets/architecture/jaffle-flow.svg">
+    <img src="docs/assets/architecture/jaffle-flow.svg" alt="Jaffle Shop end-to-end architecture flow from leadership questions to dbt evidence, DataLex contracts, DQL blocks, app, notebook, governed AI, and CI" width="100%" />
+  </a>
+</p>
 
 **Business value:** the same Jaffle Shop question moves from messy analysis to
 certified definitions, reusable DQL blocks, an executive app, and AI answers

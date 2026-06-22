@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1060" viewBox="0 0 1900 1060" role="img" aria-labelledby="title desc">
+  <title id="title">Jaffle Shop DataLex and DQL tutorial flow</title>
+  <desc id="desc">The Jaffle Shop tutorial starts with leadership questions, builds dbt evidence, generates and reviews DataLex contracts, publishes a manifest, creates DQL blocks, and serves apps, notebooks, agents, and CI.</desc>
+  <defs>
+    <style>
+      .bg { fill: #fbfaf7; }
+      .title { fill: #111827; font: 700 44px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .subtitle { fill: #475569; font: 400 24px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .laneTitle { fill: #334155; font: 700 18px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: 1px; }
+      .box { stroke-width: 3; rx: 22; }
+      .business { fill: #fdf2f8; stroke: #db2777; }
+      .dbt { fill: #fff7ed; stroke: #d97706; }
+      .datalex { fill: #eef2ff; stroke: #4f46e5; }
+      .dql { fill: #ecfdf5; stroke: #059669; }
+      .gate { fill: #f8fafc; stroke: #64748b; }
+      .boxTitle { fill: #111827; font: 700 24px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .boxText { fill: #334155; font: 400 19px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .caption { fill: #334155; font: 500 22px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .captionStrong { fill: #111827; font: 700 22px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .arrow { stroke: #64748b; stroke-width: 4; fill: none; marker-end: url(#arrowhead); }
+      .lane { fill: none; stroke: #e2e8f0; stroke-width: 2; stroke-dasharray: 10 10; rx: 28; }
+    </style>
+    <marker id="arrowhead" markerWidth="14" markerHeight="14" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1900" height="1060"/>
+
+  <text x="80" y="86" class="title">Jaffle Shop Growth Command Center: the complete OSS story</text>
+  <text x="80" y="128" class="subtitle">AI drafts the governance layer. Humans certify meaning. DQL serves trusted answers to stakeholders and agents.</text>
+
+  <rect x="54" y="176" width="406" height="626" class="lane"/>
+  <rect x="494" y="176" width="392" height="626" class="lane"/>
+  <rect x="920" y="176" width="392" height="626" class="lane"/>
+  <rect x="1346" y="176" width="500" height="626" class="lane"/>
+  <text x="80" y="214" class="laneTitle">BUSINESS NEED</text>
+  <text x="520" y="214" class="laneTitle">DBT EVIDENCE</text>
+  <text x="946" y="214" class="laneTitle">DATALEX TRUST LAYER</text>
+  <text x="1372" y="214" class="laneTitle">DQL CONSUMPTION LAYER</text>
+
+  <rect x="92" y="268" width="330" height="160" class="box business"/>
+  <text x="124" y="318" class="boxTitle">Leadership asks</text>
+  <text x="124" y="356" class="boxText">Why is revenue moving?</text>
+  <text x="124" y="388" class="boxText">Which products and customers</text>
+  <text x="124" y="420" class="boxText">matter most?</text>
+
+  <rect x="532" y="268" width="316" height="160" class="box dbt"/>
+  <text x="564" y="318" class="boxTitle">dbt + DuckDB</text>
+  <text x="564" y="356" class="boxText">orders, customers,</text>
+  <text x="564" y="388" class="boxText">products, order items</text>
+
+  <rect x="532" y="508" width="316" height="160" class="box dbt"/>
+  <text x="564" y="558" class="boxTitle">dbt evidence</text>
+  <text x="564" y="596" class="boxText">manifest, YAML, tests,</text>
+  <text x="564" y="628" class="boxText">semantic metrics</text>
+
+  <rect x="958" y="268" width="316" height="160" class="box datalex"/>
+  <text x="990" y="318" class="boxTitle">AI proposal packs</text>
+  <text x="990" y="356" class="boxText">revenue, customers,</text>
+  <text x="990" y="388" class="boxText">products</text>
+
+  <rect x="958" y="508" width="316" height="160" class="box datalex"/>
+  <text x="990" y="558" class="boxTitle">Human review</text>
+  <text x="990" y="596" class="boxText">owner, grain, source,</text>
+  <text x="990" y="628" class="boxText">assumptions</text>
+
+  <rect x="1384" y="244" width="392" height="138" class="box datalex"/>
+  <text x="1416" y="292" class="boxTitle">Certified contracts</text>
+  <text x="1416" y="330" class="boxText">10 accepted definitions</text>
+
+  <rect x="1384" y="424" width="392" height="138" class="box datalex"/>
+  <text x="1416" y="472" class="boxTitle">DataLex manifest</text>
+  <text x="1416" y="510" class="boxText">trusted handoff to DQL</text>
+
+  <rect x="1384" y="604" width="392" height="138" class="box dql"/>
+  <text x="1416" y="652" class="boxTitle">Certified DQL blocks</text>
+  <text x="1416" y="690" class="boxText">contract-bound SQL</text>
+
+  <rect x="332" y="842" width="300" height="136" class="box dql"/>
+  <text x="364" y="890" class="boxTitle">Growth App</text>
+  <text x="364" y="928" class="boxText">executive dashboard</text>
+
+  <rect x="714" y="842" width="300" height="136" class="box dql"/>
+  <text x="746" y="890" class="boxTitle">Notebook research</text>
+  <text x="746" y="928" class="boxText">draft to certified path</text>
+
+  <rect x="1096" y="842" width="300" height="136" class="box dql"/>
+  <text x="1128" y="890" class="boxTitle">Governed AI</text>
+  <text x="1128" y="928" class="boxText">certified or review-required</text>
+
+  <rect x="1478" y="842" width="300" height="136" class="box gate"/>
+  <text x="1510" y="890" class="boxTitle">CI gate</text>
+  <text x="1510" y="928" class="boxText">dbt, DataLex, DQL verify</text>
+
+  <path class="arrow" d="M422 348 L532 348"/>
+  <path class="arrow" d="M690 428 L690 508"/>
+  <path class="arrow" d="M848 588 L958 348"/>
+  <path class="arrow" d="M1116 428 L1116 508"/>
+  <path class="arrow" d="M1274 588 L1384 313"/>
+  <path class="arrow" d="M1580 382 L1580 424"/>
+  <path class="arrow" d="M1580 562 L1580 604"/>
+  <path class="arrow" d="M1514 742 C1280 806 760 806 482 842"/>
+  <path class="arrow" d="M1566 742 C1340 820 1040 810 864 842"/>
+  <path class="arrow" d="M1632 742 C1530 804 1370 814 1246 842"/>
+  <path class="arrow" d="M1628 742 L1628 842"/>
+
+  <rect x="80" y="1000" width="1740" height="42" rx="18" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="116" y="1028" class="captionStrong">Key idea:</text>
+  <text x="224" y="1028" class="caption">The same business question moves from dbt evidence to certified meaning to reusable DQL answers.</text>
+</svg>
