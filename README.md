@@ -53,8 +53,8 @@ that clearly show whether they are trusted or review-required.
 > - **Apps → Jaffle Growth Command Center** — executive revenue, customer, and product views
 > - **Lineage** — `raw → dbt models → DataLex contracts → certified blocks → App`
 >
-> The full AI-first tutorial, screenshots, and captions are in
-> [`TUTORIAL.md`](./TUTORIAL.md).
+> The full AI-first tutorial, screenshots, and chapter flow are in
+> [`docs/tutorials/jaffle/`](./docs/tutorials/jaffle/README.md).
 
 If you are running DataLex from a local source checkout, replace `datalex` with
 the path to that checkout's executable.
@@ -227,6 +227,7 @@ task build
 - `macros`: project macros
 - `DataLex`: AI-reviewed and human-certified business contracts, glossary, proposals, and manifest
 - `dql`: certified DQL blocks, business views, notebook, and Growth Command Center App
+- `docs/tutorials/jaffle`: chapter-by-chapter tutorial with story, AI path, manual path, and flow links
 - `docs/assets/tutorials/jaffle`: Paper-theme tutorial screenshots
 
 ## Notes

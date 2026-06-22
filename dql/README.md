@@ -51,4 +51,5 @@ dql.config.json  connection + dbt + DataLex manifest wiring
 ## Tutorial
 
 Follow [`TUTORIAL.md`](./TUTORIAL.md) for the DQL side and
-[`../TUTORIAL.md`](../TUTORIAL.md) for the full AI-first DataLex + DQL story.
+[`../docs/tutorials/jaffle/`](../docs/tutorials/jaffle/README.md) for the full
+AI-first DataLex + DQL story.

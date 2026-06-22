@@ -1,9 +1,10 @@
 # Jaffle Shop DQL Tutorial
 
 This folder is the DQL half of the Jaffle Shop Growth Command Center tutorial.
-The full end-to-end story starts one directory up in [`../TUTORIAL.md`](../TUTORIAL.md):
-dbt evidence -> DataLex proposal pack -> certified DataLex manifest -> DQL
-contract-bound blocks -> App -> governed agent answers.
+The full end-to-end story starts in
+[`../docs/tutorials/jaffle/`](../docs/tutorials/jaffle/README.md): dbt evidence
+-> DataLex proposal pack -> certified DataLex manifest -> DQL contract-bound
+blocks -> App -> governed agent answers.
 
 ## What DQL Adds
 
