@@ -1,0 +1,10 @@
+kind: term
+name: revenue
+definition: Gross order revenue from the dbt orders mart, using order_total unless a certified contract defines a narrower aggregation.
+synonyms: [sales, gross sales]
+steward: revenue-analytics@jaffle.shop
+owner: Growth Leadership
+tags: [revenue, metric]
+related_terms: [order]
+meta:
+  domain: revenue

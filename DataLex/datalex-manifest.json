@@ -1,0 +1,1008 @@
+{
+  "manifestSpecVersion": "1.0.0",
+  "datalexVersion": "1.11.0",
+  "generatedAt": "2026-06-22T18:54:21Z",
+  "project": {
+    "name": "jaffle_shop_growth",
+    "description": "Governed DataLex contract pack for the Jaffle Shop Growth Command Center tutorial.",
+    "dialect": "duckdb",
+    "owners": [
+      "analytics@jaffle.shop"
+    ]
+  },
+  "domains": [
+    {
+      "name": "customers",
+      "entities": [
+        {
+          "name": "Customer",
+          "contracts": [
+            {
+              "id": "customers.Customer.customer_mix",
+              "name": "New vs Returning Customer Mix",
+              "version": 1,
+              "owner": "customer-analytics@jaffle.shop",
+              "tags": [
+                "customers",
+                "segmentation",
+                "retention"
+              ],
+              "signature": {
+                "outputs": [
+                  {
+                    "name": "customer_type",
+                    "type": "string",
+                    "description": "dbt classification of new or returning customer."
+                  },
+                  {
+                    "name": "customers",
+                    "type": "integer",
+                    "description": "Count of customers in the segment."
+                  },
+                  {
+                    "name": "lifetime_spend",
+                    "type": "number",
+                    "description": "SUM(lifetime_spend) for the segment."
+                  }
+                ]
+              },
+              "description": "Customer count and lifetime spend grouped by dbt customer_type.",
+              "grain": "customer type",
+              "source": {
+                "kind": "dbt_model",
+                "ref": "model.jaffle_shop.customers"
+              },
+              "dbt_contract": {
+                "model": "customers",
+                "unique_id": "model.jaffle_shop.customers",
+                "source_of_truth": true
+              },
+              "evidence": {
+                "source_models": [
+                  "model.jaffle_shop.customers"
+                ],
+                "columns": [
+                  "customer_type",
+                  "customer_id",
+                  "lifetime_spend"
+                ],
+                "semantic_metrics": [
+                  "customers",
+                  "customers_lifetime_spend"
+                ],
+                "inferred_grain": "one row per customer_type after aggregation",
+                "assumptions": [
+                  "customer_type is assigned by the dbt customers mart from lifetime order count."
+                ],
+                "confidence": 0.9
+              },
+              "metrics": [
+                {
+                  "name": "customers",
+                  "formula": "COUNT(*)",
+                  "grain": "customer_type",
+                  "status": "certified"
+                },
+                {
+                  "name": "customer_lifetime_value",
+                  "formula": "SUM(lifetime_spend)",
+                  "grain": "customer_type",
+                  "status": "certified"
+                }
+              ],
+              "dimensions": [
+                "customer_type"
+              ],
+              "required_tests": [
+                "row_count >= 1",
+                "customers >= 0",
+                "lifetime_spend >= 0"
+              ],
+              "review": {
+                "cadence": "monthly",
+                "reviewers": [
+                  "customer-analytics@jaffle.shop"
+                ],
+                "last_reviewed_at": "2026-06-22"
+              }
+            },
+            {
+              "id": "customers.Customer.top_customers_by_lifetime_spend",
+              "name": "Top Customers by Lifetime Spend",
+              "version": 1,
+              "owner": "customer-analytics@jaffle.shop",
+              "tags": [
+                "customers",
+                "ranking",
+                "value"
+              ],
+              "signature": {
+                "outputs": [
+                  {
+                    "name": "customer_name",
+                    "type": "string",
+                    "description": "Customer display name."
+                  },
+                  {
+                    "name": "lifetime_spend",
+                    "type": "number",
+                    "description": "Historical customer spend."
+                  },
+                  {
+                    "name": "count_lifetime_orders",
+                    "type": "integer",
+                    "description": "Lifetime order count for the customer."
+                  }
+                ]
+              },
+              "description": "Highest-value customers ranked by lifetime_spend from the dbt customers mart.",
+              "grain": "customer",
+              "source": {
+                "kind": "dbt_model",
+                "ref": "model.jaffle_shop.customers"
+              },
+              "dbt_contract": {
+                "model": "customers",
+                "unique_id": "model.jaffle_shop.customers",
+                "source_of_truth": true
+              },
+              "evidence": {
+                "source_models": [
+                  "model.jaffle_shop.customers"
+                ],
+                "columns": [
+                  "customer_name",
+                  "lifetime_spend",
+                  "count_lifetime_orders"
+                ],
+                "semantic_metrics": [
+                  "customers_lifetime_spend"
+                ],
+                "inferred_grain": "one row per customer",
+                "assumptions": [
+                  "Displaying the top 10 customers is acceptable for the local tutorial dataset."
+                ],
+                "confidence": 0.89
+              },
+              "metrics": [
+                {
+                  "name": "customer_lifetime_value",
+                  "formula": "lifetime_spend",
+                  "grain": "customer",
+                  "status": "certified"
+                }
+              ],
+              "dimensions": [
+                "customer_name"
+              ],
+              "required_tests": [
+                "row_count >= 1",
+                "lifetime_spend >= 0"
+              ],
+              "review": {
+                "cadence": "monthly",
+                "reviewers": [
+                  "customer-analytics@jaffle.shop"
+                ],
+                "last_reviewed_at": "2026-06-22"
+              }
+            },
+            {
+              "id": "customers.Customer.total_customers",
+              "name": "Total Customers",
+              "version": 1,
+              "owner": "customer-analytics@jaffle.shop",
+              "tags": [
+                "customers",
+                "kpi"
+              ],
+              "signature": {
+                "outputs": [
+                  {
+                    "name": "total_customers",
+                    "type": "integer",
+                    "description": "COUNT(*) from dev.customers."
+                  }
+                ]
+              },
+              "description": "Count of distinct customers represented in the dbt customers mart.",
+              "grain": "all customers",
+              "source": {
+                "kind": "dbt_model",
+                "ref": "model.jaffle_shop.customers"
+              },
+              "dbt_contract": {
+                "model": "customers",
+                "unique_id": "model.jaffle_shop.customers",
+                "source_of_truth": true
+              },
+              "evidence": {
+                "source_models": [
+                  "model.jaffle_shop.customers"
+                ],
+                "columns": [
+                  "customer_id"
+                ],
+                "semantic_metrics": [
+                  "customers"
+                ],
+                "tests": [
+                  "unique_customer_id",
+                  "not_null_customer_id"
+                ],
+                "inferred_grain": "one row per customer",
+                "confidence": 0.95
+              },
+              "metrics": [
+                {
+                  "name": "total_customers",
+                  "formula": "COUNT(*)",
+                  "grain": "all customers",
+                  "status": "certified"
+                }
+              ],
+              "required_tests": [
+                "row_count == 1",
+                "total_customers >= 0"
+              ],
+              "review": {
+                "cadence": "monthly",
+                "reviewers": [
+                  "customer-analytics@jaffle.shop"
+                ],
+                "last_reviewed_at": "2026-06-22"
+              }
+            }
+          ],
+          "binding": {
+            "kind": "dbt_model",
+            "ref": "model.jaffle_shop.customers"
+          }
+        }
+      ],
+      "description": "Customer value, retention, and segmentation definitions backed by the dbt customers mart.",
+      "owners": [
+        "customer-analytics@jaffle.shop"
+      ],
+      "glossary": [
+        {
+          "term": "customer",
+          "definition": "A durable customer identity represented by one row in the dbt customers mart.",
+          "tags": [
+            "customer",
+            "entity"
+          ]
+        },
+        {
+          "term": "customer_lifetime_value",
+          "definition": "Total historical customer spend represented by lifetime_spend in the dbt customers mart.",
+          "tags": [
+            "customers",
+            "revenue",
+            "metric"
+          ]
+        }
+      ],
+      "metrics": [
+        {
+          "id": "customers.metric.customer_lifetime_value",
+          "name": "Customer Lifetime Value",
+          "description": "Certified customer value metric from the dbt customers mart.",
+          "owner": "customer-analytics@jaffle.shop",
+          "formula": "SUM(lifetime_spend)",
+          "grain": "customer",
+          "dependencies": [
+            "model.jaffle_shop.customers"
+          ],
+          "dimensions": [
+            "customer_type"
+          ],
+          "source": {
+            "kind": "semantic_metric",
+            "ref": "metric.customers_lifetime_spend"
+          },
+          "evidence": {
+            "source_models": [
+              "model.jaffle_shop.customers"
+            ],
+            "columns": [
+              "customer_id",
+              "customer_type",
+              "lifetime_spend",
+              "count_lifetime_orders"
+            ],
+            "semantic_metrics": [
+              "customers_lifetime_spend"
+            ],
+            "tests": [
+              "not_null_customer_id",
+              "unique_customer_id"
+            ],
+            "inferred_grain": "one row per customer",
+            "assumptions": [
+              "lifetime_spend is the approved value field for tutorial customer ranking."
+            ],
+            "confidence": 0.9
+          },
+          "tags": [
+            "customers",
+            "value",
+            "certified"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "products",
+      "entities": [
+        {
+          "name": "Product",
+          "contracts": [
+            {
+              "id": "products.Product.food_vs_drink_revenue",
+              "name": "Food vs Drink Revenue",
+              "version": 1,
+              "owner": "product-analytics@jaffle.shop",
+              "tags": [
+                "products",
+                "product-mix",
+                "revenue"
+              ],
+              "signature": {
+                "outputs": [
+                  {
+                    "name": "category",
+                    "type": "string",
+                    "description": "Food or Drink classification derived from is_food_item."
+                  },
+                  {
+                    "name": "revenue",
+                    "type": "number",
+                    "description": "SUM(product_price) for the category."
+                  }
+                ]
+              },
+              "description": "Item-level revenue split between food and drink products.",
+              "grain": "product category",
+              "source": {
+                "kind": "dbt_model",
+                "ref": "model.jaffle_shop.order_items"
+              },
+              "dbt_contract": {
+                "model": "order_items",
+                "unique_id": "model.jaffle_shop.order_items",
+                "source_of_truth": true
+              },
+              "evidence": {
+                "source_models": [
+                  "model.jaffle_shop.order_items"
+                ],
+                "columns": [
+                  "is_food_item",
+                  "product_price"
+                ],
+                "semantic_metrics": [
+                  "total_order_item_price"
+                ],
+                "inferred_grain": "one row per category after aggregation",
+                "assumptions": [
+                  "is_food_item = true maps to Food; false maps to Drink."
+                ],
+                "confidence": 0.9
+              },
+              "metrics": [
+                {
+                  "name": "product_revenue",
+                  "formula": "SUM(product_price)",
+                  "grain": "product category",
+                  "status": "certified"
+                }
+              ],
+              "dimensions": [
+                "category"
+              ],
+              "required_tests": [
+                "row_count >= 1",
+                "revenue >= 0"
+              ],
+              "review": {
+                "cadence": "monthly",
+                "reviewers": [
+                  "product-analytics@jaffle.shop"
+                ],
+                "last_reviewed_at": "2026-06-22"
+              }
+            },
+            {
+              "id": "products.Product.top_products_by_revenue",
+              "name": "Top Products by Revenue",
+              "version": 1,
+              "owner": "product-analytics@jaffle.shop",
+              "tags": [
+                "products",
+                "revenue",
+                "ranking"
+              ],
+              "signature": {
+                "outputs": [
+                  {
+                    "name": "product_name",
+                    "type": "string",
+                    "description": "Product display name."
+                  },
+                  {
+                    "name": "revenue",
+                    "type": "number",
+                    "description": "SUM(product_price) by product."
+                  },
+                  {
+                    "name": "units",
+                    "type": "integer",
+                    "description": "Count of ordered item rows."
+                  }
+                ]
+              },
+              "description": "Top-selling products ranked by item-level revenue.",
+              "grain": "product",
+              "source": {
+                "kind": "dbt_model",
+                "ref": "model.jaffle_shop.order_items"
+              },
+              "dbt_contract": {
+                "model": "order_items",
+                "unique_id": "model.jaffle_shop.order_items",
+                "source_of_truth": true
+              },
+              "evidence": {
+                "source_models": [
+                  "model.jaffle_shop.order_items"
+                ],
+                "columns": [
+                  "product_name",
+                  "product_price"
+                ],
+                "semantic_metrics": [
+                  "total_order_item_price"
+                ],
+                "inferred_grain": "one row per order item",
+                "confidence": 0.91
+              },
+              "metrics": [
+                {
+                  "name": "product_revenue",
+                  "formula": "SUM(product_price)",
+                  "grain": "product",
+                  "status": "certified"
+                }
+              ],
+              "dimensions": [
+                "product_name"
+              ],
+              "required_tests": [
+                "row_count >= 1",
+                "revenue >= 0",
+                "units >= 0"
+              ],
+              "review": {
+                "cadence": "monthly",
+                "reviewers": [
+                  "product-analytics@jaffle.shop"
+                ],
+                "last_reviewed_at": "2026-06-22"
+              }
+            }
+          ],
+          "binding": {
+            "kind": "dbt_model",
+            "ref": "model.jaffle_shop.order_items"
+          }
+        }
+      ],
+      "description": "Product mix and item-level sales definitions backed by the dbt order_items and products marts.",
+      "owners": [
+        "product-analytics@jaffle.shop"
+      ],
+      "glossary": [
+        {
+          "term": "product",
+          "definition": "A sellable food or drink item represented in the dbt products and order_items marts.",
+          "tags": [
+            "product",
+            "entity"
+          ]
+        }
+      ],
+      "metrics": [
+        {
+          "id": "products.metric.product_revenue",
+          "name": "Product Revenue",
+          "description": "Certified product revenue metric from item-level order rows.",
+          "owner": "product-analytics@jaffle.shop",
+          "formula": "SUM(product_price)",
+          "grain": "product",
+          "dependencies": [
+            "model.jaffle_shop.order_items"
+          ],
+          "dimensions": [
+            "product_name",
+            "is_food_item"
+          ],
+          "source": {
+            "kind": "semantic_metric",
+            "ref": "metric.total_order_item_price"
+          },
+          "evidence": {
+            "source_models": [
+              "model.jaffle_shop.order_items"
+            ],
+            "columns": [
+              "product_name",
+              "product_price",
+              "is_food_item"
+            ],
+            "semantic_metrics": [
+              "total_order_item_price"
+            ],
+            "inferred_grain": "one row per order item",
+            "assumptions": [
+              "product_price is the approved item revenue field for this tutorial."
+            ],
+            "confidence": 0.91
+          },
+          "tags": [
+            "products",
+            "revenue",
+            "certified"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "revenue",
+      "entities": [
+        {
+          "name": "Order",
+          "contracts": [
+            {
+              "id": "revenue.Order.average_order_value",
+              "name": "Average Order Value",
+              "version": 1,
+              "owner": "revenue-analytics@jaffle.shop",
+              "tags": [
+                "revenue",
+                "kpi",
+                "aov"
+              ],
+              "signature": {
+                "outputs": [
+                  {
+                    "name": "avg_order_value",
+                    "type": "number",
+                    "description": "AVG(order_total) rounded to two decimals."
+                  }
+                ]
+              },
+              "description": "Average gross order value across all completed orders.",
+              "grain": "all orders",
+              "source": {
+                "kind": "dbt_model",
+                "ref": "model.jaffle_shop.orders"
+              },
+              "dbt_contract": {
+                "model": "orders",
+                "unique_id": "model.jaffle_shop.orders",
+                "source_of_truth": true
+              },
+              "evidence": {
+                "source_models": [
+                  "model.jaffle_shop.orders"
+                ],
+                "columns": [
+                  "order_total"
+                ],
+                "semantic_metrics": [
+                  "average_order_amount"
+                ],
+                "inferred_grain": "one row per order",
+                "confidence": 0.91,
+                "open_questions": [
+                  "Should production AOV include only paid, non-refunded orders?"
+                ]
+              },
+              "metrics": [
+                {
+                  "name": "average_order_value",
+                  "formula": "AVG(order_total)",
+                  "grain": "all orders",
+                  "status": "certified"
+                }
+              ],
+              "required_tests": [
+                "row_count == 1",
+                "avg_order_value >= 0"
+              ],
+              "review": {
+                "cadence": "monthly",
+                "reviewers": [
+                  "revenue-analytics@jaffle.shop"
+                ],
+                "last_reviewed_at": "2026-06-22"
+              }
+            },
+            {
+              "id": "revenue.Order.monthly_revenue",
+              "name": "Monthly Revenue",
+              "version": 1,
+              "owner": "revenue-analytics@jaffle.shop",
+              "tags": [
+                "revenue",
+                "trend",
+                "monthly"
+              ],
+              "signature": {
+                "outputs": [
+                  {
+                    "name": "month",
+                    "type": "date",
+                    "description": "Calendar month from ordered_at."
+                  },
+                  {
+                    "name": "revenue",
+                    "type": "number",
+                    "description": "SUM(order_total) for the month."
+                  }
+                ]
+              },
+              "description": "Gross order revenue grouped by calendar month.",
+              "grain": "calendar month",
+              "source": {
+                "kind": "dbt_model",
+                "ref": "model.jaffle_shop.orders"
+              },
+              "dbt_contract": {
+                "model": "orders",
+                "unique_id": "model.jaffle_shop.orders",
+                "source_of_truth": true
+              },
+              "evidence": {
+                "source_models": [
+                  "model.jaffle_shop.orders"
+                ],
+                "columns": [
+                  "ordered_at",
+                  "order_total"
+                ],
+                "semantic_metrics": [
+                  "total_order_amount"
+                ],
+                "tests": [
+                  "unique_order_id",
+                  "not_null_order_id"
+                ],
+                "inferred_grain": "one row per month after aggregation",
+                "assumptions": [
+                  "Calendar month is derived with DuckDB date_trunc('month', ordered_at)."
+                ],
+                "confidence": 0.93
+              },
+              "metrics": [
+                {
+                  "name": "total_revenue",
+                  "formula": "SUM(order_total)",
+                  "grain": "month",
+                  "time_dimension": "ordered_at",
+                  "status": "certified"
+                }
+              ],
+              "dimensions": [
+                "month"
+              ],
+              "required_tests": [
+                "row_count >= 1",
+                "revenue >= 0"
+              ],
+              "review": {
+                "cadence": "monthly",
+                "reviewers": [
+                  "revenue-analytics@jaffle.shop"
+                ],
+                "last_reviewed_at": "2026-06-22"
+              }
+            },
+            {
+              "id": "revenue.Order.revenue_by_location",
+              "name": "Revenue by Location",
+              "version": 1,
+              "owner": "revenue-analytics@jaffle.shop",
+              "tags": [
+                "revenue",
+                "location"
+              ],
+              "signature": {
+                "outputs": [
+                  {
+                    "name": "location_name",
+                    "type": "string",
+                    "description": "Store location name from the dbt locations mart."
+                  },
+                  {
+                    "name": "revenue",
+                    "type": "number",
+                    "description": "SUM(order_total) for the location."
+                  }
+                ]
+              },
+              "description": "Gross order revenue grouped by Jaffle Shop store location.",
+              "grain": "location",
+              "source": {
+                "kind": "dbt_model",
+                "ref": "model.jaffle_shop.orders"
+              },
+              "dbt_contract": {
+                "model": "orders",
+                "unique_id": "model.jaffle_shop.orders",
+                "source_of_truth": true
+              },
+              "evidence": {
+                "source_models": [
+                  "model.jaffle_shop.orders",
+                  "model.jaffle_shop.locations"
+                ],
+                "columns": [
+                  "location_id",
+                  "location_name",
+                  "order_total"
+                ],
+                "inferred_grain": "one row per location after aggregation",
+                "assumptions": [
+                  "Location names come from dev.locations joined by location_id."
+                ],
+                "confidence": 0.9
+              },
+              "metrics": [
+                {
+                  "name": "total_revenue",
+                  "formula": "SUM(order_total)",
+                  "grain": "location",
+                  "status": "certified"
+                }
+              ],
+              "dimensions": [
+                "location_name"
+              ],
+              "required_tests": [
+                "row_count >= 1",
+                "revenue >= 0"
+              ],
+              "review": {
+                "cadence": "monthly",
+                "reviewers": [
+                  "revenue-analytics@jaffle.shop"
+                ],
+                "last_reviewed_at": "2026-06-22"
+              }
+            },
+            {
+              "id": "revenue.Order.total_orders",
+              "name": "Total Orders",
+              "version": 1,
+              "owner": "revenue-analytics@jaffle.shop",
+              "tags": [
+                "orders",
+                "volume",
+                "kpi"
+              ],
+              "signature": {
+                "outputs": [
+                  {
+                    "name": "total_orders",
+                    "type": "integer",
+                    "description": "COUNT(*) from dev.orders."
+                  }
+                ]
+              },
+              "description": "Count of completed orders in the dbt orders mart.",
+              "grain": "all orders",
+              "source": {
+                "kind": "dbt_model",
+                "ref": "model.jaffle_shop.orders"
+              },
+              "dbt_contract": {
+                "model": "orders",
+                "unique_id": "model.jaffle_shop.orders",
+                "source_of_truth": true
+              },
+              "evidence": {
+                "source_models": [
+                  "model.jaffle_shop.orders"
+                ],
+                "columns": [
+                  "order_id"
+                ],
+                "semantic_metrics": [
+                  "count_orders"
+                ],
+                "tests": [
+                  "unique_order_id",
+                  "not_null_order_id"
+                ],
+                "inferred_grain": "one row per order",
+                "confidence": 0.95
+              },
+              "metrics": [
+                {
+                  "name": "total_orders",
+                  "formula": "COUNT(*)",
+                  "grain": "all orders",
+                  "status": "certified"
+                }
+              ],
+              "required_tests": [
+                "row_count == 1",
+                "total_orders >= 0"
+              ],
+              "review": {
+                "cadence": "monthly",
+                "reviewers": [
+                  "revenue-analytics@jaffle.shop"
+                ],
+                "last_reviewed_at": "2026-06-22"
+              }
+            },
+            {
+              "id": "revenue.Order.total_revenue",
+              "name": "Total Revenue",
+              "version": 1,
+              "owner": "revenue-analytics@jaffle.shop",
+              "tags": [
+                "revenue",
+                "kpi",
+                "executive"
+              ],
+              "signature": {
+                "outputs": [
+                  {
+                    "name": "total_revenue",
+                    "type": "number",
+                    "description": "SUM(order_total) across all rows in dev.orders."
+                  }
+                ]
+              },
+              "description": "Total gross revenue across all completed Jaffle Shop orders.",
+              "grain": "all orders",
+              "source": {
+                "kind": "dbt_model",
+                "ref": "model.jaffle_shop.orders"
+              },
+              "dbt_contract": {
+                "model": "orders",
+                "unique_id": "model.jaffle_shop.orders",
+                "source_of_truth": true
+              },
+              "evidence": {
+                "source_models": [
+                  "model.jaffle_shop.orders"
+                ],
+                "columns": [
+                  "order_total"
+                ],
+                "semantic_metrics": [
+                  "total_order_amount"
+                ],
+                "tests": [
+                  "unique_order_id",
+                  "not_null_order_id"
+                ],
+                "inferred_grain": "one row per order",
+                "assumptions": [
+                  "Gross revenue includes tax in this tutorial dataset."
+                ],
+                "confidence": 0.92,
+                "open_questions": [
+                  "Production revenue may need refund and discount exclusions."
+                ]
+              },
+              "metrics": [
+                {
+                  "name": "total_revenue",
+                  "formula": "SUM(order_total)",
+                  "grain": "all orders",
+                  "status": "certified"
+                }
+              ],
+              "required_tests": [
+                "row_count == 1",
+                "total_revenue >= 0"
+              ],
+              "review": {
+                "cadence": "monthly",
+                "reviewers": [
+                  "revenue-analytics@jaffle.shop"
+                ],
+                "last_reviewed_at": "2026-06-22"
+              }
+            }
+          ],
+          "binding": {
+            "kind": "dbt_model",
+            "ref": "model.jaffle_shop.orders"
+          }
+        }
+      ],
+      "description": "Growth and order performance definitions backed by the dbt orders mart.",
+      "owners": [
+        "revenue-analytics@jaffle.shop"
+      ],
+      "glossary": [
+        {
+          "term": "order",
+          "definition": "A completed Jaffle Shop purchase represented by one row in the dbt orders mart.",
+          "tags": [
+            "order",
+            "entity"
+          ]
+        },
+        {
+          "term": "revenue",
+          "definition": "Gross order revenue from the dbt orders mart, using order_total unless a certified contract defines a narrower aggregation.",
+          "tags": [
+            "revenue",
+            "metric"
+          ]
+        }
+      ],
+      "metrics": [
+        {
+          "id": "revenue.metric.total_revenue",
+          "name": "Total Revenue",
+          "description": "Certified gross revenue metric for executive growth reporting.",
+          "owner": "revenue-analytics@jaffle.shop",
+          "formula": "SUM(order_total)",
+          "grain": "all orders",
+          "time_dimension": "ordered_at",
+          "dependencies": [
+            "model.jaffle_shop.orders"
+          ],
+          "dimensions": [
+            "month",
+            "location_name"
+          ],
+          "source": {
+            "kind": "semantic_metric",
+            "ref": "metric.total_order_amount"
+          },
+          "evidence": {
+            "source_models": [
+              "model.jaffle_shop.orders"
+            ],
+            "columns": [
+              "order_total",
+              "ordered_at",
+              "location_id"
+            ],
+            "semantic_metrics": [
+              "total_order_amount"
+            ],
+            "tests": [
+              "not_null_order_id",
+              "unique_order_id"
+            ],
+            "inferred_grain": "one row per order",
+            "assumptions": [
+              "order_total is gross revenue including tax in this demo dataset."
+            ],
+            "confidence": 0.92,
+            "open_questions": [
+              "Refunds and discounts are outside this local tutorial dataset."
+            ]
+          },
+          "tags": [
+            "revenue",
+            "executive",
+            "certified"
+          ]
+        }
+      ]
+    }
+  ]
+}

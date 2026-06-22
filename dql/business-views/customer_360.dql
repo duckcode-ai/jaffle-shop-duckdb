@@ -1,0 +1,18 @@
+// dql-format: 1
+
+business_view "Customer 360" {
+  domain = "customers"
+  status = "certified"
+  owner = "Customer Analytics"
+  description = "Customer base, value, and loyalty view for account and retention review."
+  businessOutcome = "Understand how many customers exist, who is most valuable, and how returning behavior changes."
+  decisionUse = "Retention review, customer value analysis, campaign targeting"
+  reviewCadence = "weekly"
+  terms = ["Customer", "Customer Lifetime Value", "Order"]
+
+  includes {
+    block "total_customers"
+    block "top_customers"
+    block "new_vs_returning_customers"
+  }
+}

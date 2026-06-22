@@ -1,0 +1,28 @@
+kind: metric_contract
+id: revenue.metric.total_revenue
+name: total_revenue
+display_name: Total Revenue
+domain: revenue
+description: Certified gross revenue metric for executive growth reporting.
+status: certified
+owner: revenue-analytics@jaffle.shop
+formula: SUM(order_total)
+grain: all orders
+time_dimension: ordered_at
+dimensions: [month, location_name]
+dependencies: [model.jaffle_shop.orders]
+source:
+  kind: semantic_metric
+  ref: metric.total_order_amount
+evidence:
+  source_models: [model.jaffle_shop.orders]
+  columns: [order_total, ordered_at, location_id]
+  semantic_metrics: [total_order_amount]
+  tests: [not_null_order_id, unique_order_id]
+  inferred_grain: one row per order
+  assumptions:
+    - order_total is gross revenue including tax in this demo dataset.
+  confidence: 0.92
+  open_questions:
+    - Refunds and discounts are outside this local tutorial dataset.
+tags: [revenue, executive, certified]

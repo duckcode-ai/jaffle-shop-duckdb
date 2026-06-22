@@ -4,9 +4,11 @@ block "revenue_by_location" {
   domain      = "revenue"
   type        = "custom"
   status      = "certified"
+  datalex_contract = "revenue.Order.revenue_by_location@1"
   owner       = "analytics@jaffle.shop"
   description = "Gross revenue by store location, highest first."
   tags        = ["revenue", "location", "geography"]
+  terms       = ["Revenue", "Order"]
   llmContext  = "Revenue split by store location: joins the dbt orders mart to the locations mart on location_id and sums order_total per location_name. Use for 'which location/store makes the most' questions. Locations include Philadelphia, Brooklyn, Chicago, San Francisco, New Orleans."
   examples = [{ question = "Which location has the highest revenue?" }]
   query = """

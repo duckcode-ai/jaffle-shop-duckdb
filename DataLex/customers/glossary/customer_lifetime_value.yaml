@@ -1,0 +1,11 @@
+kind: term
+name: customer_lifetime_value
+definition: Total historical customer spend represented by lifetime_spend in the dbt customers mart.
+abbreviation: CLV
+synonyms: [lifetime spend, customer value]
+steward: customer-analytics@jaffle.shop
+owner: Customer Analytics
+tags: [customers, revenue, metric]
+related_terms: [customer]
+meta:
+  domain: customers

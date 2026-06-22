@@ -4,9 +4,11 @@ block "total_revenue" {
   domain      = "revenue"
   type        = "custom"
   status      = "certified"
+  datalex_contract = "revenue.Order.total_revenue@1"
   owner       = "analytics@jaffle.shop"
   description = "Total gross revenue across all orders and locations (incl. tax)."
   tags        = ["revenue", "kpi"]
+  terms       = ["Revenue", "Order"]
   llmContext  = "Headline KPI: total gross revenue = SUM(order_total) over the dbt orders mart, all locations and all time. Use for 'total revenue' / 'how much have we made' questions."
   examples = [{ question = "What is our total revenue?" }]
   query = """

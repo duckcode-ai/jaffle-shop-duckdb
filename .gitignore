@@ -36,3 +36,7 @@ dql-manifest.json
 /package.json
 /package-lock.json
 /semantic-layer/
+
+# Local video planning artifacts; publish these later when the YouTube roadmap is ready.
+/YOUTUBE.md
+/docs/assets/tutorials/jaffle/youtube/

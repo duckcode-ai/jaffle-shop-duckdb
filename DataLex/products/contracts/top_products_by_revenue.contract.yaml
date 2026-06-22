@@ -1,0 +1,47 @@
+kind: contract
+id: products.Product.top_products_by_revenue
+name: top_products_by_revenue
+display_name: Top Products by Revenue
+domain: products
+entity: Product
+version: 1
+status: certified
+owner: product-analytics@jaffle.shop
+business_definition: Top-selling products ranked by item-level revenue.
+grain: product
+source:
+  kind: dbt_model
+  ref: model.jaffle_shop.order_items
+dbt_contract:
+  model: order_items
+  unique_id: model.jaffle_shop.order_items
+  source_of_truth: true
+signature:
+  outputs:
+    - name: product_name
+      type: string
+      description: Product display name.
+    - name: revenue
+      type: number
+      description: SUM(product_price) by product.
+    - name: units
+      type: integer
+      description: Count of ordered item rows.
+metrics:
+  - name: product_revenue
+    formula: SUM(product_price)
+    grain: product
+    status: certified
+dimensions: [product_name]
+required_tests: [row_count >= 1, revenue >= 0, units >= 0]
+evidence:
+  source_models: [model.jaffle_shop.order_items]
+  columns: [product_name, product_price]
+  semantic_metrics: [total_order_item_price]
+  inferred_grain: one row per order item
+  confidence: 0.91
+review:
+  cadence: monthly
+  reviewers: [product-analytics@jaffle.shop]
+  last_reviewed_at: "2026-06-22"
+tags: [products, revenue, ranking]

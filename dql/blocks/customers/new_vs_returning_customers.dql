@@ -4,9 +4,11 @@ block "new_vs_returning_customers" {
   domain      = "customers"
   type        = "custom"
   status      = "certified"
+  datalex_contract = "customers.Customer.customer_mix@1"
   owner       = "analytics@jaffle.shop"
   description = "Customer count and lifetime spend split by new vs. returning, from the dbt customers mart."
   tags        = ["customers", "segmentation", "kpi"]
+  terms       = ["Customer", "Customer Lifetime Value", "Order"]
 
   llmContext = "Use this block for questions about new vs. returning customers, customer mix, or repeat-customer behavior. customer_type comes from the dbt customers mart: 'new' = a single lifetime order, 'returning' = more than one. Reports both the customer count and total lifetime spend per type."
   examples = [

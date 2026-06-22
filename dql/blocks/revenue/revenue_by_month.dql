@@ -4,9 +4,11 @@ block "revenue_by_month" {
   domain      = "revenue"
   type        = "custom"
   status      = "certified"
+  datalex_contract = "revenue.Order.monthly_revenue@1"
   owner       = "analytics@jaffle.shop"
   description = "Gross revenue by calendar month, from the dbt orders mart."
   tags        = ["revenue", "kpi", "monthly"]
+  terms       = ["Revenue", "Order"]
 
   llmContext = "Use this block for questions about revenue over time, monthly revenue, or revenue trend. Revenue is the sum of order_total from the dbt orders mart (gross, including tax). One row per calendar month."
   examples = [

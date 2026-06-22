@@ -1,211 +1,150 @@
-# Jaffle Shop + DQL — guided tour
+# Jaffle Shop DQL Tutorial
 
-This workspace is a complete DQL governed-analytics layer on top of the Jaffle
-Shop dbt project: **10 certified blocks**, a **Jaffle Analytics** App with an
-executive dashboard, a notebook, and full lineage. This guide takes you on a
-tour of what's built, then walks you through adding your own block, then points
-at where to go next.
+This folder is the DQL half of the Jaffle Shop Growth Command Center tutorial.
+The full end-to-end story starts one directory up in [`../TUTORIAL.md`](../TUTORIAL.md):
+dbt evidence -> DataLex proposal pack -> certified DataLex manifest -> DQL
+contract-bound blocks -> App -> governed agent answers.
 
-> Setup (once): from this `dql/` folder run `npm install`, then
-> `npm run notebook` (opens <http://127.0.0.1:3474>). The dbt warehouse is
-> already built (`../jaffle_shop.duckdb`) and synced; if you rebuild dbt, run
-> `npm run sync` to refresh.
+## What DQL Adds
 
----
+DataLex certifies the business definitions. DQL makes those definitions useful
+for stakeholders:
 
-# Part 1 — Take the tour (~5 minutes)
+- 10 certified `.dql` blocks across revenue, customers, and products.
+- Every certified block has a `datalex_contract = "...@1"` binding.
+- Two business views: `Customer 360` and `Jaffle Growth Pulse`.
+- One certified app: `Jaffle Growth Command Center`.
+- One notebook for research and stakeholder walkthroughs.
+- Lineage from DuckDB tables through blocks, charts, business views, and app.
 
-## 1. The certified blocks
+## Run the DQL Side
 
-Click **Blocks** in the left rail. There are 10 certified blocks across three
-domains — each one a single `.dql` file holding SQL, an owner, a description,
-agent context, and tests:
-
-| Domain | Blocks |
-|---|---|
-| **revenue** | `total_revenue`, `total_orders`, `avg_order_value`, `revenue_by_month`, `revenue_by_location`, `food_vs_drink_revenue` |
-| **customers** | `total_customers`, `new_vs_returning_customers`, `top_customers` |
-| **products** | `top_products` |
-
-Open `revenue_by_month` and hit **Run** — it queries the dbt `orders` mart live.
-Notice the green **certified** badge: it passed the local certification gate
-(metadata present, query runs, tests pass).
-
-## 2. The executive App
-
-Click **Apps → Jaffle Analytics → Executive Overview**. This is the consumption
-surface a stakeholder would open — a dashboard composed entirely of certified
-blocks:
-
-- a KPI row — **revenue $671.4K · orders 61,948 · avg order $10.84 · 935 customers**
-- revenue by month, food vs. drink, revenue by location, top products,
-  new-vs-returning customers, and a top-customers table
-
-Every tile shows the `block:` it's backed by — the dashboard never holds its own
-SQL. Toggle **View / Build** (top right): Build lets you drag, resize, and add
-tiles; View is the clean consumer mode.
-
-## 3. The lineage
-
-Click **Lineage**. The graph connects everything: `raw` sources → dbt staging
-models → dbt marts → certified blocks → the App. This is the picture of *where
-every number comes from* — 32 nodes from source table to dashboard tile.
-
-## 4. Ask the agent (optional)
-
-If you've set an LLM provider (Settings, or an `ANTHROPIC_API_KEY` /
-`OPENAI_API_KEY` env var, or local [Ollama](https://ollama.com)):
+From the repo root:
 
 ```bash
-npx dql agent reindex
-npx dql agent ask "what is our total revenue?"
+datalex datalex manifest build DataLex --out "$(pwd)/DataLex/datalex-manifest.json"
+cd dql
+npm install
+npx dql validate
+npx dql app build
+npx dql verify
+npm run notebook
 ```
 
-It answers **from the certified block** and cites it — not improvised SQL. Ask
-something no block covers and the proposal is flagged *Uncertified* and saved as
-a draft for review. That's the governed-answer loop.
+Open <http://127.0.0.1:3474> and use the Paper theme.
 
----
+If you are running DataLex from a local source checkout, replace `datalex` with
+the path to that checkout's executable.
 
-# Part 2 — Build your own block (~15 minutes)
+## Chapter 1. Contract-Bound Blocks
 
-You'll add **revenue by weekday** — a real question ("which day sells most?")
-that isn't in the set yet.
+Open `blocks/revenue/revenue_by_month.dql`.
 
-## Step 1 — Create the block
+AI-first: ask DQL to explain why this block answers "How is revenue trending?"
+It should cite the SQL, `llmContext`, business terms, and
+`revenue.Order.monthly_revenue@1`.
 
-In the notebook UI: **Blocks → + New → SQL Block**, name it
-`revenue_by_weekday`, domain `revenue`. Or create the file directly at
-`blocks/revenue/revenue_by_weekday.dql`:
+Manual review:
 
-```dql
-// dql-format: 1
+- `status = "certified"`
+- `datalex_contract = "revenue.Order.monthly_revenue@1"`
+- SQL reads `dev.orders`
+- output grain is one row per calendar month
+- tests assert at least one row
 
-block "revenue_by_weekday" {
-  domain      = "revenue"
-  type        = "custom"
-  status      = "draft"
-  owner       = "you@your-company.com"
-  description = "Revenue by day of week, to spot weekly seasonality."
-  tags        = ["revenue", "seasonality"]
-  llmContext  = "Revenue grouped by day of week from the dbt orders mart, to reveal which weekdays drive the most sales."
-  examples = [
-    { question = "Which day of the week makes the most revenue?" }
-  ]
-  query = """
-    SELECT dayname(ordered_at) AS weekday, SUM(order_total) AS revenue
-    FROM dev.orders
-    GROUP BY 1
-    ORDER BY revenue DESC
-  """
-  visualization {
-    chart = "bar"
-    x     = "weekday"
-    y     = "revenue"
-  }
-  tests {
-    assert row_count >= 1
-  }
-}
-```
-
-> **Two syntax rules:** a block uses **one** triple-quoted (`"""…"""`) string —
-> reserve it for `query` and keep `llmContext` on a single line. And `assert`
-> takes a bare column name (`assert row_count >= 1`), not a function call.
-
-## Step 2 — Certify it
+Validation:
 
 ```bash
-npx dql certify blocks/revenue/revenue_by_weekday.dql
+npx dql validate --format json
 ```
 
-```
-  Block: "revenue_by_weekday"
-  Status: ✓ CERTIFIABLE
-  Tests (1 assertions):
-    ✓ assert row_count >= 1 (actual: 7)
-```
+Expected result: zero diagnostics.
 
-Set `status = "certified"` in the file. Certification is a **local trust
-label**: required metadata present, query runs, tests pass.
+## Chapter 2. Growth Command Center App
 
-> **DuckDB is single-writer.** If `certify` reports a "Conflicting lock" error,
-> the notebook server is holding `jaffle_shop.duckdb` — stop it (Ctrl-C
-> `npm run notebook`) and re-run, or certify before starting the notebook.
+Open `apps/jaffle-analytics/dashboards/overview.dqld`.
 
-## Step 3 — Add it to the dashboard
+AI-first: ask DQL to generate an app plan from certified blocks only.
 
-Open `apps/jaffle-analytics/dashboards/overview.dqld` and add a tile to `items`
-(pick a free row, e.g. `y: 14`):
+Manual review:
 
-```json
-{
-  "i": "weekday",
-  "x": 0, "y": 14, "w": 6, "h": 4,
-  "title": "Revenue by weekday",
-  "block": { "blockId": "revenue_by_weekday" },
-  "viz": { "type": "bar", "options": { "x": "weekday", "y": "revenue" } }
-}
-```
+- KPI row: revenue, orders, AOV, customers
+- Trend: monthly revenue
+- Customer view: new vs returning by lifetime spend
+- Product view: food vs drink and top products
+- Table: top customers
+
+Build:
 
 ```bash
 npx dql app build
 ```
 
-`Built 1 app(s), 1 dashboard(s)` with no unresolved-ref warning means it's
-wired. Reopen the App — your chart renders live.
+Expected result: 1 app, 1 dashboard, no unresolved references.
 
-## Step 4 — Compile and trace lineage
+## Chapter 3. Notebook Research to Draft Block
 
-```bash
-npx dql compile
-npx dql lineage --block revenue_by_weekday
-```
+Use the notebook for questions that are not certified yet, such as "which
+weekday sells most?"
 
-It now traces `dev.orders` → dbt `orders` → staging → `raw_orders`. From
-dashboard tile to source table, one connected graph.
+AI-first: let the notebook generate review-required SQL.
 
-## Step 5 — Ask the agent about it
+Manual path:
+
+1. Inspect the SQL and source columns.
+2. Save a draft block.
+3. Add owner, description, tests, `llmContext`, terms, and a DataLex contract.
+4. Run validation.
+5. Set `status = "certified"` only after review.
+
+The key teaching point: exploration is allowed, but it is not served as a
+certified stakeholder answer until review.
+
+## Chapter 4. Governed Agentic Analytics
+
+Covered questions should resolve to certified blocks:
 
 ```bash
 npx dql agent reindex
-npx dql agent ask "which weekday makes the most revenue?"
+npx dql agent ask "what is total revenue?"
 ```
 
-Answered from your new certified block.
+Uncovered drilldowns should remain review-required until promoted:
 
----
+```bash
+npx dql agent ask "which weekday is strongest?"
+```
 
-# Part 3 — Go further
+The agent flow is intentionally graduated: certified blocks first, metadata
+routing second, review-required drafts last.
 
-Readymade next steps to round out the example — each is a small, self-contained
-addition:
+## Chapter 5. Trust Failure and Fix
 
-1. **Attach a notebook to the App.** In the App's **Build** panel, add the
-   `welcome` notebook as an analysis page — stakeholders get the dashboard plus
-   a narrative, read-only.
+Break one contract id, for example:
 
-2. **Author a semantic block.** This dbt project ships MetricFlow metrics
-   (`npm run sync` imported 19). Create a semantic block off one of them instead
-   of writing raw SQL — see the
-   [authoring guide](https://github.com/duckcode-ai/dql/blob/main/docs/tutorials/02-authoring-blocks.md).
+```dql
+datalex_contract = "revenue.Order.not_a_contract@1"
+```
 
-3. **Add a second dashboard page.** Create
-   `apps/jaffle-analytics/dashboards/customers.dqld` focused on the customers
-   domain (`total_customers`, `new_vs_returning_customers`, `top_customers`),
-   then `npx dql app build`. The App now has two pages.
+Run:
 
-4. **Wire the MCP server to your editor.** Let Claude Code or Cursor answer from
-   these certified blocks:
-   ```bash
-   claude mcp add dql -- npx @duckcodeailabs/dql-cli mcp
-   ```
-   Ask it a revenue question — it answers from the blocks and cites them.
+```bash
+npx dql validate
+```
 
-5. **Gate it in CI.** Add `npx dql verify` to a GitHub Action so the manifest
-   stays reproducible — see the
-   [CI tutorial](https://github.com/duckcode-ai/dql/blob/main/docs/tutorials/05-ci-and-verify.md).
+DQL should fail the binding check. Restore the correct id and rerun validation.
+This is the governance lesson: bad business-definition references fail before
+stakeholders or AI agents use the answer.
 
-When you're ready, run this same flow on **your own dbt repo**:
-`npx create-dql-app@latest dql` inside it, point `dql.config.json` at your
-warehouse, `npm run sync`, and you're here.
+## Chapter 6. CI Gate
+
+Run the full DQL gate after DataLex manifest build:
+
+```bash
+npx dql validate
+npx dql app build
+npx dql verify
+```
+
+Expected result: validation diagnostics are clean, app build succeeds, and
+verify returns `{"ok":true}`.

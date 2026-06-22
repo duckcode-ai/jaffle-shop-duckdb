@@ -1,0 +1,14 @@
+// dql-format: 1
+
+term "Order" {
+  domain = "revenue"
+  type = "entity"
+  status = "certified"
+  description = "A completed jaffle shop purchase captured in the dbt orders mart."
+  tags = ["orders", "revenue", "entity"]
+  owner = "analytics@jaffle.shop"
+  businessOwner = "Revenue Operations"
+  identifiers = ["order_id"]
+  synonyms = ["purchase", "transaction"]
+  businessRules = ["Order counts are calculated from dev.orders unless a block states a narrower scope."]
+}

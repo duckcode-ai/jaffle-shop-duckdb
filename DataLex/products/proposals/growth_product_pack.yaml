@@ -1,0 +1,24 @@
+kind: proposal
+name: growth_product_pack
+proposal_type: datalex_contract
+status: reviewed
+domain: products
+target: item-level product mix contracts
+summary: AI proposed product mix contracts for top products and food-vs-drink revenue using order_items evidence.
+created_by: datalex-ai
+created_at: "2026-06-22"
+proposed_change:
+  contracts:
+    - products.Product.top_products_by_revenue
+    - products.Product.food_vs_drink_revenue
+evidence:
+  source_models: [model.jaffle_shop.order_items, model.jaffle_shop.products]
+  columns: [product_name, product_price, is_food_item]
+  semantic_metrics: [total_order_item_price]
+  inferred_grain: one row per ordered item
+  assumptions:
+    - is_food_item separates food from drink in the tutorial dataset.
+  confidence: 0.91
+meta:
+  tutorial_step: 3
+  ai_first: true

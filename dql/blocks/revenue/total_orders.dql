@@ -4,9 +4,11 @@ block "total_orders" {
   domain      = "revenue"
   type        = "custom"
   status      = "certified"
+  datalex_contract = "revenue.Order.total_orders@1"
   owner       = "analytics@jaffle.shop"
   description = "Total number of orders placed across all locations."
   tags        = ["revenue", "kpi", "volume"]
+  terms       = ["Order"]
   llmContext  = "Headline KPI: total order count = COUNT(*) over the dbt orders mart. Use for 'how many orders' / order-volume questions."
   examples = [{ question = "How many orders have we had?" }]
   query = """

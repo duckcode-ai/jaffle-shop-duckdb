@@ -1,0 +1,20 @@
+// dql-format: 1
+
+business_view "Jaffle Growth Pulse" {
+  domain = "executive"
+  status = "certified"
+  owner = "Executive Analytics"
+  description = "Executive-facing growth view combining customer health and revenue momentum."
+  businessOutcome = "Connect customer growth with order volume and revenue trend for weekly business review."
+  decisionUse = "Weekly business review, growth planning, executive readout"
+  reviewCadence = "weekly"
+  terms = ["Customer", "Order", "Revenue"]
+
+  includes {
+    business_view "Customer 360"
+    block "total_orders"
+    block "total_revenue"
+    block "revenue_by_month"
+    block "top_products"
+  }
+}

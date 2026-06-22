@@ -1,0 +1,15 @@
+// dql-format: 1
+
+term "Customer Lifetime Value" {
+  domain = "customers"
+  type = "metric"
+  status = "certified"
+  description = "Total historical spend attributed to a customer across their lifetime orders."
+  tags = ["customers", "revenue", "loyalty"]
+  owner = "analytics@jaffle.shop"
+  businessOwner = "Customer Analytics"
+  identifiers = ["customer_id"]
+  synonyms = ["lifetime spend", "customer value"]
+  businessRules = ["Use lifetime_spend from the dbt customers mart for ranked customer value views."]
+  caveats = ["Refunds and loyalty adjustments are not modeled in this local demo dataset."]
+}

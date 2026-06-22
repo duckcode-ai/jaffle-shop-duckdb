@@ -1,0 +1,10 @@
+kind: term
+name: customer
+definition: A durable customer identity represented by one row in the dbt customers mart.
+synonyms: [guest, account]
+steward: customer-analytics@jaffle.shop
+owner: Customer Analytics
+tags: [customer, entity]
+related_terms: [customer_lifetime_value]
+meta:
+  domain: customers

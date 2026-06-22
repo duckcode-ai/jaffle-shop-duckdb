@@ -4,9 +4,11 @@ block "food_vs_drink_revenue" {
   domain      = "revenue"
   type        = "custom"
   status      = "certified"
+  datalex_contract = "products.Product.food_vs_drink_revenue@1"
   owner       = "analytics@jaffle.shop"
   description = "Revenue split between food (jaffles) and drinks, from order items."
   tags        = ["revenue", "product-mix"]
+  terms       = ["Revenue", "Product"]
   llmContext  = "Revenue by item category: classifies each row of the order_items mart as Food or Drink via is_food_item and sums product_price. Use for 'food vs drink' / product-mix revenue questions."
   examples = [{ question = "How much revenue comes from food vs drinks?" }]
   query = """

@@ -1,0 +1,46 @@
+kind: contract
+id: products.Product.food_vs_drink_revenue
+name: food_vs_drink_revenue
+display_name: Food vs Drink Revenue
+domain: products
+entity: Product
+version: 1
+status: certified
+owner: product-analytics@jaffle.shop
+business_definition: Item-level revenue split between food and drink products.
+grain: product category
+source:
+  kind: dbt_model
+  ref: model.jaffle_shop.order_items
+dbt_contract:
+  model: order_items
+  unique_id: model.jaffle_shop.order_items
+  source_of_truth: true
+signature:
+  outputs:
+    - name: category
+      type: string
+      description: Food or Drink classification derived from is_food_item.
+    - name: revenue
+      type: number
+      description: SUM(product_price) for the category.
+metrics:
+  - name: product_revenue
+    formula: SUM(product_price)
+    grain: product category
+    status: certified
+dimensions: [category]
+required_tests: [row_count >= 1, revenue >= 0]
+evidence:
+  source_models: [model.jaffle_shop.order_items]
+  columns: [is_food_item, product_price]
+  semantic_metrics: [total_order_item_price]
+  inferred_grain: one row per category after aggregation
+  assumptions:
+    - is_food_item = true maps to Food; false maps to Drink.
+  confidence: 0.9
+review:
+  cadence: monthly
+  reviewers: [product-analytics@jaffle.shop]
+  last_reviewed_at: "2026-06-22"
+tags: [products, product-mix, revenue]

@@ -1,0 +1,9 @@
+kind: domain
+name: customers
+description: Customer value, retention, and segmentation definitions backed by the dbt customers mart.
+owner: customer-analytics@jaffle.shop
+entities: [customer]
+tags: [customers, retention, certified]
+meta:
+  business_owner: Customer Analytics
+  source_models: [model.jaffle_shop.customers, model.jaffle_shop.orders]

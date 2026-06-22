@@ -14,6 +14,9 @@
     "projectDir": "..",
     "manifestPath": "target/manifest.json"
   },
+  "datalex": {
+    "manifestPath": "../DataLex/datalex-manifest.json"
+  },
   "governance": {
     "required_fields": ["domain", "owner", "description"]
   }

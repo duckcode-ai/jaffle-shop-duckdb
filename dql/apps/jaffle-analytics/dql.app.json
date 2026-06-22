@@ -1,20 +1,28 @@
 {
   "version": 1,
-  "id": "jaffle-analytics",
-  "name": "Jaffle Analytics",
-  "description": "Jaffle Analytics — consumption surface for revenue",
+  "id": "jaffle-growth-command-center",
+  "name": "Jaffle Growth Command Center",
+  "description": "Executive growth app composed from DataLex-certified DQL blocks for revenue, customers, and product mix.",
   "visibility": "shared",
-  "domain": "revenue",
-  "groups": [],
-  "lifecycle": "draft",
+  "domain": "executive",
+  "groups": [
+    "leadership",
+    "analytics"
+  ],
+  "lifecycle": "certified",
   "owners": [
     "analytics@jaffle.shop"
   ],
-  "tags": [],
+  "tags": [
+    "jaffle",
+    "growth",
+    "datalex",
+    "certified"
+  ],
   "members": [
     {
       "userId": "analytics@jaffle.shop",
-      "displayName": "analytics@jaffle.shop",
+      "displayName": "Analytics Team",
       "roles": [
         "owner"
       ]
@@ -24,12 +32,12 @@
     {
       "id": "owner",
       "displayName": "Owner",
-      "description": "Full access to all dashboards and configuration."
+      "description": "Full access to dashboards, build mode, and configuration."
     },
     {
       "id": "analyst",
       "displayName": "Analyst",
-      "description": "Can view and run dashboards, propose new blocks."
+      "description": "Can run dashboards and propose new certified blocks."
     },
     {
       "id": "viewer",
@@ -39,8 +47,8 @@
   ],
   "policies": [
     {
-      "id": "team-execute",
-      "domain": "revenue",
+      "id": "executive-growth-execute",
+      "domain": "executive",
       "minClassification": "internal",
       "allowedRoles": [
         "viewer",

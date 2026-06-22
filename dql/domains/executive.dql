@@ -1,0 +1,11 @@
+// dql-format: 1
+
+domain "executive" {
+  owner = "analytics@jaffle.shop"
+  businessOwner = "Jaffle Shop Leadership"
+  boundedContext = "Cross-domain Growth Command Center that combines certified revenue, customer, and product signals."
+  sourceSystems = ["DataLex:revenue", "DataLex:customers", "DataLex:products"]
+  primaryTerms = ["Revenue", "Order", "Customer", "Product"]
+  reviewCadence = "weekly"
+  tags = ["executive", "growth", "app"]
+}

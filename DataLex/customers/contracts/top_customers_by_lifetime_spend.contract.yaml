@@ -1,0 +1,49 @@
+kind: contract
+id: customers.Customer.top_customers_by_lifetime_spend
+name: top_customers_by_lifetime_spend
+display_name: Top Customers by Lifetime Spend
+domain: customers
+entity: Customer
+version: 1
+status: certified
+owner: customer-analytics@jaffle.shop
+business_definition: Highest-value customers ranked by lifetime_spend from the dbt customers mart.
+grain: customer
+source:
+  kind: dbt_model
+  ref: model.jaffle_shop.customers
+dbt_contract:
+  model: customers
+  unique_id: model.jaffle_shop.customers
+  source_of_truth: true
+signature:
+  outputs:
+    - name: customer_name
+      type: string
+      description: Customer display name.
+    - name: lifetime_spend
+      type: number
+      description: Historical customer spend.
+    - name: count_lifetime_orders
+      type: integer
+      description: Lifetime order count for the customer.
+metrics:
+  - name: customer_lifetime_value
+    formula: lifetime_spend
+    grain: customer
+    status: certified
+dimensions: [customer_name]
+required_tests: [row_count >= 1, lifetime_spend >= 0]
+evidence:
+  source_models: [model.jaffle_shop.customers]
+  columns: [customer_name, lifetime_spend, count_lifetime_orders]
+  semantic_metrics: [customers_lifetime_spend]
+  inferred_grain: one row per customer
+  assumptions:
+    - Displaying the top 10 customers is acceptable for the local tutorial dataset.
+  confidence: 0.89
+review:
+  cadence: monthly
+  reviewers: [customer-analytics@jaffle.shop]
+  last_reviewed_at: "2026-06-22"
+tags: [customers, ranking, value]

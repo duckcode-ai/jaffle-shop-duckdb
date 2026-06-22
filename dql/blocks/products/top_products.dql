@@ -4,9 +4,11 @@ block "top_products" {
   domain      = "products"
   type        = "custom"
   status      = "certified"
+  datalex_contract = "products.Product.top_products_by_revenue@1"
   owner       = "analytics@jaffle.shop"
   description = "Top 10 products by revenue, with units sold."
   tags        = ["products", "ranking"]
+  terms       = ["Product", "Revenue"]
   llmContext  = "Top products by revenue: groups the order_items mart by product_name, sums product_price as revenue and counts rows as units, top 10. Use for 'best selling' / 'top product' questions."
   examples = [{ question = "What are our top selling products?" }]
   query = """

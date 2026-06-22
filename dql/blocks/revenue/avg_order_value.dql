@@ -4,9 +4,11 @@ block "avg_order_value" {
   domain      = "revenue"
   type        = "custom"
   status      = "certified"
+  datalex_contract = "revenue.Order.average_order_value@1"
   owner       = "analytics@jaffle.shop"
   description = "Average order value in dollars, across all orders."
   tags        = ["revenue", "kpi"]
+  terms       = ["Revenue", "Order"]
   llmContext  = "Single-value KPI: average order_total across all orders in the dbt orders mart. Use for 'average order value' / 'AOV' questions."
   examples = [{ question = "What is our average order value?" }]
   query = """

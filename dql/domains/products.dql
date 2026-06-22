@@ -1,0 +1,11 @@
+// dql-format: 1
+
+domain "products" {
+  owner = "analytics@jaffle.shop"
+  businessOwner = "Merchandising"
+  boundedContext = "Product mix, item-level revenue, and best-selling menu items for merchandising decisions."
+  sourceSystems = ["dbt:order_items", "dbt:products", "DataLex:products"]
+  primaryTerms = ["Product", "Revenue"]
+  reviewCadence = "monthly"
+  tags = ["products", "menu", "certified"]
+}

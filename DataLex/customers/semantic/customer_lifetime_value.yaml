@@ -1,0 +1,25 @@
+kind: metric_contract
+id: customers.metric.customer_lifetime_value
+name: customer_lifetime_value
+display_name: Customer Lifetime Value
+domain: customers
+description: Certified customer value metric from the dbt customers mart.
+status: certified
+owner: customer-analytics@jaffle.shop
+formula: SUM(lifetime_spend)
+grain: customer
+dimensions: [customer_type]
+dependencies: [model.jaffle_shop.customers]
+source:
+  kind: semantic_metric
+  ref: metric.customers_lifetime_spend
+evidence:
+  source_models: [model.jaffle_shop.customers]
+  columns: [customer_id, customer_type, lifetime_spend, count_lifetime_orders]
+  semantic_metrics: [customers_lifetime_spend]
+  tests: [not_null_customer_id, unique_customer_id]
+  inferred_grain: one row per customer
+  assumptions:
+    - lifetime_spend is the approved value field for tutorial customer ranking.
+  confidence: 0.9
+tags: [customers, value, certified]

@@ -1,0 +1,31 @@
+kind: proposal
+name: growth_revenue_pack
+proposal_type: datalex_contract
+status: reviewed
+domain: revenue
+target: orders mart revenue contracts
+summary: AI proposed a revenue pack from dbt evidence for total revenue, monthly trend, order count, AOV, and location revenue.
+created_by: datalex-ai
+created_at: "2026-06-22"
+proposed_change:
+  contracts:
+    - revenue.Order.total_revenue
+    - revenue.Order.monthly_revenue
+    - revenue.Order.total_orders
+    - revenue.Order.average_order_value
+    - revenue.Order.revenue_by_location
+evidence:
+  source_models: [model.jaffle_shop.orders, model.jaffle_shop.locations]
+  columns: [order_id, ordered_at, order_total, location_id, location_name]
+  semantic_metrics: [total_order_amount, count_orders, average_order_amount]
+  tests: [unique_order_id, not_null_order_id]
+  inferred_grain: one row per order
+  assumptions:
+    - order_total is accepted as gross revenue for the tutorial.
+    - monthly revenue uses date_trunc('month', ordered_at).
+  confidence: 0.92
+  open_questions:
+    - Should production revenue exclude tax, discounts, or refunded orders?
+meta:
+  tutorial_step: 3
+  ai_first: true

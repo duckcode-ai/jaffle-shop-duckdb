@@ -1,0 +1,11 @@
+// dql-format: 1
+
+domain "customers" {
+  owner = "analytics@jaffle.shop"
+  businessOwner = "Customer Analytics"
+  boundedContext = "Customer count, customer value, and new-vs-returning segmentation for retention and growth review."
+  sourceSystems = ["dbt:customers", "DataLex:customers"]
+  primaryTerms = ["Customer", "Customer Lifetime Value", "Order"]
+  reviewCadence = "monthly"
+  tags = ["customers", "retention", "certified"]
+}

@@ -1,22 +1,27 @@
-# Jaffle Shop DuckDB + DQL
+# Jaffle Shop DuckDB + DataLex + DQL
 
 This is a local DuckDB version of the dbt Jaffle Shop sample project, with a
-[DQL](https://github.com/duckcode-ai/dql) **governed-analytics layer** built on
-top. dbt models the data; DQL turns the answers into certified, reusable,
-git-tracked blocks — with an App dashboard, notebooks, and full lineage.
+[DataLex](https://github.com/duckcode-ai/DataLex) contract pack and a
+[DQL](https://github.com/duckcode-ai/dql) governed-analytics layer built on
+top. dbt models the data; DataLex certifies business meaning from dbt evidence;
+DQL turns those certified contracts into reusable blocks, notebooks, an App,
+and AI answers that can cite their trust boundary.
 
-> **🟢 Two-minute tour.** After `./setup.sh` (below):
+> **Two-minute tour.** After `./setup.sh` (below):
 > ```bash
-> cd dql && npm install && npm run notebook   # http://127.0.0.1:3474
+> datalex datalex manifest build DataLex --out "$(pwd)/DataLex/datalex-manifest.json"
+> cd dql && npm install && npx dql validate && npx dql app build && npm run notebook
 > ```
 > Then open the left rail:
-> - **Blocks** — 10 certified analytics blocks (revenue, customers, products)
-> - **Apps → Jaffle Analytics** — an executive dashboard (revenue $671.4K,
->   orders 61,948, AOV $10.84, customers 935, plus charts)
-> - **Lineage** — `raw → dbt models → certified blocks → App`
+> - **Blocks** — 10 certified analytics blocks, each bound to a DataLex contract
+> - **Apps → Jaffle Growth Command Center** — executive revenue, customer, and product views
+> - **Lineage** — `raw → dbt models → DataLex contracts → certified blocks → App`
 >
-> The full guided tour and a hands-on "build your own block" walkthrough are in
-> [`dql/TUTORIAL.md`](./dql/TUTORIAL.md).
+> The full AI-first tutorial, screenshots, and captions are in
+> [`TUTORIAL.md`](./TUTORIAL.md).
+
+If you are running DataLex from a local source checkout, replace `datalex` with
+the path to that checkout's executable.
 
 ## Prerequisites
 
@@ -184,6 +189,9 @@ task build
 - `models/staging`: staging models over the raw source tables
 - `models/marts`: final mart models
 - `macros`: project macros
+- `DataLex`: AI-reviewed and human-certified business contracts, glossary, proposals, and manifest
+- `dql`: certified DQL blocks, business views, notebook, and Growth Command Center App
+- `docs/assets/tutorials/jaffle`: Paper-theme tutorial screenshots
 
 ## Notes
 

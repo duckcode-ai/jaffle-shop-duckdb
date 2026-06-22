@@ -1,0 +1,53 @@
+kind: contract
+id: customers.Customer.customer_mix
+name: customer_mix
+display_name: New vs Returning Customer Mix
+domain: customers
+entity: Customer
+version: 1
+status: certified
+owner: customer-analytics@jaffle.shop
+business_definition: Customer count and lifetime spend grouped by dbt customer_type.
+grain: customer type
+source:
+  kind: dbt_model
+  ref: model.jaffle_shop.customers
+dbt_contract:
+  model: customers
+  unique_id: model.jaffle_shop.customers
+  source_of_truth: true
+signature:
+  outputs:
+    - name: customer_type
+      type: string
+      description: dbt classification of new or returning customer.
+    - name: customers
+      type: integer
+      description: Count of customers in the segment.
+    - name: lifetime_spend
+      type: number
+      description: SUM(lifetime_spend) for the segment.
+metrics:
+  - name: customers
+    formula: COUNT(*)
+    grain: customer_type
+    status: certified
+  - name: customer_lifetime_value
+    formula: SUM(lifetime_spend)
+    grain: customer_type
+    status: certified
+dimensions: [customer_type]
+required_tests: [row_count >= 1, customers >= 0, lifetime_spend >= 0]
+evidence:
+  source_models: [model.jaffle_shop.customers]
+  columns: [customer_type, customer_id, lifetime_spend]
+  semantic_metrics: [customers, customers_lifetime_spend]
+  inferred_grain: one row per customer_type after aggregation
+  assumptions:
+    - customer_type is assigned by the dbt customers mart from lifetime order count.
+  confidence: 0.9
+review:
+  cadence: monthly
+  reviewers: [customer-analytics@jaffle.shop]
+  last_reviewed_at: "2026-06-22"
+tags: [customers, segmentation, retention]
