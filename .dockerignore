@@ -1,0 +1,12 @@
+# Keep the build context lean and let the image build its own artifacts.
+.git
+.venv
+**/node_modules
+target
+dbt_packages
+logs
+*.duckdb
+*.duckdb.wal
+dql/build
+dql/.dql
+.DS_Store

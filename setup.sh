@@ -43,6 +43,11 @@ echo "Installing Python dependencies..."
 .venv/bin/python -m pip install --upgrade pip --progress-bar off
 .venv/bin/python -m pip install -r requirements.txt --progress-bar off
 
+# Always land on the newest published DataLex CLI, even when re-running over an
+# existing .venv (a plain -r install does not upgrade a requirement already met).
+echo "Ensuring the latest DataLex CLI..."
+.venv/bin/python -m pip install --upgrade datalex-cli --progress-bar off
+
 echo "Installing dbt packages..."
 .venv/bin/dbt deps --profiles-dir .
 
@@ -55,6 +60,35 @@ echo "Building and testing dbt models..."
 echo "Generating dbt docs and lineage artifacts..."
 .venv/bin/dbt docs generate --profiles-dir .
 
+# DataLex layer. datalex-cli is installed from requirements.txt into the same
+# venv, so the manifest is always built with the latest DataLex CLI.
+echo "Building the DataLex manifest..."
+.venv/bin/datalex datalex manifest build DataLex --out "$ROOT_DIR/DataLex/datalex-manifest.json"
+
+# DQL layer. This needs Node 20-22. It is optional: if Node is not present we
+# print the manual steps instead of failing the whole setup.
+DQL_READY=0
+if [ "${SKIP_DQL:-0}" = "1" ]; then
+  echo "Skipping the DQL layer (SKIP_DQL=1)."
+elif command -v npm >/dev/null 2>&1; then
+  NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)"
+  if [ "$NODE_MAJOR" -ge 20 ] && [ "$NODE_MAJOR" -lt 23 ]; then
+    echo "Setting up the DQL layer (installing the latest dql-cli)..."
+    # --no-save keeps package.json pinned to "latest"; the explicit @latest
+    # install forces an upgrade even when node_modules already has an older one.
+    ( cd "$ROOT_DIR/dql" \
+        && npm install --no-audit --no-fund \
+        && npm install @duckcodeailabs/dql-cli@latest --no-save --no-audit --no-fund \
+        && npx dql validate \
+        && npx dql app build )
+    DQL_READY=1
+  else
+    echo "Found Node ${NODE_MAJOR}.x, but DQL needs Node 20-22. Skipping the DQL layer."
+  fi
+else
+  echo "Node/npm not found, skipping the DQL layer."
+fi
+
 cat <<'EOF'
 
 Setup complete.
@@ -65,8 +99,33 @@ Local database: ${DB_PATH}
 Raw seed schema: raw
 Model schema: dev
 Docs artifacts: target/manifest.json and target/catalog.json
+DataLex manifest: DataLex/datalex-manifest.json
+EOF
 
-Next commands:
-  source .venv/bin/activate
-  dbt docs serve --profiles-dir .
+if [ "$DQL_READY" = "1" ]; then
+  cat <<EOF
+
+DQL is ready. Launch the notebook + Growth Command Center App:
+  cd dql && npm run notebook     # http://127.0.0.1:3474
+
+Or serve dbt docs and lineage:
+  source .venv/bin/activate && dbt docs serve --profiles-dir .
+EOF
+else
+  cat <<EOF
+
+To finish the DQL layer (needs Node 20-22):
+  cd dql && npm install && npx dql validate && npx dql app build && npm run notebook
+
+Or serve dbt docs and lineage:
+  source .venv/bin/activate && dbt docs serve --profiles-dir .
+EOF
+fi
+
+cat <<EOF
+
+This setup already pulled the latest DataLex + DQL. To refresh them later
+without a full re-run (or with: task upgrade):
+  .venv/bin/python -m pip install -U datalex-cli
+  cd dql && npm install @duckcodeailabs/dql-cli@latest --no-save
 EOF

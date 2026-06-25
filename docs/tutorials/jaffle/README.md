@@ -23,10 +23,23 @@ answers.
 
 ## Setup
 
-Run the setup once from the repo root:
+Run the setup once from the repo root. It installs the latest dbt, DataLex, and
+DQL tooling, builds the models, publishes the DataLex manifest, and runs the DQL
+gate — in that order:
 
 ```bash
 ./setup.sh
+cd dql && npm run notebook     # http://127.0.0.1:3474
+```
+
+Prefer Docker? `docker compose up --build` does the same with no local Python or
+Node toolchain. See the [root README](../../../README.md#run-with-docker).
+
+To run the steps by hand, `datalex` is the CLI that `setup.sh` installs into the
+project `.venv` (`pip install datalex-cli`), so activate it first:
+
+```bash
+source .venv/bin/activate
 datalex datalex manifest build DataLex --out "$(pwd)/DataLex/datalex-manifest.json"
 cd dql
 npm install
@@ -36,8 +49,8 @@ npx dql verify
 npm run notebook
 ```
 
-If you are running DataLex from a local source checkout, replace `datalex` with
-that checkout's executable path.
+If you are running DataLex from a local source checkout instead, replace
+`datalex` with that checkout's executable path.
 
 **Expected proof points**
 
