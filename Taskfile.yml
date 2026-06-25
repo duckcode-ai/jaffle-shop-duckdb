@@ -19,6 +19,11 @@ tasks:
       - source .venv/bin/activate && python3 -m pip install --upgrade pip --progress-bar off > /dev/null
       - source .venv/bin/activate && python3 -m pip install -r requirements.txt --progress-bar off > /dev/null
 
+  upgrade:
+    cmds:
+      - source .venv/bin/activate && python3 -m pip install -U datalex-cli --progress-bar off
+      - cd dql && npm install @duckcodeailabs/dql-cli@latest --no-save --no-audit --no-fund
+
   deps:
     cmds:
       - source .venv/bin/activate && dbt deps --profiles-dir .

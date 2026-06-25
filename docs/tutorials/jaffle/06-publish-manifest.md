@@ -25,14 +25,16 @@ Ask DataLex to summarize:
 
 ## Manual Review Path
 
-Build the manifest:
+Build the manifest (`datalex` is installed into the project `.venv` by
+`setup.sh` via `pip install datalex-cli`, so activate it first):
 
 ```bash
+source .venv/bin/activate
 datalex datalex manifest build DataLex --out "$(pwd)/DataLex/datalex-manifest.json"
 ```
 
-If you are using a local DataLex source checkout, replace `datalex` with that
-checkout's executable path.
+If you are using a local DataLex source checkout instead, replace `datalex` with
+that checkout's executable path.
 
 ## Files to Inspect
 

@@ -1,4 +1,5 @@
 dbt-duckdb>=1.10,<2.0
+datalex-cli>=1.11
 pre-commit>=3.6.0
 requests~=2.31.0
 jafgen>=0.4.11

@@ -8,21 +8,25 @@ notebooks, lineage, and governed agent answers.
 
 ## Run it
 
-From the repo root, build the DataLex manifest first:
+`./setup.sh` at the repo root already installs the DataLex CLI, builds the
+manifest, and runs the DQL gate. To run the DQL side by hand, first build the
+DataLex manifest from the repo root (the `datalex` binary comes from the
+`.venv` that `setup.sh` created):
 
 ```bash
-/Users/Kranthi_1/DataLex/datalex datalex manifest build DataLex --out "$(pwd)/DataLex/datalex-manifest.json"
+source ../.venv/bin/activate
+datalex datalex manifest build DataLex --out "$(pwd)/DataLex/datalex-manifest.json"
 cd dql
 ```
 
 Then run the DQL gate and notebook:
 
 ```bash
-npm install
+npm install            # resolves the latest @duckcodeailabs/dql-cli
 npx dql validate
 npx dql app build
 npx dql verify
-npm run notebook     # http://127.0.0.1:3474
+npm run notebook       # http://127.0.0.1:3474
 ```
 
 The default connection points at the dbt-built `../jaffle_shop.duckdb`, and the

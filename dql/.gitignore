@@ -12,6 +12,8 @@ build/
 
 # Node
 node_modules/
+# Not committed: setup always resolves the latest @duckcodeailabs/dql-cli.
+package-lock.json
 
 # OS
 .DS_Store

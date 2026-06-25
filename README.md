@@ -34,10 +34,11 @@ stakeholders and agents.
 certified definitions, reusable DQL blocks, an executive app, and AI answers
 that clearly show whether they are trusted or review-required.
 
-> **Two-minute tour.** After `./setup.sh` (below):
+> **Two-minute tour.** `./setup.sh` (below) installs everything, builds the
+> dbt models, publishes the DataLex manifest, and runs the DQL gate — in that
+> order. When it finishes, launch the notebook and Growth Command Center App:
 > ```bash
-> datalex datalex manifest build DataLex --out "$(pwd)/DataLex/datalex-manifest.json"
-> cd dql && npm install && npx dql validate && npx dql app build && npm run notebook
+> cd dql && npm run notebook     # http://127.0.0.1:3474
 > ```
 > Then open the left rail:
 > - **Blocks** — 10 certified analytics blocks, each bound to a DataLex contract
@@ -47,13 +48,20 @@ that clearly show whether they are trusted or review-required.
 > The full AI-first tutorial, screenshots, and chapter flow are in
 > [`docs/tutorials/jaffle/`](./docs/tutorials/jaffle/README.md).
 
-If you are running DataLex from a local source checkout, replace `datalex` with
-the path to that checkout's executable.
+`setup.sh` installs the **latest** `datalex-cli` (DataLex) and
+`@duckcodeailabs/dql-cli` (DQL) on every run, so you always build against
+current tooling. Prefer a single command and no local toolchain? Use the
+[Docker](#run-with-docker) path instead.
 
 ## Prerequisites
 
-- Python 3.9 through 3.13
+- Python 3.9 through 3.13 (for dbt and the DataLex CLI)
 - Git
+- Node 20 through 22 — only for the DQL layer (notebook, App, blocks). The dbt
+  + DataLex steps run without it; `setup.sh` builds DQL automatically when Node
+  is present and prints the manual steps when it is not.
+- Optional: [Docker](#run-with-docker) for a one-command install with no local
+  Python or Node toolchain
 - Optional: [Task](https://taskfile.dev/) if you want to use `Taskfile.yml`
 
 ## Quick Start
@@ -73,9 +81,18 @@ Python explicitly:
 PYTHON=python3.13 ./setup.sh
 ```
 
-The setup script creates a virtual environment, installs `dbt-duckdb`, installs
-dbt packages, loads the seed data into DuckDB, builds and tests the models, and
-generates docs and lineage artifacts.
+The setup script runs the whole stack in order:
+
+1. creates a virtual environment and installs the latest `dbt-duckdb` and
+   `datalex-cli`
+2. installs dbt packages, loads the seed data into DuckDB, builds and tests the
+   models, and generates docs and lineage artifacts
+3. builds the DataLex manifest (`DataLex/datalex-manifest.json`)
+4. if Node 20–22 is present, installs the latest `@duckcodeailabs/dql-cli` and
+   runs the DQL gate (`npm install` → `dql validate` → `dql app build`)
+
+Set `SKIP_DQL=1 ./setup.sh` to stop after the DataLex manifest and skip the DQL
+layer.
 
 By default it writes to `jaffle_shop.duckdb`. To use a different local database
 path:
@@ -84,23 +101,59 @@ path:
 DBT_DUCKDB_PATH=./my_jaffle_shop.duckdb ./setup.sh
 ```
 
-If you prefer to run the steps manually:
+If you prefer to run the steps manually, follow the same order:
 
 ```bash
+# 1. Python layer: dbt + DataLex CLI (latest)
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install --upgrade pip
 python3 -m pip install -r requirements.txt
+
+# 2. dbt: build and test the models, generate docs + lineage
 dbt deps --profiles-dir .
 dbt seed --full-refresh --profiles-dir .
 dbt build --profiles-dir . --exclude resource_type:seed
 dbt docs generate --profiles-dir .
+
+# 3. DataLex: publish the manifest DQL and agents consume
+datalex datalex manifest build DataLex --out "$(pwd)/DataLex/datalex-manifest.json"
+
+# 4. DQL: install the latest dql-cli, run the gate, launch the notebook (needs Node 20-22)
+cd dql
+npm install
+npx dql validate
+npx dql app build
+npm run notebook     # http://127.0.0.1:3474
 ```
 
 The build creates a local `jaffle_shop.duckdb` database file in the project
 root. Seed tables are loaded into the `raw` schema and models are built into
 the `dev` schema. `dbt docs generate` writes `target/manifest.json` and
 `target/catalog.json`, which dbt uses for docs and lineage.
+
+## Run with Docker
+
+No local Python or Node toolchain required — Docker bundles both runtimes,
+runs the full ordered setup at build time, and serves the notebook:
+
+```bash
+docker compose up --build
+```
+
+Then open <http://127.0.0.1:3474> for the DQL notebook and Growth Command
+Center App. The image always builds against the latest `datalex-cli` and
+`@duckcodeailabs/dql-cli`.
+
+To serve dbt docs and lineage instead of the notebook:
+
+```bash
+docker compose run --rm --service-ports jaffle \
+  bash -c "cd /app && source .venv/bin/activate && \
+           dbt docs serve --profiles-dir . --host 0.0.0.0 --port 8080"
+```
+
+Then open <http://127.0.0.1:8080>.
 
 ## Using Task
 
