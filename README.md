@@ -1,11 +1,19 @@
 # Jaffle Shop DuckDB + DataLex + DQL
 
-This is a local DuckDB version of the dbt Jaffle Shop sample project, with a
-[DataLex](https://github.com/duckcode-ai/DataLex) contract pack and a
-[DQL](https://github.com/duckcode-ai/dql) governed-analytics layer built on
-top. dbt models the data; DataLex certifies business meaning from dbt evidence;
-DQL turns those certified contracts into reusable blocks, notebooks, an App,
-and AI answers that can cite their trust boundary.
+> **From a raw dbt model to a certified AI answer — with a human-reviewed
+> contract at every step.**
+
+This is the reference demo for the **DuckCode Analytics Platform**: a dbt
+project with a [DataLex](https://github.com/duckcode-ai/DataLex) contract pack
+and a [DQL](https://github.com/duckcode-ai/dql) governed-analytics layer built
+on top. dbt models the data; DataLex certifies business meaning from dbt
+evidence; DQL turns those certified contracts into reusable blocks, notebooks,
+an App, and AI answers that can cite their trust boundary.
+
+DataLex and DQL run on **Snowflake, Databricks, and DuckDB**. This demo uses
+DuckDB so you can run the entire flow locally with zero warehouse setup — the
+same DataLex contracts and DQL blocks work unchanged against a Snowflake or
+Databricks dbt project.
 
 ## End-to-end flow
 
@@ -53,7 +61,7 @@ the path to that checkout's executable.
 Clone the repo and run the setup script:
 
 ```bash
-git clone <your-repo-url> jaffle-shop-duckdb
+git clone https://github.com/duckcode-ai/jaffle-shop-duckdb.git
 cd jaffle-shop-duckdb
 ./setup.sh
 ```
@@ -125,6 +133,11 @@ jaffle_shop:
 
 Because this profile has no secrets, it is committed to the repo. Use
 `--profiles-dir .` when running dbt commands so dbt reads this local profile.
+
+This demo targets DuckDB for a zero-setup local run. To point the same models,
+DataLex contracts, and DQL blocks at **Snowflake** or **Databricks**, swap this
+profile for a standard `dbt-snowflake` or `dbt-databricks` profile — the
+governance layer above dbt is warehouse-agnostic.
 
 ## Common Commands
 
