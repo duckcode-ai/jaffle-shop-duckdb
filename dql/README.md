@@ -1,45 +1,88 @@
-# Jaffle Shop — DQL workspace
+# dql
 
-A [DQL](https://github.com/duckcode-ai/dql) analytics layer on top of the
-Jaffle Shop dbt project. dbt owns the models; DQL adds **certified analytics
-blocks**, an **App** with an executive dashboard, and end-to-end **lineage**
-from raw sources through the dbt DAG to every answer.
+A DQL project scaffolded by `create-dql-app`.
 
-## Run it
+DQL means **Domain Query Language**. It is the open-source analytics language
+for turning source data, SQL, dbt models, business terms, notebooks,
+dashboards, apps, and lineage into one Git-versioned project.
+
+The core path is:
+
+```text
+source data -> DQL block -> business_view -> dashboard/app/AI answer
+```
+
+Run `dql compile .` to produce `dql-manifest.json`, the local manifest that
+connects technical lineage with business lineage.
+
+## Connect your warehouse
+
+Edit `dql.config.json` or open the notebook connection panel. DQL uses a flat
+install by default: Databricks SQL works through the built-in HTTP connector,
+and DuckDB or Snowflake drivers can be installed project-locally when needed.
+Add your warehouse connection in the notebook or config.
 
 ```bash
 npm install
-npm run notebook     # http://127.0.0.1:3474
+npm run doctor
 ```
 
-The default connection points at the dbt-built `../jaffle_shop.duckdb`, and the
-dbt DAG is already synced. If you rebuild dbt, run `npm run sync` to refresh.
+Choose one database path before running queries:
 
-Open the left rail:
-- **Blocks** — 10 certified blocks (revenue, customers, products)
-- **Apps → Jaffle Analytics** — the executive dashboard (revenue, orders, AOV,
-  customers, locations, product mix, top customers)
-- **Lineage** — `raw → dbt models → certified blocks → App`
+| Database | Extra install | Notes |
+| --- | --- | --- |
+| Databricks SQL | none | Built into DQL through HTTPS |
+| DuckDB or local CSV/Parquet/JSON files | `npm install --prefix .dql/connectors duckdb` | Needed for `duckdb` and `file` connections |
+| Snowflake | `npm install --prefix .dql/connectors snowflake-sdk` | Needed for Snowflake connections |
 
-## What's inside
+The notebook Connections page can also install DuckDB or Snowflake into
+`.dql/connectors/`. For local files, add a DuckDB/file connection and query CSV
+or Parquet data with functions such as `read_csv_auto('./file.csv')`.
+See the [connector reference](https://github.com/duckcode-ai/dql/blob/main/docs/reference/connectors.md).
 
-| Domain | Blocks |
-|---|---|
-| **revenue** | `total_revenue`, `total_orders`, `avg_order_value`, `revenue_by_month`, `revenue_by_location`, `food_vs_drink_revenue` |
-| **customers** | `total_customers`, `new_vs_returning_customers`, `top_customers` |
-| **products** | `top_products` |
+## Start the notebook
 
-```
-blocks/        certified .dql blocks, by domain
-apps/          the Jaffle Analytics App + dashboard page
-notebooks/     a welcome notebook exploring the marts
-dql.config.json  connection + dbt wiring
+```bash
+npm run notebook
 ```
 
-## Build your own block
+Open `notebooks/welcome.dqlnb` first. It shows the starter workflow:
 
-Follow [`TUTORIAL.md`](./TUTORIAL.md) — a ~15-minute hands-on: create a block,
-certify it against the real warehouse, add it to the dashboard, trace its
-lineage, and ask the agent. It's the same flow you'd run on **your own dbt
-repo**: `npx create-dql-app@latest dql` inside it, point the config at your
-warehouse, `npm run sync`.
+1. Explore data with SQL.
+2. Promote repeated logic into reusable DQL blocks under `blocks/`.
+3. Define shared vocabulary under `terms/`.
+4. Compose business outcomes under `business-views/`.
+5. Use Lineage to trace source data into business views and consumption.
+
+## Connect an AI agent
+
+After `npm run doctor` passes, DQL can expose the same governed project context
+to Claude Code, Codex, Cursor, Claude Desktop, or any MCP client:
+
+```bash
+npm run compile
+npx dql mcp test
+npx dql connect claude-code
+# or: npx dql connect codex
+# or: npx dql connect all
+```
+
+Claude Code uses project `.mcp.json` and `CLAUDE.md`. Codex uses project
+`.codex/config.toml` and `AGENTS.md`. Agents should start with
+`inspect_dql_project`, route questions through `ask_dql`, use certified blocks
+when the grain exactly fits, and mark generated SQL as uncertified.
+The generated `.mcp.json`, `.codex/`, and `.cursor/` files are ignored by
+default because they can contain local machine paths.
+
+## Have a dbt project?
+
+Point `dql.config.json` at it (auto-wired if a sibling dbt project was
+detected at scaffold time), then:
+
+```bash
+dbt parse          # inside the dbt project
+npx dql sync dbt   # import models + lineage into DQL
+```
+
+No dbt project handy? Try the example repo:
+[github.com/duckcode-ai/jaffle-shop-duckdb](https://github.com/duckcode-ai/jaffle-shop-duckdb).

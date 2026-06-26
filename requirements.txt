@@ -3,8 +3,18 @@
 # Keep this file lightly pinned so pip can resolve compatible transitive
 # dependencies across supported Python versions, including Python 3.13.
 
+# dbt + DuckDB transformation layer.
 dbt-duckdb>=1.10,<2.0
 jafgen>=0.4.11
 pre-commit>=3.6.0
 requests~=2.31.0
 typing-extensions>=4.12.2,<5
+
+# DataLex contract layer (AI-first dbt domain contracts).
+# [serve]   bundles a portable Node runtime for the local UI on http://localhost:3030.
+# [duckdb]  adds the DuckDB driver used by this example.
+# [draft]   installs the Anthropic/Claude SDK; [draft-openai] adds OpenAI. These power
+#           the AI Setup + Generate workflow. Ollama needs no extra. You supply your
+#           own API key at runtime. Gemini (draft-gemini) is omitted on purpose: its
+#           google-generativeai deps pull a protobuf version that conflicts with dbt.
+datalex-cli[serve,duckdb,draft,draft-openai]>=1.12,<2

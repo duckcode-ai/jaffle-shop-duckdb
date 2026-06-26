@@ -5,33 +5,78 @@ This is a local DuckDB version of the dbt Jaffle Shop sample project, with a
 top. dbt models the data; DQL turns the answers into certified, reusable,
 git-tracked blocks — with an App dashboard, notebooks, and full lineage.
 
-> **🟢 Two-minute tour.** After `./setup.sh` (below):
+> **🟢 Two-minute tour.** One command installs all three layers and opens both
+> local UIs:
 > ```bash
-> cd dql && npm install && npm run notebook   # http://127.0.0.1:3474
+> ./setup.sh
 > ```
-> Then open the left rail:
+> When it finishes it launches:
+> - **DataLex** (contract layer) — http://localhost:3030
+> - **DQL notebook** (analytics layer) — http://127.0.0.1:3474
+>
+> In the **DQL notebook**'s left rail:
 > - **Blocks** — 10 certified analytics blocks (revenue, customers, products)
 > - **Apps → Jaffle Analytics** — an executive dashboard (revenue $671.4K,
 >   orders 61,948, AOV $10.84, customers 935, plus charts)
 > - **Lineage** — `raw → dbt models → certified blocks → App`
 >
+> In **DataLex** you'll find the commerce contract layer: conceptual / logical /
+> physical models for 6 entities, a governed glossary, and certified contracts
+> (`commerce.Orders.revenue`, `commerce.Customers.lifetime_value`) — see
+> [`DataLex/README.md`](./DataLex/README.md).
+>
+> Stop the servers with `./stop.sh`; relaunch later with `./start.sh`.
 > The full guided tour and a hands-on "build your own block" walkthrough are in
 > [`dql/TUTORIAL.md`](./dql/TUTORIAL.md).
+
+## The three layers
+
+This example wires together the full DuckCode analytics stack:
+
+| Layer | Tool | Installed by `setup.sh` | UI |
+| --- | --- | --- | --- |
+| Transformation | **dbt + DuckDB** | `dbt-duckdb` (PyPI) → builds `jaffle_shop.duckdb` | dbt docs |
+| Contracts | **DataLex** | `datalex-cli[serve,duckdb,draft,draft-openai]` (PyPI) | http://localhost:3030 |
+| Analytics | **DQL** | `@duckcodeailabs/dql-cli` (npm) | http://127.0.0.1:3474 |
 
 ## Prerequisites
 
 - Python 3.9 through 3.13
+- Node.js 20 or 22 LTS (for the DQL layer; avoid Node 23/24)
 - Git
 - Optional: [Task](https://taskfile.dev/) if you want to use `Taskfile.yml`
 
 ## Quick Start
 
-Clone the repo and run the setup script:
+Clone the repo and run the one setup command:
 
 ```bash
 git clone <your-repo-url> jaffle-shop-duckdb
 cd jaffle-shop-duckdb
 ./setup.sh
+```
+
+`setup.sh` installs and wires all three layers, then launches both local UIs:
+
+1. Creates a Python virtualenv and installs `dbt-duckdb` **and** `datalex-cli`.
+2. Loads seed data into DuckDB, builds and tests the dbt models, and generates
+   docs/lineage artifacts.
+3. Installs the DQL CLI, the project-local DuckDB connector, and compiles the
+   DQL manifest.
+4. Launches **DataLex** (http://localhost:3030) and the **DQL notebook**
+   (http://127.0.0.1:3474).
+
+To install and build everything but **not** launch the UIs (for example in CI):
+
+```bash
+./setup.sh --no-launch
+```
+
+Then start and stop the UIs on demand:
+
+```bash
+./start.sh   # launch DataLex + DQL notebook
+./stop.sh    # stop both
 ```
 
 If your machine's default `python3` is Python 3.14 or newer, choose a supported
@@ -40,10 +85,6 @@ Python explicitly:
 ```bash
 PYTHON=python3.13 ./setup.sh
 ```
-
-The setup script creates a virtual environment, installs `dbt-duckdb`, installs
-dbt packages, loads the seed data into DuckDB, builds and tests the models, and
-generates docs and lineage artifacts.
 
 By default it writes to `jaffle_shop.duckdb`. To use a different local database
 path:
@@ -55,6 +96,7 @@ DBT_DUCKDB_PATH=./my_jaffle_shop.duckdb ./setup.sh
 If you prefer to run the steps manually:
 
 ```bash
+# 1. dbt + DuckDB (and DataLex, both Python) into a local virtualenv
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install --upgrade pip
@@ -63,6 +105,22 @@ dbt deps --profiles-dir .
 dbt seed --full-refresh --profiles-dir .
 dbt build --profiles-dir . --exclude resource_type:seed
 dbt docs generate --profiles-dir .
+
+# 2. DataLex contract layer (validate models + build the certified manifest)
+datalex datalex validate DataLex
+datalex datalex manifest build DataLex
+
+# 3. DQL analytics layer (Node)
+cd dql
+npm install
+npm install --prefix .dql/connectors duckdb   # DuckDB connector
+npm run compile
+npm run doctor
+cd ..
+
+# 4. Launch the UIs
+datalex serve --project-dir DataLex            # http://localhost:3030
+npm --prefix dql run notebook                  # http://127.0.0.1:3474
 ```
 
 The build creates a local `jaffle_shop.duckdb` database file in the project

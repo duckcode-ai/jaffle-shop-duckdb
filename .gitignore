@@ -7,6 +7,7 @@ env
 target/
 dbt_packages/
 logs/
+.run/
 *.duckdb
 *.duckdb.wal
 
@@ -16,6 +17,25 @@ logs/
 
 .ruff_cache
 __pycache__
+
+# DataLex local state. `.dm-projects.json` is the per-machine project registry;
+# `dm` is a generated CLI shim with an absolute venv path; `datalex-manifest.json`
+# is a build artifact rebuilt by setup.sh from certified contracts.
+.datalex/
+.dm-projects.json
+dm
+DataLex/datalex-manifest.json
+
+# If `datalex serve` is pointed at the repo root (instead of DataLex/), it
+# scaffolds an empty workspace here. These are runtime-only; the committed
+# DataLex pack lives under DataLex/.
+/datalex.yaml
+/Skills/
+/core/
+/domains/
+/generated/
+/generated-sql/
+/imported/
 
 # DQL
 dql-manifest.json

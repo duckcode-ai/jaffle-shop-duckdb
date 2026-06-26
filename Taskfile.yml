@@ -10,6 +10,14 @@ tasks:
     cmds:
       - ./setup.sh
 
+  start:
+    cmds:
+      - ./start.sh
+
+  stop:
+    cmds:
+      - ./stop.sh
+
   venv:
     cmds:
       - python3 -m venv .venv
@@ -43,7 +51,7 @@ tasks:
 
   clean:
     cmds:
-      - rm -rf jaffle-data target dbt_packages logs jaffle_shop.duckdb jaffle_shop.duckdb.wal
+      - rm -rf jaffle-data target dbt_packages logs .run jaffle_shop.duckdb jaffle_shop.duckdb.wal
 
   load:
     cmds:

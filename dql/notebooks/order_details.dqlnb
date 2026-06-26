@@ -1,0 +1,22 @@
+{
+  "dqlnbVersion": 1,
+  "version": 1,
+  "title": "order-details",
+  "metadata": {
+    "createdAt": "2026-06-24T02:10:18.623Z",
+    "modifiedAt": "2026-06-24T02:10:18.623Z"
+  },
+  "cells": [
+    {
+      "id": "77lqyuvi",
+      "type": "markdown",
+      "content": "# order-details\n\nAdd your analysis here."
+    },
+    {
+      "id": "nu58ws4k",
+      "type": "sql",
+      "name": "query_1",
+      "content": "SELECT * from"
+    }
+  ]
+}
