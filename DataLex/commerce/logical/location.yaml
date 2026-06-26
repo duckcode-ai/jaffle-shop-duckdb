@@ -1,0 +1,26 @@
+kind: entity
+layer: logical
+name: location
+logical_name: Location
+description: A physical Jaffle Shop store location.
+owner: operations
+domain: commerce
+implements: [location]
+candidate_keys:
+  - [location_id]
+columns:
+  - name: location_id
+    type: identifier
+    nullable: false
+    primary_key: true
+    description: Stable unique identifier for the store location.
+  - name: location_name
+    type: string
+    nullable: false
+    description: Display name of the store location.
+  - name: tax_rate
+    type: decimal
+    description: Sales tax rate applied at the location.
+  - name: opened_at
+    type: date
+    description: Date the location opened.

@@ -1,0 +1,8 @@
+kind: entity
+layer: conceptual
+name: order_item
+logical_name: Order Item
+description: A single product line on an order, linking an order to a product.
+owner: growth
+domain: commerce
+tags: [core]

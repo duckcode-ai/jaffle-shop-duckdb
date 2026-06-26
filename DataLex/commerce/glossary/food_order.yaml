@@ -1,0 +1,8 @@
+kind: term
+name: food_order
+definition: >-
+  An order that includes at least one food product. Flagged by
+  orders.is_food_order.
+steward: merchandising
+related_terms: [drink_order]
+tags: [product]

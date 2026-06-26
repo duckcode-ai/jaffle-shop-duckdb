@@ -1,0 +1,36 @@
+kind: entity
+layer: physical
+dialect: duckdb
+name: customers
+logical: customer
+physical_name: customers
+database: jaffle_shop
+schema: dev
+description: Physical customers mart in DuckDB (dev.customers). One row per customer.
+owner: growth
+domain: commerce
+columns:
+  - name: customer_id
+    type: varchar
+    nullable: false
+    primary_key: true
+    logical: customer.customer_id
+  - name: customer_name
+    type: varchar
+    nullable: false
+    logical: customer.customer_name
+  - name: customer_type
+    type: varchar
+    logical: customer.customer_type
+  - name: count_lifetime_orders
+    type: bigint
+    logical: customer.count_lifetime_orders
+  - name: first_ordered_at
+    type: date
+    logical: customer.first_ordered_at
+  - name: last_ordered_at
+    type: date
+    logical: customer.last_ordered_at
+  - name: lifetime_spend
+    type: decimal(38,2)
+    logical: customer.lifetime_spend

@@ -1,7 +1,7 @@
 {
   "manifestSpecVersion": "1.0.0",
   "datalexVersion": "1.11.0",
-  "generatedAt": "2026-06-22T18:54:21Z",
+  "generatedAt": "2026-06-26T03:44:11Z",
   "project": {
     "name": "jaffle_shop_growth",
     "description": "Governed DataLex contract pack for the Jaffle Shop Growth Command Center tutorial.",
@@ -11,6 +11,529 @@
     ]
   },
   "domains": [
+    {
+      "name": "commerce",
+      "entities": [
+        {
+          "name": "Customer",
+          "description": "A person who has purchased one or more items from the Jaffle Shop.",
+          "tags": [
+            "core"
+          ]
+        },
+        {
+          "name": "Customer",
+          "description": "Customer master record with lifetime value attributes.",
+          "fields": [
+            {
+              "name": "count_lifetime_orders",
+              "type": "integer",
+              "description": "Total number of orders the customer has ever placed."
+            },
+            {
+              "name": "customer_id",
+              "type": "identifier",
+              "description": "Stable unique identifier for the customer.",
+              "primary_key": true,
+              "nullable": false
+            },
+            {
+              "name": "customer_name",
+              "type": "string",
+              "description": "Customer's full name.",
+              "nullable": false
+            },
+            {
+              "name": "customer_type",
+              "type": "enum",
+              "description": "Whether the customer is new (one order) or returning (more than one).",
+              "nullable": false
+            },
+            {
+              "name": "first_ordered_at",
+              "type": "date",
+              "description": "Date the customer placed their first order."
+            },
+            {
+              "name": "last_ordered_at",
+              "type": "date",
+              "description": "Date of the customer's most recent order."
+            },
+            {
+              "name": "lifetime_spend",
+              "type": "money",
+              "description": "Sum of all order totals (including tax) for the customer."
+            }
+          ]
+        },
+        {
+          "name": "Customers",
+          "description": "Physical customers mart in DuckDB (dev.customers). One row per customer.",
+          "fields": [
+            {
+              "name": "count_lifetime_orders",
+              "type": "bigint"
+            },
+            {
+              "name": "customer_id",
+              "type": "varchar",
+              "primary_key": true,
+              "nullable": false
+            },
+            {
+              "name": "customer_name",
+              "type": "varchar",
+              "nullable": false
+            },
+            {
+              "name": "customer_type",
+              "type": "varchar"
+            },
+            {
+              "name": "first_ordered_at",
+              "type": "date"
+            },
+            {
+              "name": "last_ordered_at",
+              "type": "date"
+            },
+            {
+              "name": "lifetime_spend",
+              "type": "decimal(38,2)"
+            }
+          ],
+          "binding": {
+            "kind": "table",
+            "ref": "customers"
+          }
+        },
+        {
+          "name": "Location",
+          "description": "A physical Jaffle Shop store location where orders are fulfilled.",
+          "tags": [
+            "core"
+          ]
+        },
+        {
+          "name": "Location",
+          "description": "A physical Jaffle Shop store location.",
+          "fields": [
+            {
+              "name": "location_id",
+              "type": "identifier",
+              "description": "Stable unique identifier for the store location.",
+              "primary_key": true,
+              "nullable": false
+            },
+            {
+              "name": "location_name",
+              "type": "string",
+              "description": "Display name of the store location.",
+              "nullable": false
+            },
+            {
+              "name": "opened_at",
+              "type": "date",
+              "description": "Date the location opened."
+            },
+            {
+              "name": "tax_rate",
+              "type": "decimal",
+              "description": "Sales tax rate applied at the location."
+            }
+          ]
+        },
+        {
+          "name": "Locations",
+          "description": "Physical locations mart in DuckDB (dev.locations). One row per store.",
+          "fields": [
+            {
+              "name": "location_id",
+              "type": "varchar",
+              "primary_key": true,
+              "nullable": false
+            },
+            {
+              "name": "location_name",
+              "type": "varchar",
+              "nullable": false
+            },
+            {
+              "name": "opened_at",
+              "type": "date"
+            },
+            {
+              "name": "tax_rate",
+              "type": "decimal(10,4)"
+            }
+          ],
+          "binding": {
+            "kind": "table",
+            "ref": "locations"
+          }
+        },
+        {
+          "name": "Order",
+          "description": "A purchase placed by a customer, made up of one or more order items.",
+          "tags": [
+            "core",
+            "revenue"
+          ]
+        },
+        {
+          "name": "Order",
+          "description": "One row per order with revenue and food/drink breakdown.",
+          "fields": [
+            {
+              "name": "customer_id",
+              "type": "identifier",
+              "description": "The customer who placed the order.",
+              "nullable": false
+            },
+            {
+              "name": "is_drink_order",
+              "type": "boolean",
+              "description": "Whether the order included any drink items."
+            },
+            {
+              "name": "is_food_order",
+              "type": "boolean",
+              "description": "Whether the order included any food items."
+            },
+            {
+              "name": "location_id",
+              "type": "identifier",
+              "description": "The store location that fulfilled the order."
+            },
+            {
+              "name": "order_cost",
+              "type": "money",
+              "description": "Sum of supply expenses to fulfill the order."
+            },
+            {
+              "name": "order_id",
+              "type": "identifier",
+              "description": "Stable unique identifier for the order.",
+              "primary_key": true,
+              "nullable": false
+            },
+            {
+              "name": "order_total",
+              "type": "money",
+              "description": "Total amount of the order in USD including tax.",
+              "nullable": false
+            },
+            {
+              "name": "ordered_at",
+              "type": "date",
+              "description": "Date the order was placed.",
+              "nullable": false
+            }
+          ]
+        },
+        {
+          "name": "OrderItem",
+          "description": "A single product line on an order, linking an order to a product.",
+          "tags": [
+            "core"
+          ]
+        },
+        {
+          "name": "OrderItem",
+          "description": "One row per product line on an order.",
+          "fields": [
+            {
+              "name": "order_id",
+              "type": "identifier",
+              "description": "The order this line belongs to.",
+              "nullable": false
+            },
+            {
+              "name": "order_item_id",
+              "type": "identifier",
+              "description": "Stable unique identifier for the order line.",
+              "primary_key": true,
+              "nullable": false
+            },
+            {
+              "name": "product_id",
+              "type": "identifier",
+              "description": "The product sold on this line.",
+              "nullable": false
+            }
+          ]
+        },
+        {
+          "name": "OrderItems",
+          "description": "Physical order_items mart in DuckDB (dev.order_items). One row per line.",
+          "fields": [
+            {
+              "name": "order_id",
+              "type": "varchar",
+              "nullable": false
+            },
+            {
+              "name": "order_item_id",
+              "type": "varchar",
+              "primary_key": true,
+              "nullable": false
+            },
+            {
+              "name": "product_id",
+              "type": "varchar",
+              "nullable": false
+            }
+          ],
+          "binding": {
+            "kind": "table",
+            "ref": "order_items"
+          }
+        },
+        {
+          "name": "Orders",
+          "description": "Physical orders mart in DuckDB (dev.orders). One row per order.",
+          "fields": [
+            {
+              "name": "customer_id",
+              "type": "varchar",
+              "nullable": false
+            },
+            {
+              "name": "is_drink_order",
+              "type": "boolean"
+            },
+            {
+              "name": "is_food_order",
+              "type": "boolean"
+            },
+            {
+              "name": "order_cost",
+              "type": "decimal(38,2)"
+            },
+            {
+              "name": "order_id",
+              "type": "varchar",
+              "primary_key": true,
+              "nullable": false
+            },
+            {
+              "name": "order_total",
+              "type": "decimal(16,2)",
+              "nullable": false
+            },
+            {
+              "name": "ordered_at",
+              "type": "date",
+              "nullable": false
+            }
+          ],
+          "binding": {
+            "kind": "table",
+            "ref": "orders"
+          }
+        },
+        {
+          "name": "Product",
+          "description": "A food or drink item sold by the Jaffle Shop, identified by SKU.",
+          "tags": [
+            "core"
+          ]
+        },
+        {
+          "name": "Product",
+          "description": "A food or drink item sold by the Jaffle Shop.",
+          "fields": [
+            {
+              "name": "is_drink_item",
+              "type": "boolean",
+              "description": "Whether the product is a drink item."
+            },
+            {
+              "name": "is_food_item",
+              "type": "boolean",
+              "description": "Whether the product is a food item."
+            },
+            {
+              "name": "product_id",
+              "type": "identifier",
+              "description": "Stable unique identifier (SKU) for the product.",
+              "primary_key": true,
+              "nullable": false
+            },
+            {
+              "name": "product_name",
+              "type": "string",
+              "description": "Display name of the product.",
+              "nullable": false
+            },
+            {
+              "name": "product_price",
+              "type": "money",
+              "description": "List price of the product in USD."
+            },
+            {
+              "name": "product_type",
+              "type": "enum",
+              "description": "Category of the product, e.g. jaffle or beverage."
+            }
+          ]
+        },
+        {
+          "name": "Products",
+          "description": "Physical products mart in DuckDB (dev.products). One row per SKU.",
+          "fields": [
+            {
+              "name": "is_drink_item",
+              "type": "boolean"
+            },
+            {
+              "name": "is_food_item",
+              "type": "boolean"
+            },
+            {
+              "name": "product_id",
+              "type": "varchar",
+              "primary_key": true,
+              "nullable": false
+            },
+            {
+              "name": "product_name",
+              "type": "varchar",
+              "nullable": false
+            },
+            {
+              "name": "product_price",
+              "type": "decimal(16,2)"
+            },
+            {
+              "name": "product_type",
+              "type": "varchar"
+            }
+          ],
+          "binding": {
+            "kind": "table",
+            "ref": "products"
+          }
+        },
+        {
+          "name": "Supplies",
+          "description": "Physical supplies mart in DuckDB (dev.supplies). One row per supply per SKU.",
+          "fields": [
+            {
+              "name": "is_perishable",
+              "type": "boolean"
+            },
+            {
+              "name": "product_id",
+              "type": "varchar",
+              "nullable": false
+            },
+            {
+              "name": "supply_cost",
+              "type": "decimal(16,2)"
+            },
+            {
+              "name": "supply_id",
+              "type": "varchar",
+              "nullable": false
+            },
+            {
+              "name": "supply_name",
+              "type": "varchar"
+            }
+          ],
+          "binding": {
+            "kind": "table",
+            "ref": "supplies"
+          }
+        },
+        {
+          "name": "Supply",
+          "description": "A raw supply consumed to fulfill a product, carrying a unit cost.",
+          "tags": [
+            "cost"
+          ]
+        },
+        {
+          "name": "Supply",
+          "description": "A raw supply consumed to fulfill a product.",
+          "fields": [
+            {
+              "name": "is_perishable",
+              "type": "boolean",
+              "description": "Whether the supply is perishable."
+            },
+            {
+              "name": "product_id",
+              "type": "identifier",
+              "description": "The product this supply is consumed for.",
+              "nullable": false
+            },
+            {
+              "name": "supply_cost",
+              "type": "money",
+              "description": "Unit cost of the supply in USD."
+            },
+            {
+              "name": "supply_id",
+              "type": "identifier",
+              "description": "Identifier for the supply.",
+              "nullable": false
+            },
+            {
+              "name": "supply_name",
+              "type": "string",
+              "description": "Name of the supply."
+            }
+          ]
+        }
+      ],
+      "description": "The Jaffle Shop commerce domain: customers placing orders for food and drink products, fulfilled from store locations and sourced through supplies.",
+      "owners": [
+        "analytics-platform@jaffleshop.example"
+      ]
+    },
+    {
+      "name": "core",
+      "entities": [],
+      "glossary": [
+        {
+          "term": "average_order_value",
+          "definition": "Revenue divided by the number of orders over a period. Measures how much each order is worth on average.",
+          "tags": [
+            "revenue"
+          ]
+        },
+        {
+          "term": "drink_order",
+          "definition": "An order that includes at least one drink product. Flagged by orders.is_drink_order.",
+          "tags": [
+            "product"
+          ]
+        },
+        {
+          "term": "food_order",
+          "definition": "An order that includes at least one food product. Flagged by orders.is_food_order.",
+          "tags": [
+            "product"
+          ]
+        },
+        {
+          "term": "new_customer",
+          "definition": "A customer who has placed exactly one order to date. Identified by customers.customer_type = 'new'.",
+          "tags": [
+            "customer"
+          ]
+        },
+        {
+          "term": "returning_customer",
+          "definition": "A customer who has placed more than one order to date. Identified by customers.customer_type = 'returning'.",
+          "tags": [
+            "customer"
+          ]
+        }
+      ]
+    },
     {
       "name": "customers",
       "entities": [

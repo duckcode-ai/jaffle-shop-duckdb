@@ -1,0 +1,9 @@
+kind: entity
+layer: conceptual
+name: customer
+logical_name: Customer
+description: A person who has purchased one or more items from the Jaffle Shop.
+owner: growth
+domain: commerce
+terms: [customer_lifetime_value, new_customer, returning_customer]
+tags: [core]

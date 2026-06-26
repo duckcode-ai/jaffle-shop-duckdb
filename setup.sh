@@ -45,8 +45,9 @@ echo "Installing Python dependencies..."
 
 # Always land on the newest published DataLex CLI, even when re-running over an
 # existing .venv (a plain -r install does not upgrade a requirement already met).
-echo "Ensuring the latest DataLex CLI..."
-.venv/bin/python -m pip install --upgrade datalex-cli --progress-bar off
+echo "Ensuring the latest DataLex CLI (with serve + DuckDB + AI providers)..."
+.venv/bin/python -m pip install --upgrade \
+  'datalex-cli[serve,duckdb,draft,draft-openai]' --progress-bar off
 
 echo "Installing dbt packages..."
 .venv/bin/dbt deps --profiles-dir .
@@ -62,6 +63,8 @@ echo "Generating dbt docs and lineage artifacts..."
 
 # DataLex layer. datalex-cli is installed from requirements.txt into the same
 # venv, so the manifest is always built with the latest DataLex CLI.
+echo "Validating the DataLex contract pack (models, terms, contracts)..."
+.venv/bin/datalex datalex validate DataLex
 echo "Building the DataLex manifest..."
 .venv/bin/datalex datalex manifest build DataLex --out "$ROOT_DIR/DataLex/datalex-manifest.json"
 
@@ -126,6 +129,10 @@ cat <<EOF
 
 This setup already pulled the latest DataLex + DQL. To refresh them later
 without a full re-run (or with: task upgrade):
-  .venv/bin/python -m pip install -U datalex-cli
+  .venv/bin/python -m pip install -U 'datalex-cli[serve,duckdb,draft,draft-openai]'
   cd dql && npm install @duckcodeailabs/dql-cli@latest --no-save
+
+DataLex AI generation (proposals/contracts from dbt evidence) needs an API key.
+Set one in the DataLex AI Setup panel, or export ANTHROPIC_API_KEY / OPENAI_API_KEY
+before running 'datalex serve' or 'datalex draft'. Ollama also works locally.
 EOF

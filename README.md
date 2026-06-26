@@ -274,7 +274,10 @@ task build
 - `models/staging`: staging models over the raw source tables
 - `models/marts`: final mart models
 - `macros`: project macros
-- `DataLex`: AI-reviewed and human-certified business contracts, glossary, proposals, and manifest
+- `DataLex`: AI-reviewed and human-certified business contracts, glossary, proposals, and manifest.
+  Includes a `commerce` domain with **conceptual / logical / physical** models for the six core
+  entities (customer, order, order_item, product, supply, location) plus their relationships —
+  the data-modeling layer beneath the `customers` / `products` / `revenue` contract domains
 - `dql`: certified DQL blocks, business views, notebook, and Growth Command Center App
 - `docs/tutorials/jaffle`: chapter-by-chapter tutorial with story, AI path, manual path, and flow links
 - `docs/assets/tutorials/jaffle`: Paper-theme tutorial screenshots

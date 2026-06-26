@@ -1,0 +1,32 @@
+kind: entity
+layer: logical
+name: order_item
+logical_name: Order Item
+description: One row per product line on an order.
+owner: growth
+domain: commerce
+implements: [order_item]
+candidate_keys:
+  - [order_item_id]
+columns:
+  - name: order_item_id
+    type: identifier
+    nullable: false
+    primary_key: true
+    description: Stable unique identifier for the order line.
+  - name: order_id
+    type: identifier
+    nullable: false
+    description: The order this line belongs to.
+    references:
+      entity: order
+      column: order_id
+      relationship: many_to_one
+  - name: product_id
+    type: identifier
+    nullable: false
+    description: The product sold on this line.
+    references:
+      entity: product
+      column: product_id
+      relationship: many_to_one

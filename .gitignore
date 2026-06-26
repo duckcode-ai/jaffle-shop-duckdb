@@ -17,6 +17,21 @@ logs/
 .ruff_cache
 __pycache__
 
+# DataLex local/runtime state. The committed pack lives under DataLex/ and the
+# manifest (DataLex/datalex-manifest.json) is tracked on purpose. These are
+# per-machine runtime files: a registry, a generated CLI shim, and the empty
+# workspace `datalex serve` scaffolds if pointed at the repo root.
+.datalex/
+.dm-projects.json
+dm
+/datalex.yaml
+/Skills/
+/core/
+/domains/
+/generated/
+/generated-sql/
+/imported/
+
 # DQL
 dql-manifest.json
 .dql/runs/
