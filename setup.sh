@@ -6,6 +6,16 @@ cd "$ROOT_DIR"
 DB_PATH="${DBT_DUCKDB_PATH:-jaffle_shop.duckdb}"
 PYTHON_BIN="${PYTHON:-python3}"
 
+# Launch both local UIs at the end and open them in the browser. Opt out with
+# --no-launch or LAUNCH=0 (for CI, Docker, or headless runs).
+LAUNCH="${LAUNCH:-1}"
+for arg in "$@"; do
+  case "$arg" in
+    --no-launch) LAUNCH=0 ;;
+    *) echo "Unknown argument: $arg" >&2; exit 1 ;;
+  esac
+done
+
 if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
   echo "${PYTHON_BIN} is required but was not found on PATH." >&2
   exit 1
@@ -105,11 +115,19 @@ Docs artifacts: target/manifest.json and target/catalog.json
 DataLex manifest: DataLex/datalex-manifest.json
 EOF
 
-if [ "$DQL_READY" = "1" ]; then
+if [ "$DQL_READY" = "1" ] && [ "$LAUNCH" = "1" ]; then
   cat <<EOF
 
-DQL is ready. Launch the notebook + Growth Command Center App:
-  cd dql && npm run notebook     # http://127.0.0.1:3474
+Launching both local UIs (use ./stop.sh to stop them):
+  DataLex (contract layer):  http://localhost:3030
+  DQL notebook (analytics):  http://127.0.0.1:3474
+EOF
+elif [ "$DQL_READY" = "1" ]; then
+  cat <<EOF
+
+DQL is ready. Launch the UIs when you want (or run ./start.sh for both):
+  cd dql && npm run notebook                 # http://127.0.0.1:3474
+  .venv/bin/datalex serve --project-dir DataLex   # http://localhost:3030
 
 Or serve dbt docs and lineage:
   source .venv/bin/activate && dbt docs serve --profiles-dir .
@@ -136,3 +154,8 @@ DataLex AI generation (proposals/contracts from dbt evidence) needs an API key.
 Set one in the DataLex AI Setup panel, or export ANTHROPIC_API_KEY / OPENAI_API_KEY
 before running 'datalex serve' or 'datalex draft'. Ollama also works locally.
 EOF
+
+# Launch both UIs and open the browser, unless opted out or DQL is unavailable.
+if [ "$LAUNCH" = "1" ] && [ "$DQL_READY" = "1" ]; then
+  exec ./start.sh
+fi
