@@ -1,0 +1,57 @@
+kind: contract
+id: commerce.Orders.revenue
+name: revenue
+display_name: Order Revenue
+domain: commerce
+entity: order
+model: order
+version: 1
+status: certified
+owner: analytics-platform@jaffleshop.example
+description: >-
+  Certified definition of Jaffle Shop revenue and average order value, measured
+  from the orders mart. This is the trusted top-line revenue contract that DQL
+  blocks reference.
+business_definition: >-
+  Revenue is the sum of order_total (tax included) across orders. Average order
+  value is revenue divided by the count of orders.
+grain: one row per order
+tags: [revenue, certified]
+source:
+  kind: dbt_model
+  ref: orders
+dbt_contract:
+  model: orders
+  unique_id: model.jaffle_shop.orders
+  enforced: false
+  source_of_truth: true
+metrics:
+  - name: revenue
+    formula: sum(orders.order_total)
+    grain: order
+    time_dimension: ordered_at
+    dimensions: [customer_type, is_food_order, is_drink_order]
+    dependencies: [orders.order_total]
+    owner: finance
+    status: certified
+  - name: average_order_value
+    formula: sum(orders.order_total) / count(orders.order_id)
+    grain: order
+    time_dimension: ordered_at
+    dimensions: [customer_type]
+    dependencies: [orders.order_total, orders.order_id]
+    owner: finance
+    status: certified
+dimensions: [ordered_at, customer_type, is_food_order, is_drink_order]
+required_tests:
+  - not_null(orders.order_id)
+  - unique(orders.order_id)
+evidence:
+  source_models: [orders, stg_orders]
+  columns: [order_id, order_total, ordered_at]
+  tests: [not_null_orders_order_id, unique_orders_order_id]
+  inferred_grain: one row per order
+  confidence: 0.95
+review:
+  cadence: quarterly
+  reviewers: [finance, analytics-platform@jaffleshop.example]

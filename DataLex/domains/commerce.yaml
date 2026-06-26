@@ -1,0 +1,17 @@
+kind: domain
+name: commerce
+description: >-
+  The Jaffle Shop commerce domain: customers placing orders for food and drink
+  products, fulfilled from store locations and sourced through supplies.
+owner: analytics-platform@jaffleshop.example
+color: '#3b82f6'
+entities:
+  - customer
+  - order
+  - order_item
+  - product
+  - supply
+  - location
+tags:
+  - core
+  - revenue

@@ -1,0 +1,10 @@
+kind: term
+name: customer_lifetime_value
+definition: >-
+  The total revenue (including tax) a customer has generated across all of their
+  orders to date, exposed as customers.lifetime_spend.
+abbreviation: ltv
+synonyms: [ltv, lifetime spend]
+steward: growth
+related_terms: [revenue, new_customer, returning_customer]
+tags: [revenue, customer]

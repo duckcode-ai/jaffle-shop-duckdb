@@ -1,0 +1,11 @@
+kind: term
+name: revenue
+definition: >-
+  Total order value including tax, summed across orders. The Jaffle Shop's
+  primary top-line measure, sourced from orders.order_total.
+abbreviation: rev
+synonyms: [sales, gross revenue]
+steward: finance
+owner: analytics-platform@jaffleshop.example
+related_terms: [average_order_value, customer_lifetime_value]
+tags: [revenue]

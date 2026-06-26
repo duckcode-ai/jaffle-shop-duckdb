@@ -1,0 +1,48 @@
+kind: contract
+id: commerce.Orders.food_drink_split
+name: food_drink_split
+display_name: Food vs Drink Revenue Split
+domain: commerce
+entity: order
+model: order
+version: 1
+status: reviewed
+owner: merchandising
+description: >-
+  Reviewed (not yet certified) split of revenue between food and drink orders.
+  Promote to certified after merchandising sign-off.
+business_definition: >-
+  Food revenue is order revenue where is_food_order is true; drink revenue where
+  is_drink_order is true. Orders may count toward both.
+grain: one row per order
+tags: [revenue, product]
+source:
+  kind: dbt_model
+  ref: orders
+dbt_contract:
+  model: orders
+  unique_id: model.jaffle_shop.orders
+  enforced: false
+metrics:
+  - name: food_revenue
+    formula: sum(case when orders.is_food_order then orders.order_total else 0 end)
+    grain: order
+    time_dimension: ordered_at
+    dependencies: [orders.order_total, orders.is_food_order]
+    owner: merchandising
+    status: reviewed
+  - name: drink_revenue
+    formula: sum(case when orders.is_drink_order then orders.order_total else 0 end)
+    grain: order
+    time_dimension: ordered_at
+    dependencies: [orders.order_total, orders.is_drink_order]
+    owner: merchandising
+    status: reviewed
+dimensions: [ordered_at, is_food_order, is_drink_order]
+evidence:
+  source_models: [orders]
+  columns: [order_total, is_food_order, is_drink_order]
+  inferred_grain: one row per order
+  confidence: 0.8
+  open_questions:
+    - Should orders that include both food and drink be split proportionally?

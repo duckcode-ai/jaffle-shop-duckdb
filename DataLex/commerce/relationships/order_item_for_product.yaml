@@ -1,0 +1,13 @@
+kind: relationship
+layer: logical
+name: order_item_for_product
+from:
+  entity: product
+  column: product_id
+to:
+  entity: order_item
+  column: product_id
+cardinality: one_to_many
+role_name: sold_as
+verb: is sold as
+description: A product can appear on many order items.

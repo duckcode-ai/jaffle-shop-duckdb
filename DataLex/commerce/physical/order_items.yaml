@@ -1,0 +1,33 @@
+kind: entity
+layer: physical
+dialect: postgres
+name: order_items
+logical: order_item
+physical_name: order_items
+database: jaffle_shop
+schema: dev
+description: Physical order_items mart in DuckDB (dev.order_items). One row per line.
+owner: growth
+domain: commerce
+columns:
+  - name: order_item_id
+    type: varchar
+    nullable: false
+    primary_key: true
+    logical: order_item.order_item_id
+  - name: order_id
+    type: varchar
+    nullable: false
+    logical: order_item.order_id
+    references:
+      entity: orders
+      column: order_id
+      relationship: many_to_one
+  - name: product_id
+    type: varchar
+    nullable: false
+    logical: order_item.product_id
+    references:
+      entity: products
+      column: product_id
+      relationship: many_to_one

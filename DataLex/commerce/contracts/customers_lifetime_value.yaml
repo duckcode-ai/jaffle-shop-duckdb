@@ -1,0 +1,54 @@
+kind: contract
+id: commerce.Customers.lifetime_value
+name: lifetime_value
+display_name: Customer Lifetime Value
+domain: commerce
+entity: customer
+model: customer
+version: 1
+status: certified
+owner: growth
+description: >-
+  Certified customer lifetime value (LTV) and new-vs-returning segmentation,
+  measured from the customers mart.
+business_definition: >-
+  Lifetime value is the sum of every order total (tax included) a customer has
+  placed. Customers are segmented as new (one order) or returning (more than one).
+grain: one row per customer
+tags: [customer, revenue, certified]
+source:
+  kind: dbt_model
+  ref: customers
+dbt_contract:
+  model: customers
+  unique_id: model.jaffle_shop.customers
+  enforced: false
+  source_of_truth: true
+metrics:
+  - name: customer_lifetime_value
+    formula: sum(customers.lifetime_spend)
+    grain: customer
+    dimensions: [customer_type]
+    dependencies: [customers.lifetime_spend]
+    owner: growth
+    status: certified
+  - name: customers
+    formula: count_distinct(customers.customer_id)
+    grain: customer
+    dimensions: [customer_type]
+    dependencies: [customers.customer_id]
+    owner: growth
+    status: certified
+dimensions: [customer_type, first_ordered_at]
+required_tests:
+  - not_null(customers.customer_id)
+  - unique(customers.customer_id)
+  - accepted_values(customers.customer_type, [new, returning])
+evidence:
+  source_models: [customers, stg_customers]
+  columns: [customer_id, lifetime_spend, customer_type]
+  inferred_grain: one row per customer
+  confidence: 0.93
+review:
+  cadence: quarterly
+  reviewers: [growth]

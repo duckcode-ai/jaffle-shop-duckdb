@@ -1,0 +1,34 @@
+kind: entity
+layer: logical
+name: product
+logical_name: Product
+description: A food or drink item sold by the Jaffle Shop.
+owner: merchandising
+domain: commerce
+implements: [product]
+candidate_keys:
+  - [product_id]
+columns:
+  - name: product_id
+    type: identifier
+    nullable: false
+    primary_key: true
+    description: Stable unique identifier (SKU) for the product.
+  - name: product_name
+    type: string
+    nullable: false
+    description: Display name of the product.
+  - name: product_type
+    type: enum
+    description: Category of the product, e.g. jaffle or beverage.
+  - name: product_price
+    type: money
+    description: List price of the product in USD.
+  - name: is_food_item
+    type: boolean
+    description: Whether the product is a food item.
+    terms: [food_order]
+  - name: is_drink_item
+    type: boolean
+    description: Whether the product is a drink item.
+    terms: [drink_order]

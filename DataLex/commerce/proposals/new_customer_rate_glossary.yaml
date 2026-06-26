@@ -1,0 +1,22 @@
+kind: proposal
+name: new_customer_rate_term
+proposal_type: glossary
+status: reviewed
+domain: commerce
+target: new_customer_rate
+summary: >-
+  Propose a shared glossary term "new customer rate" to standardize how teams
+  describe the share of orders coming from first-time customers.
+proposed_change:
+  term:
+    name: new_customer_rate
+    definition: >-
+      The share of orders in a period placed by customers on their first order,
+      i.e. count of new-customer orders divided by total orders.
+    related_terms: [new_customer, returning_customer, revenue]
+evidence:
+  source_models: [orders, customers]
+  columns: [customer_type]
+  confidence: 0.85
+created_by: datalex-ai
+created_at: '2026-06-25'

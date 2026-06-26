@@ -1,0 +1,10 @@
+kind: term
+name: average_order_value
+definition: >-
+  Revenue divided by the number of orders over a period. Measures how much each
+  order is worth on average.
+abbreviation: aov
+synonyms: [aov]
+steward: finance
+related_terms: [revenue]
+tags: [revenue]

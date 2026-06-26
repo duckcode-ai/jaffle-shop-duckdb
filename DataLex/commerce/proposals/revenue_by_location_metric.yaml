@@ -1,0 +1,29 @@
+kind: proposal
+name: revenue_by_location_metric
+proposal_type: metric_contract
+status: draft
+domain: commerce
+target: commerce.Locations.revenue_by_location
+summary: >-
+  Propose a certified revenue-by-location metric so stores can be compared. The
+  orders mart does not yet carry location_id, so this needs a model change first.
+proposed_change:
+  metric:
+    name: revenue_by_location
+    formula: sum(orders.order_total)
+    grain: order
+    dimensions: [location_id, location_name]
+    time_dimension: ordered_at
+  requires:
+    - Add location_id to the orders mart (orders <- stg_orders.location_id).
+evidence:
+  source_models: [orders, locations, stg_orders]
+  columns: [order_total, location_id]
+  inferred_grain: one row per order
+  assumptions:
+    - Every order is fulfilled at exactly one location.
+  confidence: 0.6
+  open_questions:
+    - Is location_id available upstream in raw_orders or raw_stores?
+created_by: datalex-ai
+created_at: '2026-06-25'

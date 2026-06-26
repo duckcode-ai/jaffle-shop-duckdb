@@ -1,0 +1,27 @@
+kind: entity
+layer: physical
+dialect: postgres
+name: locations
+logical: location
+physical_name: locations
+database: jaffle_shop
+schema: dev
+description: Physical locations mart in DuckDB (dev.locations). One row per store.
+owner: operations
+domain: commerce
+columns:
+  - name: location_id
+    type: varchar
+    nullable: false
+    primary_key: true
+    logical: location.location_id
+  - name: location_name
+    type: varchar
+    nullable: false
+    logical: location.location_name
+  - name: tax_rate
+    type: decimal(10,4)
+    logical: location.tax_rate
+  - name: opened_at
+    type: date
+    logical: location.opened_at

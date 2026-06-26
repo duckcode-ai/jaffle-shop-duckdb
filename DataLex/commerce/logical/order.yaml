@@ -1,0 +1,51 @@
+kind: entity
+layer: logical
+name: order
+logical_name: Order
+description: One row per order with revenue and food/drink breakdown.
+owner: growth
+domain: commerce
+implements: [order]
+candidate_keys:
+  - [order_id]
+columns:
+  - name: order_id
+    type: identifier
+    nullable: false
+    primary_key: true
+    description: Stable unique identifier for the order.
+  - name: customer_id
+    type: identifier
+    nullable: false
+    description: The customer who placed the order.
+    references:
+      entity: customer
+      column: customer_id
+      relationship: many_to_one
+  - name: location_id
+    type: identifier
+    description: The store location that fulfilled the order.
+    references:
+      entity: location
+      column: location_id
+      relationship: many_to_one
+  - name: ordered_at
+    type: date
+    nullable: false
+    description: Date the order was placed.
+  - name: order_total
+    type: money
+    nullable: false
+    description: Total amount of the order in USD including tax.
+    terms: [revenue]
+  - name: order_cost
+    type: money
+    description: Sum of supply expenses to fulfill the order.
+  - name: is_food_order
+    type: boolean
+    description: Whether the order included any food items.
+    terms: [food_order]
+  - name: is_drink_order
+    type: boolean
+    description: Whether the order included any drink items.
+    terms: [drink_order]

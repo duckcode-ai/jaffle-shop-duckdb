@@ -1,0 +1,32 @@
+kind: entity
+layer: logical
+name: supply
+logical_name: Supply
+description: A raw supply consumed to fulfill a product.
+owner: merchandising
+domain: commerce
+implements: [supply]
+candidate_keys:
+  - [supply_id, product_id]
+columns:
+  - name: supply_id
+    type: identifier
+    nullable: false
+    description: Identifier for the supply.
+  - name: product_id
+    type: identifier
+    nullable: false
+    description: The product this supply is consumed for.
+    references:
+      entity: product
+      column: product_id
+      relationship: many_to_one
+  - name: supply_name
+    type: string
+    description: Name of the supply.
+  - name: supply_cost
+    type: money
+    description: Unit cost of the supply in USD.
+  - name: is_perishable
+    type: boolean
+    description: Whether the supply is perishable.

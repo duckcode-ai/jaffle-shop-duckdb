@@ -1,0 +1,21 @@
+kind: project
+name: jaffle_commerce
+version: '1'
+description: >-
+  DataLex contract layer for the Jaffle Shop commerce domain. Conceptual,
+  logical, and physical models sit above the dbt + DuckDB project; certified
+  contracts publish to datalex-manifest.json for DQL and AI agents.
+owner: analytics-platform@jaffleshop.example
+dialects: [postgres]
+default_dialect: postgres
+
+domains: domains/**/*.yaml
+models:
+  - commerce/conceptual/**/*.yaml
+  - commerce/logical/**/*.yaml
+  - commerce/physical/**/*.yaml
+relationships: commerce/relationships/**/*.yaml
+glossary: commerce/glossary/**/*.yaml
+contracts: commerce/contracts/**/*.yaml
+proposals: commerce/proposals/**/*.yaml
+semantic_models: commerce/semantic/**/*.yaml

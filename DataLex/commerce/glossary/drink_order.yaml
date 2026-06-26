@@ -1,0 +1,8 @@
+kind: term
+name: drink_order
+definition: >-
+  An order that includes at least one drink product. Flagged by
+  orders.is_drink_order.
+steward: merchandising
+related_terms: [food_order]
+tags: [product]
