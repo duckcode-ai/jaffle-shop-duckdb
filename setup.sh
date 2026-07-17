@@ -3,159 +3,110 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
-DB_PATH="${DBT_DUCKDB_PATH:-jaffle_shop.duckdb}"
+
 PYTHON_BIN="${PYTHON:-python3}"
+DQL_VERSION="${DQL_VERSION:-1.7.1}"
+DB_PATH="${DBT_DUCKDB_PATH:-jaffle_shop.duckdb}"
 
-# Launch both local UIs at the end and open them in the browser. Opt out with
-# --no-launch or LAUNCH=0 (for CI, Docker, or headless runs).
-LAUNCH="${LAUNCH:-1}"
-for arg in "$@"; do
-  case "$arg" in
-    --no-launch) LAUNCH=0 ;;
-    *) echo "Unknown argument: $arg" >&2; exit 1 ;;
-  esac
-done
-
-if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
-  echo "${PYTHON_BIN} is required but was not found on PATH." >&2
-  exit 1
+# macOS can point python3 at a newer release before dbt supports it. When the
+# user did not explicitly choose an interpreter, prefer an installed supported
+# version automatically.
+if [ -z "${PYTHON:-}" ] && command -v "$PYTHON_BIN" >/dev/null 2>&1; then
+  DEFAULT_PYTHON_SUPPORTED="$($PYTHON_BIN - <<'PY'
+import sys
+print(int((3, 9) <= sys.version_info[:2] < (3, 14)))
+PY
+)"
+  if [ "$DEFAULT_PYTHON_SUPPORTED" != "1" ]; then
+    for candidate in python3.13 python3.12 python3.11 python3.10 python3.9; do
+      if command -v "$candidate" >/dev/null 2>&1; then
+        PYTHON_BIN="$candidate"
+        break
+      fi
+    done
+  fi
 fi
 
-PYTHON_VERSION="$("$PYTHON_BIN" - <<'PY'
+require_command() {
+  local command="$1" hint="$2"
+  if ! command -v "$command" >/dev/null 2>&1; then
+    echo "Missing required command: $command" >&2
+    echo "$hint" >&2
+    exit 1
+  fi
+}
+
+require_command "$PYTHON_BIN" "Install Python 3.9–3.13, or run PYTHON=python3.13 ./setup.sh"
+require_command node "Install Node.js 20–22 from https://nodejs.org/"
+require_command npm "Install npm with Node.js 20–22 from https://nodejs.org/"
+
+PYTHON_VERSION="$($PYTHON_BIN - <<'PY'
 import sys
 print(f"{sys.version_info.major}.{sys.version_info.minor}")
 PY
 )"
 
-PYTHON_SUPPORTED="$("$PYTHON_BIN" - <<'PY'
+PYTHON_SUPPORTED="$($PYTHON_BIN - <<'PY'
 import sys
 print(int((3, 9) <= sys.version_info[:2] < (3, 14)))
 PY
 )"
 
+NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)"
 if [ "$PYTHON_SUPPORTED" != "1" ]; then
-  cat >&2 <<EOF
-Python ${PYTHON_VERSION} is not supported by this dbt-DuckDB setup.
-
-Use Python 3.9 through 3.13. If your default python3 is newer, run:
-  PYTHON=python3.13 ./setup.sh
-
-Or install Python 3.13 first, for example:
-  brew install python@3.13
-EOF
+  echo "Python ${PYTHON_VERSION} is not supported. Use Python 3.9–3.13." >&2
+  exit 1
+fi
+if [ "$NODE_MAJOR" -lt 20 ] || [ "$NODE_MAJOR" -gt 22 ]; then
+  echo "Node ${NODE_MAJOR}.x is not supported. Use Node 20–22." >&2
   exit 1
 fi
 
-echo "Creating local Python virtual environment..."
-"$PYTHON_BIN" -m venv .venv
+echo "[1/5] Creating the local Python environment…"
+if [ ! -x ".venv/bin/python" ]; then
+  "$PYTHON_BIN" -m venv .venv
+fi
 
-echo "Installing Python dependencies..."
+echo "[2/5] Installing dbt-DuckDB…"
 .venv/bin/python -m pip install --upgrade pip --progress-bar off
 .venv/bin/python -m pip install -r requirements.txt --progress-bar off
 
-# Always land on the newest published DataLex CLI, even when re-running over an
-# existing .venv (a plain -r install does not upgrade a requirement already met).
-echo "Ensuring the latest DataLex CLI (with serve + DuckDB + AI providers)..."
-.venv/bin/python -m pip install --upgrade \
-  'datalex-cli[serve,duckdb,draft,draft-openai]' --progress-bar off
-
-echo "Installing dbt packages..."
+echo "[3/5] Building the Jaffle Shop dbt project…"
 .venv/bin/dbt deps --profiles-dir .
-
-echo "Loading seed data into local DuckDB..."
 .venv/bin/dbt seed --full-refresh --profiles-dir .
-
-echo "Building and testing dbt models..."
 .venv/bin/dbt build --profiles-dir . --exclude resource_type:seed
-
-echo "Generating dbt docs and lineage artifacts..."
 .venv/bin/dbt docs generate --profiles-dir .
 
-# DataLex layer. datalex-cli is installed from requirements.txt into the same
-# venv, so the manifest is always built with the latest DataLex CLI.
-echo "Validating the DataLex contract pack (models, terms, contracts)..."
-.venv/bin/datalex datalex validate DataLex
-echo "Building the DataLex manifest..."
-.venv/bin/datalex datalex manifest build DataLex --out "$ROOT_DIR/DataLex/datalex-manifest.json"
-
-# DQL layer. This needs Node 20-22. It is optional: if Node is not present we
-# print the manual steps instead of failing the whole setup.
-DQL_READY=0
-if [ "${SKIP_DQL:-0}" = "1" ]; then
-  echo "Skipping the DQL layer (SKIP_DQL=1)."
-elif command -v npm >/dev/null 2>&1; then
-  NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)"
-  if [ "$NODE_MAJOR" -ge 20 ] && [ "$NODE_MAJOR" -lt 23 ]; then
-    echo "Setting up the DQL layer (installing the latest dql-cli)..."
-    # --no-save keeps package.json pinned to "latest"; the explicit @latest
-    # install forces an upgrade even when node_modules already has an older one.
-    ( cd "$ROOT_DIR/dql" \
-        && npm install --no-audit --no-fund \
-        && npm install @duckcodeailabs/dql-cli@latest --no-save --no-audit --no-fund \
-        && npx dql validate \
-        && npx dql app build )
-    DQL_READY=1
-  else
-    echo "Found Node ${NODE_MAJOR}.x, but DQL needs Node 20-22. Skipping the DQL layer."
-  fi
-else
-  echo "Node/npm not found, skipping the DQL layer."
+echo "[4/5] Installing DQL ${DQL_VERSION}…"
+npm install --no-package-lock --no-audit --no-fund
+if [ "$DQL_VERSION" != "1.7.1" ]; then
+  npm install --no-save --no-package-lock --no-audit --no-fund "@duckcodeailabs/dql-cli@${DQL_VERSION}"
 fi
+# DQL keeps optional native database drivers outside the published CLI. This
+# local connector gives the notebook, blocks, and Ask AI a real DuckDB runtime.
+npm install --prefix .dql/connectors --no-package-lock --no-audit --no-fund "duckdb@^1.1.0"
 
-cat <<'EOF'
+echo "[5/5] Compiling the DQL domain workspace…"
+npx dql doctor .
+npx dql compile .
+    npx dql model validate .
+npx dql app build .
+
+cat <<EOF
 
 Setup complete.
+
+  DuckDB database: ${DB_PATH}
+  dbt manifest:    target/manifest.json
+  DQL manifest:    dql-manifest.json
+
+Next:
+  npm run notebook
+
+Then open http://127.0.0.1:3474 and start with:
+  • Domains → Commerce → Model
+  • Blocks → Top beverage customers
+  • Ask → "Who are the top customers by beverage revenue?"
+
+See README.md for the guided workflow.
 EOF
-
-cat <<EOF
-Local database: ${DB_PATH}
-Raw seed schema: raw
-Model schema: dev
-Docs artifacts: target/manifest.json and target/catalog.json
-DataLex manifest: DataLex/datalex-manifest.json
-EOF
-
-if [ "$DQL_READY" = "1" ] && [ "$LAUNCH" = "1" ]; then
-  cat <<EOF
-
-Launching both local UIs (use ./stop.sh to stop them):
-  DataLex (contract layer):  http://localhost:3030
-  DQL notebook (analytics):  http://127.0.0.1:3474
-EOF
-elif [ "$DQL_READY" = "1" ]; then
-  cat <<EOF
-
-DQL is ready. Launch the UIs when you want (or run ./start.sh for both):
-  cd dql && npm run notebook                 # http://127.0.0.1:3474
-  .venv/bin/datalex serve --project-dir DataLex   # http://localhost:3030
-
-Or serve dbt docs and lineage:
-  source .venv/bin/activate && dbt docs serve --profiles-dir .
-EOF
-else
-  cat <<EOF
-
-To finish the DQL layer (needs Node 20-22):
-  cd dql && npm install && npx dql validate && npx dql app build && npm run notebook
-
-Or serve dbt docs and lineage:
-  source .venv/bin/activate && dbt docs serve --profiles-dir .
-EOF
-fi
-
-cat <<EOF
-
-This setup already pulled the latest DataLex + DQL. To refresh them later
-without a full re-run (or with: task upgrade):
-  .venv/bin/python -m pip install -U 'datalex-cli[serve,duckdb,draft,draft-openai]'
-  cd dql && npm install @duckcodeailabs/dql-cli@latest --no-save
-
-DataLex AI generation (proposals/contracts from dbt evidence) needs an API key.
-Set one in the DataLex AI Setup panel, or export ANTHROPIC_API_KEY / OPENAI_API_KEY
-before running 'datalex serve' or 'datalex draft'. Ollama also works locally.
-EOF
-
-# Launch both UIs and open the browser, unless opted out or DQL is unavailable.
-if [ "$LAUNCH" = "1" ] && [ "$DQL_READY" = "1" ]; then
-  exec ./start.sh
-fi

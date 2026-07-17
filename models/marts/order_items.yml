@@ -11,6 +11,8 @@ models:
               arguments:
                 to: ref('orders')
                 field: order_id
+      - name: product_id
+        description: The foreign key relating an order item to its purchased product.
 
 unit_tests:
   - name: test_supply_costs_sum_correctly

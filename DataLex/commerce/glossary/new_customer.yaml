@@ -1,8 +1,0 @@
-kind: term
-name: new_customer
-definition: >-
-  A customer who has placed exactly one order to date. Identified by
-  customers.customer_type = 'new'.
-steward: growth
-related_terms: [returning_customer, customer_lifetime_value]
-tags: [customer]

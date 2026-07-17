@@ -1,8 +1,0 @@
-kind: entity
-layer: conceptual
-name: supply
-logical_name: Supply
-description: A raw supply consumed to fulfill a product, carrying a unit cost.
-owner: merchandising
-domain: commerce
-tags: [cost]

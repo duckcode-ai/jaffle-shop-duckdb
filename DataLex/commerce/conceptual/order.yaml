@@ -1,9 +1,0 @@
-kind: entity
-layer: conceptual
-name: order
-logical_name: Order
-description: A purchase placed by a customer, made up of one or more order items.
-owner: growth
-domain: commerce
-terms: [revenue, average_order_value, food_order, drink_order]
-tags: [core, revenue]

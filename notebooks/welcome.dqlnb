@@ -1,0 +1,32 @@
+{
+  "dqlnbVersion": 2,
+  "version": 1,
+  "title": "Jaffle Shop Growth & Beverage Insights",
+  "metadata": {
+    "description": "A DQL research notebook for the Jaffle Shop commerce domain.",
+    "createdWith": "dql",
+    "ownerDomain": "commerce",
+    "usesDomains": ["commerce"],
+    "requiredExports": []
+  },
+  "cells": [
+    {
+      "id": "intro",
+      "type": "markdown",
+      "name": "Start here",
+      "content": "# Jaffle Shop Growth & Beverage Insights\n\nThis example is built on dbt and DQL only. Start with a governed question in **Ask**, or run the two queries below. Reuse a result by saving it as a draft block, then review and certify it when it becomes a team definition.\n\nTry: **Who are the top customers by beverage revenue and product variety?**"
+    },
+    {
+      "id": "monthly-revenue",
+      "type": "sql",
+      "name": "Monthly gross revenue",
+      "content": "SELECT\n  date_trunc('month', ordered_at) AS month,\n  SUM(order_total) AS gross_revenue,\n  COUNT(*) AS order_count\nFROM dev.orders\nGROUP BY 1\nORDER BY 1"
+    },
+    {
+      "id": "top-beverage-customers",
+      "type": "sql",
+      "name": "Top beverage customers",
+      "content": "SELECT\n  customers.customer_name,\n  SUM(order_items.product_price) AS beverage_revenue,\n  COUNT(DISTINCT products.product_id) AS beverage_product_types\nFROM dev.order_items AS order_items\nJOIN dev.products AS products ON order_items.product_id = products.product_id\nJOIN dev.orders AS orders ON order_items.order_id = orders.order_id\nJOIN dev.customers AS customers ON orders.customer_id = customers.customer_id\nWHERE products.is_drink_item = true\nGROUP BY 1\nORDER BY beverage_revenue DESC, beverage_product_types DESC\nLIMIT 10"
+    }
+  ]
+}

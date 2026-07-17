@@ -1,8 +1,0 @@
-kind: term
-name: returning_customer
-definition: >-
-  A customer who has placed more than one order to date. Identified by
-  customers.customer_type = 'returning'.
-steward: growth
-related_terms: [new_customer, customer_lifetime_value]
-tags: [customer]

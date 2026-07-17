@@ -1,9 +1,0 @@
-kind: entity
-layer: conceptual
-name: product
-logical_name: Product
-description: A food or drink item sold by the Jaffle Shop, identified by SKU.
-owner: merchandising
-domain: commerce
-terms: [food_order, drink_order]
-tags: [core]

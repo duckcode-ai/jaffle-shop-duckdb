@@ -1,58 +1,31 @@
-.venv
-venv
+.venv/
 node_modules/
-.env
-env
 
-target/
+# dbt + DuckDB runtime
 dbt_packages/
+target/
 logs/
-.run/
 *.duckdb
 *.duckdb.wal
 
-.DS_Store
-
-.user.yml
-
-.ruff_cache
-__pycache__
-
-# DataLex local/runtime state. The committed pack lives under DataLex/ and the
-# manifest (DataLex/datalex-manifest.json) is tracked on purpose. These are
-# per-machine runtime files: a registry, a generated CLI shim, and the empty
-# workspace `datalex serve` scaffolds if pointed at the repo root.
-.datalex/
-.dm-projects.json
-dm
-/datalex.yaml
-/Skills/
-/core/
-/domains/
-/generated/
-/generated-sql/
-/imported/
-
-# DQL
+# DQL local runtime state
 dql-manifest.json
-.dql/runs/
-.dql/cache/
-.dql/imports/
-.dql/local/
+.dql/
+.user.yml
 *.dqlnb.run.json
 *.dql.run.json
 *.run.json
 
-# Local DQL/Node test workspace files; not part of this dbt-DuckDB repo.
-/.nvmrc
-/apps/
-/blocks/
-/dql.config.json
-/notebooks/
-/package.json
-/package-lock.json
-/semantic-layer/
-
-# Local video planning artifacts; publish these later when the YouTube roadmap is ready.
-/YOUTUBE.md
-/docs/assets/tutorials/jaffle/youtube/
+.DS_Store
+**/.dql/runs/
+**/.dql/cache/
+**/.dql/imports/
+**/.dql/local/
+**/.dql/connectors/
+**/.dql/memory/
+**/.dql/migration-staging/
+**/.dql/docker-starter/
+**/.dql/oauth-credentials.json
+**/.dql/provider-settings.json
+**/.dql/mcp-servers.json
+**/.dql-user-prefs.json

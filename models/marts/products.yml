@@ -1,3 +1,17 @@
+models:
+  - name: products
+    description: Product dimension table with one row per product.
+    columns:
+      - name: product_id
+        description: The unique product key.
+        data_tests:
+          - not_null
+          - unique
+      - name: product_name
+        description: The name shown to Jaffle Shop customers.
+      - name: is_drink_item
+        description: Whether the product is a beverage item.
+
 semantic_models:
   #The name of the semantic model.
   - name: products

@@ -1,0 +1,19 @@
+{
+  "name": "jaffle-shop-dql",
+  "private": true,
+  "description": "dbt DuckDB example for DQL domain modeling, skills, blocks, apps, and Ask AI.",
+  "scripts": {
+    "notebook": "dql notebook . --port 3474",
+    "doctor": "dql doctor .",
+    "compile": "dql compile .",
+    "validate": "dql model validate .",
+    "sync": "dql sync dbt .",
+    "app:build": "dql app build ."
+  },
+  "devDependencies": {
+    "@duckcodeailabs/dql-cli": "1.7.1"
+  },
+  "engines": {
+    "node": ">=20 <23"
+  }
+}

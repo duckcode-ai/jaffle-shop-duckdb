@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "id": "overview",
+  "metadata": {
+    "title": "Jaffle Growth Review",
+    "description": "A short business story: revenue trend first, then beverage performance and customer value.",
+    "domain": "commerce",
+    "visibility": "shared",
+    "lifecycle": "certified",
+    "tags": ["jaffle-shop", "growth", "beverage"]
+  },
+  "layout": {
+    "kind": "grid",
+    "cols": 12,
+    "rowHeight": 80,
+    "items": [
+      {
+        "i": "monthly-revenue",
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 4,
+        "block": { "blockId": "monthly_revenue" },
+        "viz": { "type": "line", "options": { "x": "month", "y": "gross_revenue", "format": "currency" } },
+        "title": "Monthly gross revenue"
+      },
+      {
+        "i": "beverage-products",
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 4,
+        "block": { "blockId": "beverage_revenue_by_product" },
+        "viz": { "type": "bar", "options": { "x": "product_name", "y": "beverage_revenue", "format": "currency" } },
+        "title": "Top beverage products"
+      },
+      {
+        "i": "beverage-customers",
+        "x": 0,
+        "y": 4,
+        "w": 8,
+        "h": 4,
+        "block": { "blockId": "top_beverage_customers" },
+        "viz": { "type": "table" },
+        "title": "Top beverage customers"
+      },
+      {
+        "i": "customer-profile",
+        "x": 8,
+        "y": 4,
+        "w": 4,
+        "h": 4,
+        "block": { "blockId": "customer_profile" },
+        "viz": { "type": "table" },
+        "title": "Customer lifetime profiles"
+      }
+    ]
+  }
+}

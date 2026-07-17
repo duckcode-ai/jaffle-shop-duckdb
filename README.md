@@ -1,72 +1,32 @@
-# Jaffle Shop DuckDB + DataLex + DQL
+# Jaffle Shop — dbt + DQL
 
-> **From a raw dbt model to a certified AI answer — with a human-reviewed
-> contract at every step.**
+A small, local-first example for turning a dbt project into a governed DQL
+workspace. It uses DuckDB, so you can explore real dbt models, domain modeling,
+skills, reusable blocks, an app, and Ask AI without a cloud warehouse.
 
-This is the reference demo for the **DuckCode Analytics Platform**: a dbt
-project with a [DataLex](https://github.com/duckcode-ai/DataLex) contract pack
-and a [DQL](https://github.com/duckcode-ai/dql) governed-analytics layer built
-on top. dbt models the data; DataLex certifies business meaning from dbt
-evidence; DQL turns those certified contracts into reusable blocks, notebooks,
-an App, and AI answers that can cite their trust boundary.
+This is a **DQL-only** example. dbt remains the source of truth for models,
+columns, tests, and MetricFlow metrics; DQL adds the business-facing layer that
+people and agents use to ask, explain, reuse, and trace analysis.
 
-DataLex and DQL run on **Snowflake, Databricks, and DuckDB**. This demo uses
-DuckDB so you can run the entire flow locally with zero warehouse setup — the
-same DataLex contracts and DQL blocks work unchanged against a Snowflake or
-Databricks dbt project.
+## What you will explore
 
-## End-to-end flow
+The included use case is **Growth & Beverage Insights**:
 
-This repo is the reference story for the two OSS projects: AI drafts the
-governance work, humans certify it, and DQL serves only the trusted layer to
-stakeholders and agents.
+- Which months drive revenue and order volume?
+- Which products generate beverage revenue?
+- Which customers bought the widest range of beverage products?
+- How can an analyst reuse the same governed answer in a notebook or app?
 
-> Click the diagram to open the full-size SVG in a browser tab, where you can
-> zoom or use full-screen mode.
-
-<p align="center">
-  <a href="docs/assets/architecture/jaffle-flow.svg">
-    <img src="docs/assets/architecture/jaffle-flow.svg" alt="Jaffle Shop end-to-end architecture flow from leadership questions to dbt evidence, DataLex contracts, DQL blocks, app, notebook, governed AI, and CI" width="100%" />
-  </a>
-</p>
-
-**Business value:** the same Jaffle Shop question moves from messy analysis to
-certified definitions, reusable DQL blocks, an executive app, and AI answers
-that clearly show whether they are trusted or review-required.
-
-> **Two-minute tour.** `./setup.sh` (below) installs everything, builds the
-> dbt models, publishes the DataLex manifest, and runs the DQL gate — in that
-> order. When it finishes, launch the notebook and Growth Command Center App:
-> ```bash
-> cd dql && npm run notebook     # http://127.0.0.1:3474
-> ```
-> Then open the left rail:
-> - **Blocks** — 10 certified analytics blocks, each bound to a DataLex contract
-> - **Apps → Jaffle Growth Command Center** — executive revenue, customer, and product views
-> - **Lineage** — `raw → dbt models → DataLex contracts → certified blocks → App`
->
-> The full AI-first tutorial, screenshots, and chapter flow are in
-> [`docs/tutorials/jaffle/`](./docs/tutorials/jaffle/README.md).
-
-`setup.sh` installs the **latest** `datalex-cli` (DataLex) and
-`@duckcodeailabs/dql-cli` (DQL) on every run, so you always build against
-current tooling. Prefer a single command and no local toolchain? Use the
-[Docker](#run-with-docker) path instead.
+The project has one `commerce` domain, two focused model areas, two scoped
+skills, four certified blocks, a starter notebook, and a Growth dashboard.
 
 ## Prerequisites
 
-- Python 3.9 through 3.13 (for dbt and the DataLex CLI)
+- Python 3.9–3.13
+- Node.js 20–22 (includes npm)
 - Git
-- Node 20 through 22 — only for the DQL layer (notebook, App, blocks). The dbt
-  + DataLex steps run without it; `setup.sh` builds DQL automatically when Node
-  is present and prints the manual steps when it is not.
-- Optional: [Docker](#run-with-docker) for a one-command install with no local
-  Python or Node toolchain
-- Optional: [Task](https://taskfile.dev/) if you want to use `Taskfile.yml`
 
-## Quick Start
-
-Clone the repo and run the setup script:
+## 1. Set up the example
 
 ```bash
 git clone https://github.com/duckcode-ai/jaffle-shop-duckdb.git
@@ -74,222 +34,107 @@ cd jaffle-shop-duckdb
 ./setup.sh
 ```
 
-If your machine's default `python3` is Python 3.14 or newer, choose a supported
-Python explicitly:
+The script is safe to rerun. It creates a local virtual environment, builds the
+dbt DuckDB database, installs DQL `1.7.1`, compiles the DQL workspace, validates
+the dbt-first model areas, and builds the starter app.
+
+If your default Python is unsupported, choose one explicitly:
 
 ```bash
 PYTHON=python3.13 ./setup.sh
 ```
 
-The setup script runs the whole stack in order:
-
-1. creates a virtual environment and installs the latest `dbt-duckdb` and
-   `datalex-cli`
-2. installs dbt packages, loads the seed data into DuckDB, builds and tests the
-   models, and generates docs and lineage artifacts
-3. builds the DataLex manifest (`DataLex/datalex-manifest.json`)
-4. if Node 20–22 is present, installs the latest `@duckcodeailabs/dql-cli` and
-   runs the DQL gate (`npm install` → `dql validate` → `dql app build`)
-
-Set `SKIP_DQL=1 ./setup.sh` to stop after the DataLex manifest and skip the DQL
-layer.
-
-By default it writes to `jaffle_shop.duckdb`. To use a different local database
-path:
+To try a different DQL release, pass it explicitly:
 
 ```bash
-DBT_DUCKDB_PATH=./my_jaffle_shop.duckdb ./setup.sh
+DQL_VERSION=latest ./setup.sh
 ```
 
-If you prefer to run the steps manually, follow the same order:
+## 2. Open DQL
 
 ```bash
-# 1. Python layer: dbt + DataLex CLI (latest)
-python3 -m venv .venv
-source .venv/bin/activate
-python3 -m pip install --upgrade pip
-python3 -m pip install -r requirements.txt
-
-# 2. dbt: build and test the models, generate docs + lineage
-dbt deps --profiles-dir .
-dbt seed --full-refresh --profiles-dir .
-dbt build --profiles-dir . --exclude resource_type:seed
-dbt docs generate --profiles-dir .
-
-# 3. DataLex: publish the manifest DQL and agents consume
-datalex datalex manifest build DataLex --out "$(pwd)/DataLex/datalex-manifest.json"
-
-# 4. DQL: install the latest dql-cli, run the gate, launch the notebook (needs Node 20-22)
-cd dql
-npm install
-npx dql validate
-npx dql app build
-npm run notebook     # http://127.0.0.1:3474
+npm run notebook
 ```
 
-The build creates a local `jaffle_shop.duckdb` database file in the project
-root. Seed tables are loaded into the `raw` schema and models are built into
-the `dev` schema. `dbt docs generate` writes `target/manifest.json` and
-`target/catalog.json`, which dbt uses for docs and lineage.
+Open <http://127.0.0.1:3474>. The notebook is local; press `Ctrl+C` to stop it.
 
-## Run with Docker
+## 3. Follow the product flow
 
-No local Python or Node toolchain required — Docker bundles both runtimes,
-runs the full ordered setup at build time, and serves the notebook:
+1. **Domains → Commerce → Model** — inspect the dbt-backed model areas:
+   `Revenue performance` and `Customer value`.
+2. **Domains → Commerce → Skills** — see the beverage and customer-analysis
+   instructions that guide retrieval only when relevant.
+3. **Blocks** — open `monthly_revenue`, `beverage_revenue_by_product`,
+   `top_beverage_customers`, or `customer_profile`.
+4. **Apps → Jaffle Growth Review** — reuse the same blocks in one stakeholder
+   view.
+5. **Ask** — try the questions below. DQL searches certified blocks first,
+   then the commerce model and dbt metadata when a block is not enough.
+
+Suggested questions:
+
+```text
+How has revenue changed by month?
+Which beverage products generate the most revenue?
+Who are the top customers by beverage revenue and product variety?
+Give me the profile for Matthew Meyer.
+```
+
+## Project map
+
+```text
+models/                              dbt models and tests (source of truth)
+domains/commerce/domain.dql          business domain
+domains/commerce/modeling/areas/     focused dbt-backed model areas
+domains/commerce/skills/             domain guidance for Ask AI
+domains/commerce/blocks/             reusable certified answers
+skills/                              project-wide SQL guidance
+apps/jaffle-growth/                  governed growth dashboard
+notebooks/welcome.dqlnb              starter research notebook
+```
+
+## Extend it in four small steps
+
+1. Add or improve a dbt model under `models/`, then rebuild dbt:
+
+   ```bash
+   .venv/bin/dbt build --profiles-dir .
+   .venv/bin/dbt docs generate --profiles-dir .
+   ```
+
+2. In **Domains**, add a model area that explains the business question and
+   points to the dbt models it needs.
+3. Add a domain skill for vocabulary or analysis rules; keep it scoped to the
+   model area when it is not broadly applicable.
+4. Save a repeated answer as a draft block, review it, then certify it. Run:
+
+   ```bash
+   npm run compile
+   npm run validate
+   ```
+
+## Useful commands
 
 ```bash
-docker compose up --build
+# Rebuild the local dbt database and docs
+.venv/bin/dbt build --profiles-dir .
+.venv/bin/dbt docs generate --profiles-dir .
+
+# Refresh DQL after source changes
+npm run compile
+npm run validate
+npm run app:build
+
+# Check local prerequisites and DQL/dbt wiring
+npm run doctor
+
+# Start the notebook without an npm wrapper
+./start.sh
 ```
 
-Then open <http://127.0.0.1:3474> for the DQL notebook and Growth Command
-Center App. The image always builds against the latest `datalex-cli` and
-`@duckcodeailabs/dql-cli`.
+## Local files
 
-To serve dbt docs and lineage instead of the notebook:
-
-```bash
-docker compose run --rm --service-ports jaffle \
-  bash -c "cd /app && source .venv/bin/activate && \
-           dbt docs serve --profiles-dir . --host 0.0.0.0 --port 8080"
-```
-
-Then open <http://127.0.0.1:8080>.
-
-## Using Task
-
-If you have Task installed, run:
-
-```bash
-task setup
-```
-
-To run the full verification, including docs and lineage artifacts:
-
-```bash
-task verify
-```
-
-## Profile
-
-The repo includes a local `profiles.yml`:
-
-```yaml
-jaffle_shop:
-  target: dev
-  outputs:
-    dev:
-      type: duckdb
-      path: "{{ env_var('DBT_DUCKDB_PATH', 'jaffle_shop.duckdb') }}"
-      schema: dev
-      threads: 4
-```
-
-Because this profile has no secrets, it is committed to the repo. Use
-`--profiles-dir .` when running dbt commands so dbt reads this local profile.
-
-This demo targets DuckDB for a zero-setup local run. To point the same models,
-DataLex contracts, and DQL blocks at **Snowflake** or **Databricks**, swap this
-profile for a standard `dbt-snowflake` or `dbt-databricks` profile — the
-governance layer above dbt is warehouse-agnostic.
-
-## Common Commands
-
-Install package dependencies:
-
-```bash
-dbt deps --profiles-dir .
-```
-
-Load only the seed data:
-
-```bash
-dbt seed --full-refresh --profiles-dir .
-```
-
-Build and test everything:
-
-```bash
-dbt seed --full-refresh --profiles-dir .
-dbt build --profiles-dir . --exclude resource_type:seed
-```
-
-Generate docs and lineage artifacts:
-
-```bash
-dbt docs generate --profiles-dir .
-dbt docs serve --profiles-dir .
-```
-
-Open the database in DuckDB:
-
-```bash
-duckdb jaffle_shop.duckdb
-```
-
-Then query the built models:
-
-```sql
-select * from dev.orders limit 10;
-select * from dev.customers limit 10;
-```
-
-Clean generated local artifacts:
-
-```bash
-rm -rf target dbt_packages logs jaffle_shop.duckdb jaffle_shop.duckdb.wal
-```
-
-Or with Task:
-
-```bash
-task clean
-```
-
-## Larger Synthetic Data
-
-The default seed files under `seeds/jaffle-data` are enough to run the project.
-To generate a larger local dataset with `jafgen`:
-
-```bash
-source .venv/bin/activate
-jafgen 6
-rm -rf seeds/jaffle-data
-mv jaffle-data seeds
-dbt seed --full-refresh --profiles-dir .
-dbt build --profiles-dir . --exclude resource_type:seed
-```
-
-With Task:
-
-```bash
-task gen YEARS=6
-task build
-```
-
-## Project Layout
-
-- `profiles.yml`: local DuckDB dbt profile
-- `dbt_project.yml`: dbt project settings
-- `seeds/jaffle-data`: CSV source data loaded into DuckDB
-- `models/staging`: staging models over the raw source tables
-- `models/marts`: final mart models
-- `macros`: project macros
-- `DataLex`: AI-reviewed and human-certified business contracts, glossary, proposals, and manifest.
-  Includes a `commerce` domain with **conceptual / logical / physical** models for the six core
-  entities (customer, order, order_item, product, supply, location) plus their relationships —
-  the data-modeling layer beneath the `customers` / `products` / `revenue` contract domains
-- `dql`: certified DQL blocks, business views, notebook, and Growth Command Center App
-- `docs/tutorials/jaffle`: chapter-by-chapter tutorial with story, AI path, manual path, and flow links
-- `docs/assets/tutorials/jaffle`: Paper-theme tutorial screenshots
-
-## Notes
-
-- `jaffle_shop.duckdb` and DuckDB WAL files are ignored by git.
-- `target/manifest.json` and `target/catalog.json` are generated artifacts.
-  Recreate them with `dbt docs generate --profiles-dir .`.
-- Run `dbt seed --full-refresh --profiles-dir .` before `dbt build` on a fresh
-  DuckDB file. The staging models read seed-backed data through `source()`, and
-  dbt does not infer that source-to-seed dependency automatically.
-- Use `--exclude resource_type:seed` on the build after seeding so dbt does not
-  append the seed rows a second time.
-- Seed loading is enabled by default for local development.
+`jaffle_shop.duckdb`, `target/`, `node_modules/`, `.venv/`, and `.dql/` are
+local runtime artifacts and are ignored by Git. The checked-in source is the
+dbt project plus the DQL domain workspace; there is no second semantic copy to
+keep in sync.

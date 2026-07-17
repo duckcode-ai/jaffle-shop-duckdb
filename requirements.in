@@ -1,6 +1,0 @@
-dbt-duckdb>=1.10,<2.0
-datalex-cli[serve,duckdb,draft,draft-openai]>=1.12,<2
-pre-commit>=3.6.0
-requests~=2.31.0
-jafgen>=0.4.11
-typing-extensions>=4.12.2,<5

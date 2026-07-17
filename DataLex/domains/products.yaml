@@ -1,9 +1,0 @@
-kind: domain
-name: products
-description: Product mix and item-level sales definitions backed by the dbt order_items and products marts.
-owner: product-analytics@jaffle.shop
-entities: [product]
-tags: [products, menu, certified]
-meta:
-  business_owner: Merchandising
-  source_models: [model.jaffle_shop.order_items, model.jaffle_shop.products]

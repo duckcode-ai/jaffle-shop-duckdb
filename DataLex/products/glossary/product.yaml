@@ -1,9 +1,0 @@
-kind: term
-name: product
-definition: A sellable food or drink item represented in the dbt products and order_items marts.
-synonyms: [menu item, item]
-steward: product-analytics@jaffle.shop
-owner: Merchandising
-tags: [product, entity]
-meta:
-  domain: products

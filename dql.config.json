@@ -1,0 +1,38 @@
+{
+  "project": "jaffle-shop-dql",
+  "layout": {
+    "version": 2,
+    "mode": "oss-dbt-workspace",
+    "skillsPath": "skills"
+  },
+  "identity": {
+    "owner": "analytics@jaffle.shop"
+  },
+  "manifestVersion": 3,
+  "modeling": {
+    "mode": "dbt-first"
+  },
+  "defaultConnectionName": "jaffle_shop_dev",
+  "connections": {
+    "default": {
+      "driver": "duckdb",
+      "filepath": "jaffle_shop.duckdb"
+    },
+    "jaffle_shop_dev": {
+      "driver": "duckdb",
+      "filepath": "/Users/Kranthi_1/jaffle-shop-duckdb/jaffle_shop.duckdb"
+    }
+  },
+  "semanticLayer": {
+    "provider": "dbt",
+    "projectPath": "."
+  },
+  "dbt": {
+    "projectDir": ".",
+    "manifestPath": "target/manifest.json"
+  },
+  "preview": {
+    "port": 3474,
+    "open": true
+  }
+}

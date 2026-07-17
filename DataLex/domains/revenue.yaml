@@ -1,9 +1,0 @@
-kind: domain
-name: revenue
-description: Growth and order performance definitions backed by the dbt orders mart.
-owner: revenue-analytics@jaffle.shop
-entities: [order]
-tags: [growth, executive, certified]
-meta:
-  business_owner: Growth Leadership
-  source_models: [model.jaffle_shop.orders, model.jaffle_shop.order_items]

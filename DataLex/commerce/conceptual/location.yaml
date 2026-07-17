@@ -1,8 +1,0 @@
-kind: entity
-layer: conceptual
-name: location
-logical_name: Location
-description: A physical Jaffle Shop store location where orders are fulfilled.
-owner: operations
-domain: commerce
-tags: [core]
