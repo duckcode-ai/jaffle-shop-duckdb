@@ -1,5 +1,7 @@
 .venv/
 node_modules/
+# npm install writes this; the CLI version is set in package.json
+/package-lock.json
 
 # dbt + DuckDB runtime
 dbt_packages/
@@ -8,7 +10,7 @@ logs/
 *.duckdb
 *.duckdb.wal
 
-# DQL local runtime state
+# ZLens local runtime state (ZLens keeps its files under .dql/)
 dql-manifest.json
 .dql/
 .user.yml
@@ -29,3 +31,8 @@ dql-manifest.json
 **/.dql/provider-settings.json
 **/.dql/mcp-servers.json
 **/.dql-user-prefs.json
+
+# Local AI agent client config written by `zlens connect`
+.mcp.json
+.codex/
+.cursor/

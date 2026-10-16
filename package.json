@@ -1,19 +1,20 @@
 {
-  "name": "jaffle-shop-dql",
+  "name": "jaffle-shop-zlens",
   "private": true,
-  "description": "dbt DuckDB example for DQL domain modeling, skills, blocks, apps, and Ask AI.",
+  "description": "Jaffle Shop dbt project on DuckDB with a ready-made ZLens workspace: domain model, skills, certified blocks, an App and Ask.",
   "scripts": {
-    "notebook": "dql notebook . --port 3474",
-    "doctor": "dql doctor .",
-    "compile": "dql compile .",
-    "validate": "dql model validate .",
-    "sync": "dql sync dbt .",
-    "app:build": "dql app build ."
+    "notebook": "zlens notebook . --port 3474",
+    "sync": "zlens sync dbt .",
+    "compile": "zlens compile .",
+    "lineage": "zlens lineage",
+    "doctor": "zlens doctor .",
+    "validate": "zlens validate . && zlens model validate .",
+    "app:build": "zlens app build ."
   },
   "devDependencies": {
-    "@duckcodeailabs/dql-cli": "1.7.1"
+    "@zlens/cli": "^0.1.0"
   },
   "engines": {
-    "node": ">=20 <23"
+    "node": ">=20"
   }
 }
