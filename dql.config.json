@@ -1,5 +1,5 @@
 {
-  "project": "jaffle-shop-dql",
+  "project": "jaffle-shop",
   "layout": {
     "version": 2,
     "mode": "oss-dbt-workspace",
@@ -29,10 +29,15 @@
   },
   "dbt": {
     "projectDir": ".",
-    "manifestPath": "target/manifest.json"
+    "manifestPath": "target/manifest.json",
+    "profilesDir": "."
   },
   "preview": {
     "port": 3474,
     "open": true
+  },
+  "defaultConnection": {
+    "driver": "duckdb",
+    "filepath": "jaffle_shop.duckdb"
   }
 }
