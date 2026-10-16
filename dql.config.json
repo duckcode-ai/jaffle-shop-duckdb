@@ -20,7 +20,7 @@
     },
     "jaffle_shop_dev": {
       "driver": "duckdb",
-      "filepath": "/Users/Kranthi_1/jaffle-shop-duckdb/jaffle_shop.duckdb"
+      "filepath": "jaffle_shop.duckdb"
     }
   },
   "semanticLayer": {
