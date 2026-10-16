@@ -22,14 +22,15 @@ export DBT_SEND_ANONYMOUS_USAGE_STATS="${DBT_SEND_ANONYMOUS_USAGE_STATS:-false}"
 python_supported() {
   "$1" - <<'PY' 2>/dev/null
 import sys
-print(int((3, 9) <= sys.version_info[:2] < (3, 14)))
+print(int((3, 9) <= sys.version_info[:2] < (3, 15)))
 PY
 }
 
-# dbt-duckdb supports Python 3.9-3.13. When python3 is newer (common on macOS
-# with Homebrew) and no interpreter was chosen, use an installed supported one.
+# dbt-duckdb runs on Python 3.9-3.14 (3.14 tested with dbt-core 1.12). When
+# python3 is outside that range and no interpreter was chosen, use an installed
+# supported one.
 if [ -z "${PYTHON:-}" ] && { ! command -v "$PYTHON_BIN" >/dev/null 2>&1 || [ "$(python_supported "$PYTHON_BIN")" != "1" ]; }; then
-  for candidate in python3.13 python3.12 python3.11 python3.10 python3.9; do
+  for candidate in python3.14 python3.13 python3.12 python3.11 python3.10 python3.9; do
     if command -v "$candidate" >/dev/null 2>&1; then
       PYTHON_BIN="$candidate"
       break
@@ -46,12 +47,12 @@ require_command() {
   fi
 }
 
-require_command "$PYTHON_BIN" "Install Python 3.9–3.13, or run PYTHON=python3.13 ./setup.sh"
+require_command "$PYTHON_BIN" "Install Python 3.9–3.13 (3.14 also works), or run PYTHON=python3.13 ./setup.sh"
 require_command node "Install Node.js 20 or newer from https://nodejs.org/"
 require_command npm "Install npm with Node.js 20 or newer from https://nodejs.org/"
 
 if [ "$(python_supported "$PYTHON_BIN")" != "1" ]; then
-  echo "$("$PYTHON_BIN" --version 2>&1) is not supported by dbt-duckdb. Use Python 3.9–3.13, for example PYTHON=python3.13 ./setup.sh" >&2
+  echo "$("$PYTHON_BIN" --version 2>&1) is not supported by dbt-duckdb. Use Python 3.9–3.14, for example PYTHON=python3.13 ./setup.sh" >&2
   exit 1
 fi
 
@@ -108,7 +109,7 @@ Next:
 The workbench opens at http://127.0.0.1:3474. Start with:
   • Apps → Jaffle Growth Review
   • Lineage → monthly_revenue
-  • Notebooks → Jaffle Shop Growth & Beverage Insights
+  • Notebooks → welcome → Run all
 
 See README.md for the guided tour.
 EOF

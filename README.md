@@ -29,8 +29,8 @@ four certified blocks, a starter notebook and the **Jaffle Growth Review** App.
 
 ## Before you start
 
-- Python 3.9 to 3.13 for dbt (`python3 --version`; see
-  [Troubleshooting](#troubleshooting) if yours is 3.14)
+- Python 3.9 to 3.13 for dbt (`python3 --version`). Python 3.14 also works
+  with the current dbt-duckdb release.
 - Node.js 20 or newer (`node -v`)
 - git
 
@@ -93,8 +93,8 @@ The first time, ZLens opens **Guided Setup**:
    beverage customers and customer profiles, each labelled **Certified**.
 2. **Lineage.** Pick the `monthly_revenue` block. The graph runs from the dbt
    sources and models through the block to its dashboard and the App.
-3. **Notebooks.** Open **Jaffle Shop Growth & Beverage Insights** and run its
-   cells with **Shift+Enter**, or click **New Notebook** and run the query
+3. **Notebooks.** Open **welcome** (under **Domains → commerce**) and click
+   **Run all**, or click **New Notebook** and run the query
    from the [ZLens quickstart](https://duckcode-ai-labs.github.io/zlens/get-started/):
 
    ```sql
@@ -118,6 +118,10 @@ The first time, ZLens opens **Guided Setup**:
    ```
 
 ## Lineage and certification from the terminal
+
+DuckDB lets only one process write to `jaffle_shop.duckdb`, and the running
+workbench holds it. Stop `npm run notebook` (`Ctrl+C`) before you run
+`zlens certify` or `dbt build` in a terminal; `zlens lineage` works either way.
 
 ```bash
 npx zlens lineage                          # summary: blocks, terms, charts, Apps
@@ -155,7 +159,8 @@ notebooks/welcome.dqlnb              starter notebook
 
 ## Extend it
 
-1. Add or change a dbt model under `models/`, then rebuild dbt and re-import:
+1. Add or change a dbt model under `models/`. Stop the workbench, then
+   rebuild dbt and re-import:
 
    ```bash
    .venv/bin/dbt build --profiles-dir .
@@ -190,9 +195,13 @@ port).
 
 ## Troubleshooting
 
-- **`python3` is 3.14 or newer.** dbt-duckdb supports Python 3.9 to 3.13.
-  Remove `.venv` and create it with a supported version, for example
-  `python3.13 -m venv .venv`, or run `PYTHON=python3.13 ./setup.sh`.
+- **`pip install` or dbt fails on your Python.** Use Python 3.9 to 3.13
+  (3.14 works with current dbt). Remove `.venv` and create it with a supported
+  version, for example `python3.13 -m venv .venv`, or run
+  `PYTHON=python3.13 ./setup.sh`.
+- **`Could not set lock on file ".../jaffle_shop.duckdb"`.** Another process
+  has the database open, usually the running workbench. Stop it with `Ctrl+C`,
+  run your command, then start `npm run notebook` again.
 - **You have a `dql/` folder.** An older quickstart ran `create-zlens-app`
   here. Delete `dql/` and run `npm run notebook` in this folder.
 - **`dql` command or `@duckcodeailabs/dql-cli`.** That is the pre-ZLens CLI.
