@@ -3,7 +3,7 @@
   "version": 1,
   "title": "Jaffle Shop Growth & Beverage Insights",
   "metadata": {
-    "description": "A DQL research notebook for the Jaffle Shop commerce domain.",
+    "description": "A ZLens research notebook for the Jaffle Shop commerce domain.",
     "createdWith": "dql",
     "ownerDomain": "commerce",
     "usesDomains": ["commerce"],
@@ -14,7 +14,7 @@
       "id": "intro",
       "type": "markdown",
       "name": "Start here",
-      "content": "# Jaffle Shop Growth & Beverage Insights\n\nThis example is built on dbt and DQL only. Start with a governed question in **Ask**, or run the two queries below. Reuse a result by saving it as a draft block, then review and certify it when it becomes a team definition.\n\nTry: **Who are the top customers by beverage revenue and product variety?**"
+      "content": "# Jaffle Shop Growth & Beverage Insights\n\nThis example is built on dbt and ZLens only. Start with a governed question in **Ask**, or run the two queries below. Reuse a result by saving it as a draft block, then review and certify it when it becomes a team definition.\n\nTry: **Who are the top customers by beverage revenue and product variety?**"
     },
     {
       "id": "monthly-revenue",
