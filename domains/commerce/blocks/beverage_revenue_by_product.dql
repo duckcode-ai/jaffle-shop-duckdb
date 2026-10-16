@@ -33,7 +33,7 @@ block "beverage_revenue_by_product" {
       ON order_items.product_id = products.product_id
     WHERE products.is_drink_item = true
     GROUP BY 1
-    ORDER BY beverage_revenue DESC, product_name
+    ORDER BY beverage_revenue DESC, products.product_name
   """
 
   visualization {

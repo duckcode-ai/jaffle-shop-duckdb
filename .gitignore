@@ -10,9 +10,10 @@ logs/
 *.duckdb
 *.duckdb.wal
 
-# ZLens local runtime state (ZLens keeps its files under .dql/)
+# ZLens local runtime state. ZLens keeps its files under .dql/ and expects
+# granular ignores: its local runtime (workbench, certify) drops a blanket
+# `.dql/` rule and adds any of these that are missing.
 dql-manifest.json
-.dql/
 .user.yml
 *.dqlnb.run.json
 *.dql.run.json
@@ -23,6 +24,7 @@ dql-manifest.json
 **/.dql/cache/
 **/.dql/imports/
 **/.dql/local/
+**/.dql/runtimes/
 **/.dql/connectors/
 **/.dql/memory/
 **/.dql/migration-staging/
