@@ -3,7 +3,7 @@ id: sql-conventions
 kind: sql_policy
 status: active
 owner: analytics@jaffle.shop
-description: Project-wide SQL rules for dbt-backed DQL answers.
+description: Project-wide SQL rules for dbt-backed ZLens answers.
 triggers: [sql, query, analysis, revenue, customer]
 ---
 # SQL conventions

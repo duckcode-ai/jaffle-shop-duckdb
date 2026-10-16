@@ -1,0 +1,28 @@
+name: beverage_revenue_by_product
+block: beverage_revenue_by_product
+domain: commerce
+description: "Beverage product revenue and item count. One row per beverage product."
+owner: "analytics@jaffle.shop"
+source:
+  provider: dql
+  objectType: block
+  objectId: beverage_revenue_by_product
+reviewStatus: certified
+certification:
+  certifiedBy: analytics@jaffle.shop
+  certifiedAt: '2026-10-16T00:23:22.996Z'
+  via: cli
+  rules: oss
+  sourceSha256: a6aa433e1725bacacf226f04ebd353d30b3646ab95823ec627a8d634d3ddd9ee
+  checks:
+    - metadata
+    - validation
+    - run
+    - tests
+    - chart
+    - lineage
+    - ai-reviewed
+  warnings:
+    - >-
+      Block groups by an identity key: Ask can't use this block as a certified answer: it groups by product_name only, and two entities can share a name. Add the entity's identifier column to SELECT
+      and GROUP BY.
