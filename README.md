@@ -31,7 +31,8 @@ four certified blocks, a starter notebook and the **Jaffle Growth Review** App.
 
 - Python 3.9 to 3.13 for dbt (`python3 --version`). Python 3.14 also works
   with the current dbt-duckdb release.
-- Node.js 20 or newer (`node -v`)
+- Node.js 20, 22 or 24, with 24 LTS recommended (`node -v`). Node 25 and 26
+  are not supported yet: ZLens's DuckDB driver has no prebuilt binary for them.
 - git
 
 ## 1. Build the dbt project
@@ -195,6 +196,10 @@ port).
 
 ## Troubleshooting
 
+- **`ZLens's DuckDB driver has no prebuilt binary for Node 26 yet`.** You are
+  on Node 25 or 26. Switch to Node 24 LTS or 22 (`nvm install 24`, or
+  `fnm use 24`), then run `npm run notebook` again: the driver installs on its
+  own.
 - **`pip install` or dbt fails on your Python.** Use Python 3.9 to 3.13
   (3.14 works with current dbt). Remove `.venv` and create it with a supported
   version, for example `python3.13 -m venv .venv`, or run
