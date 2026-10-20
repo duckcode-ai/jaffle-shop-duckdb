@@ -1,0 +1,50 @@
+# Runs the README's steps 1 and 2 (without `npm run notebook`) and checks
+# that the workspace validates.
+name: Sample check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sample-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Sample check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Build the dbt project
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -r requirements.txt
+          .venv/bin/dbt deps --profiles-dir .
+          .venv/bin/dbt seed --profiles-dir .
+          .venv/bin/dbt build --profiles-dir . --exclude resource_type:seed
+
+      - name: Install ZLens
+        run: |
+          npm install
+          npm install --prefix .dql/connectors duckdb
+
+      - name: Sync
+        run: npm run sync
+
+      - name: Validate
+        run: npm run validate
