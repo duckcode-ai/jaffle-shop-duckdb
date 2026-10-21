@@ -75,6 +75,36 @@ fi
 .venv/bin/python -m pip install --quiet --upgrade pip --progress-bar off
 .venv/bin/python -m pip install --quiet -r requirements.txt --progress-bar off
 
+# ZLens reads the database with DuckDB 1.4. An older setup may have installed
+# DuckDB 2.0 into .venv, and a file written by 2.0 cannot be opened by 1.4
+# ("version number 999 ... created with an newer version of DuckDB").
+DUCKDB_PIN='duckdb>=1.4,<1.5'
+if ! .venv/bin/python -c 'import sys, duckdb; sys.exit(0 if duckdb.__version__.startswith("1.4.") else 1)' 2>/dev/null; then
+  echo "Reinstalling DuckDB 1.4 in .venv (the version ZLens reads)…"
+  .venv/bin/python -m pip install --quiet --force-reinstall "$DUCKDB_PIN" --progress-bar off
+fi
+echo "Using DuckDB $(.venv/bin/python -c 'import duckdb; print(duckdb.__version__)') for dbt."
+
+# Set aside a database written by a newer DuckDB; dbt rebuilds it below.
+DB_FILE="${DBT_DUCKDB_PATH:-jaffle_shop.duckdb}"
+if [ -f "$DB_FILE" ]; then
+  db_status="$(.venv/bin/python - "$DB_FILE" <<'PY' 2>/dev/null || true
+import sys, duckdb
+try:
+    duckdb.connect(sys.argv[1], read_only=True).close()
+    print("ok")
+except Exception as err:
+    print("newer" if "newer version of DuckDB" in str(err) else "other")
+PY
+)"
+  if [ "$db_status" = "newer" ]; then
+    OLD_DB="${DB_FILE%.duckdb}.from-newer-duckdb.duckdb"
+    echo "$DB_FILE was written by a newer DuckDB that ZLens cannot read. Moving it to $OLD_DB and rebuilding it with DuckDB 1.4…"
+    mv -f "$DB_FILE" "$OLD_DB"
+    if [ -f "$DB_FILE.wal" ]; then mv -f "$DB_FILE.wal" "$OLD_DB.wal"; fi
+  fi
+fi
+
 echo "[2/4] Building the Jaffle Shop dbt project (DuckDB)…"
 .venv/bin/dbt deps --profiles-dir .
 .venv/bin/dbt seed --full-refresh --profiles-dir .
