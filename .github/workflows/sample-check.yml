@@ -43,6 +43,18 @@ jobs:
           npm install
           npm install --prefix .dql/connectors duckdb
 
+      - name: Open the database with ZLens's DuckDB driver
+        # Fails if dbt wrote jaffle_shop.duckdb with a DuckDB that ZLens
+        # cannot read (for example Python duckdb 2.0).
+        run: |
+          node -e "
+            const { Database } = require('./.dql/connectors/node_modules/duckdb');
+            new Database('jaffle_shop.duckdb', { access_mode: 'READ_ONLY' }, (err) => {
+              if (err) { console.error(err.message); process.exit(1); }
+              console.log('jaffle_shop.duckdb opens with the ZLens DuckDB driver');
+            });
+          "
+
       - name: Sync
         run: npm run sync
 

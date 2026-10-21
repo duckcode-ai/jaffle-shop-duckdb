@@ -200,6 +200,16 @@ port).
   on Node 25 or 26. Switch to Node 24 LTS or 22 (`nvm install 24`, or
   `fnm use 24`), then run `npm run notebook` again: the driver installs on its
   own.
+- **`Trying to read a database file with version number 999, but we can only
+  read versions between 64 and 67. The database file was created with an
+  newer version of DuckDB.`** (in the Setup "Test" button, Settings or
+  `npm run doctor`). `jaffle_shop.duckdb` was built by Python DuckDB 2.0, and
+  ZLens reads files from DuckDB 1.4. `requirements.txt` now pins
+  `duckdb>=1.4,<1.5`; rerun `./setup.sh`, which reinstalls DuckDB 1.4 in
+  `.venv`, moves the unreadable file to `jaffle_shop.from-newer-duckdb.duckdb`
+  and rebuilds it. By hand: stop the workbench, then
+  `.venv/bin/pip install 'duckdb>=1.4,<1.5'`, delete `jaffle_shop.duckdb` and
+  run `dbt seed` and `dbt build` again (step 1).
 - **`pip install` or dbt fails on your Python.** Use Python 3.9 to 3.13
   (3.14 works with current dbt). Remove `.venv` and create it with a supported
   version, for example `python3.13 -m venv .venv`, or run

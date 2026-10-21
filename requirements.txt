@@ -1,2 +1,6 @@
 # The example needs only dbt + the local DuckDB adapter.
 dbt-duckdb>=1.10,<2.0
+# ZLens reads the database with DuckDB 1.4. DuckDB 2.0 writes files that 1.4
+# cannot open ("version number 999 ... created with an newer version of
+# DuckDB"), so keep the Python engine on the same 1.4 line.
+duckdb>=1.4,<1.5
