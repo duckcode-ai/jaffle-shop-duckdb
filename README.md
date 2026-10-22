@@ -2,12 +2,13 @@
 
 The sample project for [ZLens](https://github.com/duckcode-ai-labs/zlens):
 the dbt Jaffle Shop on DuckDB, with a ready-made ZLens workspace on top. You
-can try domain modeling, skills, certified blocks, an App, lineage and Ask on
-your laptop, without a warehouse account.
+can try domain modeling, skills, certified saved queries, an App, lineage and
+Ask on your laptop, without a warehouse account.
 
 dbt stays the source of truth for models, columns, tests and MetricFlow
 metrics. ZLens adds the business layer that people and AI agents use to ask,
-reuse and trace analysis. Blocks are written in DQL, the ZLens query language.
+reuse and trace analysis. Saved queries (called blocks in files and on the
+command line) are written in DQL, the ZLens query language.
 
 > [!IMPORTANT]
 > This folder **is already a ZLens workspace** (`dql.config.json` is at the
@@ -25,7 +26,8 @@ The use case is **Growth & Beverage Insights**:
 - How do you reuse the same certified answer in a notebook, an App and Ask?
 
 The workspace has one `commerce` domain, two model areas, two domain skills,
-four certified blocks, a starter notebook and the **Jaffle Growth Review** App.
+four certified saved queries, a starter notebook and the **Jaffle Growth
+Review** App.
 
 ## Before you start
 
@@ -55,18 +57,19 @@ Still in `jaffle-shop-duckdb`:
 
 ```bash
 npm install
-npm install --prefix .dql/connectors duckdb
 npm run sync
 npm run notebook
 ```
 
 - `npm install` installs the ZLens CLI (`@zlens/cli`) into this folder. No
   global install is needed; `npx zlens …` runs it.
-- The second command installs the DuckDB driver ZLens queries with.
 - `npm run sync` imports the dbt project. Its last line starts with
   `✓ dbt sync complete`.
 - `npm run notebook` prints `Notebook ready: http://127.0.0.1:3474` and opens
-  your browser. Leave it running; press `Ctrl+C` to stop it.
+  your browser. Leave it running; press `Ctrl+C` to stop it. The first time,
+  it installs the DuckDB driver into `.dql/connectors` by itself
+  (`Installing the DuckDB driver…`, then `DuckDB driver ready`); you do not
+  install it by hand.
 
 **Shortcut:** `./setup.sh` runs steps 1 and 2 (except `npm run notebook`) in
 one go. It picks a supported Python for you and is safe to rerun. Then run
@@ -74,26 +77,32 @@ one go. It picks a supported Python for you and is safe to rerun. Then run
 
 ## 3. Finish Guided Setup
 
-The first time, ZLens opens **Guided Setup**:
+The first time, ZLens opens **Guided Setup** (**Welcome to ZLens**, four
+steps):
 
-1. **Connect your dbt project.** You see **dbt project ready** and the path
-   `.` (this folder). Click **Preview**, then **Apply project**, then
-   **Continue to database**.
-2. **Connect your database.** The sample's DuckDB connection is already set
-   up: you see **DuckDB · configured** and **Test passed**. Click
-   **Continue to optional AI**.
-3. **Set up an AI provider.** Optional. Only **Ask** needs a model; see
+1. **Where does your data model live?** This folder already has a ZLens
+   workspace on the dbt project, so choose **Open an existing ZLens project**
+   (its card names the dbt project in this folder and the connection
+   `jaffle_shop_dev` (duckdb)). Click **Continue to credentials**.
+2. **Connect and synchronize.** The sample's DuckDB connection is already set
+   up: you see **DuckDB · configured** and **Test passed**. You already ran
+   `npm run sync`, so there is nothing to synchronize here and no schemas to
+   tick. Click **Continue to optional AI**.
+3. **Set up an AI provider.** Optional. Only **Ask** (and describing an App
+   in your own words) needs a model; see
    [Set up an AI provider](https://duckcode-ai-labs.github.io/zlens/get-started/ai-provider/).
-   Click **Continue to finish**.
-4. Click **Finish setup**.
+   Click **Skip AI for now**.
+4. **Where do you want to start?** Click **Finish setup · Build an App**: it
+   opens **Apps** with the new App form (see step 5 of the tour).
 
 ## 4. Take the tour
 
 1. **Apps → Jaffle Growth Review → View.** The header reads
-   **All 4 tiles certified**: monthly revenue, top beverage products, top
+   **All tiles certified**: monthly revenue, top beverage products, top
    beverage customers and customer profiles, each labelled **Certified**.
-2. **Lineage.** Pick the `monthly_revenue` block. The graph runs from the dbt
-   sources and models through the block to its dashboard and the App.
+2. **Lineage.** Pick the `monthly_revenue` saved query. The graph runs from
+   the dbt sources and models through the saved query to its dashboard and
+   the App.
 3. **Notebooks.** Open **welcome** (under **Domains → commerce**) and click
    **Run all**, or click **New Notebook** and run the query
    from the [ZLens quickstart](https://duckcode-ai-labs.github.io/zlens/get-started/):
@@ -105,12 +114,20 @@ The first time, ZLens opens **Guided Setup**:
    limit 10
    ```
 
-4. **Domains → Commerce.** The **Model** tab shows the dbt-backed model areas
-   `Revenue performance` and `Customer value`; **Skills** shows the beverage
-   and customer-analysis guidance Ask uses.
-5. **Blocks.** Open `monthly_revenue`, `beverage_revenue_by_product`,
+4. **Modeling**, then **Domain: Commerce.** **Map** draws the domain's
+   dbt-backed models and joins; **Skills** shows the beverage and
+   customer-analysis guidance Ask uses (`beverage-analysis`,
+   `customer-profile`); **Saved queries** lists the four certified ones.
+5. **Build your own App with Quick start** (no AI needed). In **Apps**, click
+   **Build new App**, keep **Quick start** and click **Choose data**. On
+   **Data for this App**, click **Add to App** on **Monthly Revenue**, then
+   **Next: choose tiles**. ZLens proposes a total and a trend, such as
+   **Total Gross Revenue** and **Gross Revenue by month**; click **Build App**
+   and the tiles run on live data. A new App stays visible only to you until
+   you click **Publish**.
+6. **Saved queries.** Open `monthly_revenue`, `beverage_revenue_by_product`,
    `top_beverage_customers` or `customer_profile`.
-6. **Ask** (needs an AI provider). Try:
+7. **Ask** (needs an AI provider). Try:
 
    ```text
    How has revenue changed by month?
@@ -131,7 +148,7 @@ npx zlens lineage "Jaffle Growth Review"   # one App
 npx zlens certify domains/commerce/blocks/monthly_revenue.dql   # check the rules, writes nothing
 ```
 
-To change a certified block, save your edit as a draft in
+To change a certified saved query (a block file), save your edit as a draft in
 `domains/commerce/blocks/_drafts/<block>.dql` with `status = "draft"`, then:
 
 ```bash
@@ -140,8 +157,8 @@ npx zlens certify --from-draft domains/commerce/blocks/_drafts/<block>.dql --for
 
 ZLens runs the certification rules (owner, compile, run, tests) and only when
 they pass replaces the certified block and writes who certified it to
-`semantic-layer/blocks/commerce/<block>.yaml`. In the workbench, **Certify** in
-Block Studio does the same.
+`semantic-layer/blocks/commerce/<block>.yaml`. In the workbench, **Certify**
+on a saved query does the same.
 
 ## Project map
 
@@ -151,7 +168,7 @@ dql.config.json                      ZLens workspace config and DuckDB connectio
 domains/commerce/domain.dql          business domain
 domains/commerce/modeling/areas/     dbt-backed model areas
 domains/commerce/skills/             domain guidance for Ask
-domains/commerce/blocks/             certified blocks, written in DQL
+domains/commerce/blocks/             certified saved queries (blocks), written in DQL
 semantic-layer/blocks/               certification receipts
 skills/                              project-wide SQL guidance
 apps/jaffle-growth/                  the Jaffle Growth Review App
@@ -171,7 +188,7 @@ notebooks/welcome.dqlnb              starter notebook
 2. In **Domains**, add a model area that explains the business question and
    points to the dbt models it needs.
 3. Add a domain skill for vocabulary or analysis rules.
-4. Save a repeated answer as a block (a draft), then certify it. Check the
+4. Save a repeated answer as a saved query (a draft), then certify it. Check the
    workspace with:
 
    ```bash
