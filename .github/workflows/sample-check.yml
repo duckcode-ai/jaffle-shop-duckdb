@@ -1,5 +1,5 @@
 # Runs the README's steps 1 and 2 (without `npm run notebook`) and checks
-# that the workspace validates.
+# that the workspace validates and every block example routes to its block.
 name: Sample check
 
 on:
@@ -60,3 +60,7 @@ jobs:
 
       - name: Validate
         run: npm run validate
+
+      # Every certified block's examples[].question must route to that block.
+      - name: Eval
+        run: npx zlens eval . --min-route-accuracy 1 --min-refusal 1

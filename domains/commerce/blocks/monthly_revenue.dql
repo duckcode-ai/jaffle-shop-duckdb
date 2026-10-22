@@ -20,7 +20,7 @@ block "monthly_revenue" {
   llmContext = "Use for revenue trends by month. Gross revenue is SUM(dev.orders.order_total), including tax; the result also contains the number of orders."
   examples = [
     { question = "How has revenue changed by month?" },
-    { question = "Show monthly gross revenue and orders." }
+    { question = "Show monthly gross revenue and number of orders." }
   ]
 
   query = """
