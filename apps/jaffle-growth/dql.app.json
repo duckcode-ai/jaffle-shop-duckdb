@@ -2,7 +2,7 @@
   "version": 1,
   "id": "jaffle-growth",
   "name": "Jaffle Growth Review",
-  "description": "A compact stakeholder view built from the Commerce domain's certified revenue and beverage blocks.",
+  "description": "A compact stakeholder view built from the Commerce domain's certified revenue and beverage saved queries.",
   "visibility": "shared",
   "domain": "commerce",
   "groups": ["growth", "analytics"],
