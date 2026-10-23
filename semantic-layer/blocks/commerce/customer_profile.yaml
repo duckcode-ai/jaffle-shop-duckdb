@@ -1,0 +1,31 @@
+name: customer_profile
+block: customer_profile
+domain: commerce
+description: "Customer lifetime profile. One row per customer."
+owner: "analytics@jaffle.shop"
+tags:
+  - customer
+  - profile
+  - lifetime-value
+source:
+  provider: dql
+  objectType: block
+  objectId: customer_profile
+reviewStatus: certified
+certification:
+  certifiedBy: analytics@jaffle.shop
+  certifiedAt: '2026-10-22T23:59:08.581Z'
+  via: block-studio
+  rules: oss
+  sourceSha256: 4c72380c8ea3c3051271240cb183dcdea2ece0817ebe3ca7b0d79576bc7db175
+  checks:
+    - metadata
+    - validation
+    - run
+    - tests
+    - chart
+    - lineage
+    - ai-reviewed
+  warnings:
+    - 'Entity profile declares stable entity grain: entity_profile requires exactly one entity, a grain, and an identifier output'
+    - 'Filter bindings map declared filters: allowedFilters requires filterBindings or parameterPolicy so app/dashboard filters can be applied safely'

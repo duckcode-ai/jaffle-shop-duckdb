@@ -88,9 +88,12 @@ steps):
    up: you see **DuckDB · configured** and **Test passed**. You already ran
    `npm run sync`, so there is nothing to synchronize here and no schemas to
    tick. Click **Continue to optional AI**.
-3. **Set up an AI provider.** Optional. Only **Ask** (and describing an App
-   in your own words) needs a model; see
-   [Set up an AI provider](https://duckcode-ai-labs.github.io/zlens/get-started/ai-provider/).
+3. **Set up an AI provider.** Optional. Without one, the setup, notebook,
+   saved queries, the App, lineage and modeling in this tour all work. The AI
+   features need a model: **Ask**, **Ask about this App**, the App's AI
+   copilot, **Edit with AI** on tiles, Notebook AI, and describing an App in
+   your own words. Without a provider ZLens hides them or says they need one.
+   See [Set up an AI provider](https://duckcode-ai-labs.github.io/zlens/get-started/ai-provider/).
    Click **Skip AI for now**.
 4. **Where do you want to start?** Click **Finish setup · Build an App**: it
    opens **Apps** with the new App form (see step 5 of the tour).

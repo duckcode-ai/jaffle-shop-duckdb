@@ -1,0 +1,28 @@
+name: monthly_revenue
+block: monthly_revenue
+domain: commerce
+description: "Monthly gross order revenue and order count. One row per calendar month."
+owner: "analytics@jaffle.shop"
+tags:
+  - revenue
+  - trend
+  - growth
+source:
+  provider: dql
+  objectType: block
+  objectId: monthly_revenue
+reviewStatus: certified
+certification:
+  certifiedBy: analytics@jaffle.shop
+  certifiedAt: '2026-10-22T23:59:08.459Z'
+  via: block-studio
+  rules: oss
+  sourceSha256: ead7f128d878fa3dc247aaaad0f98bb4acf715b343769140968aa0ce59e334cd
+  checks:
+    - metadata
+    - validation
+    - run
+    - tests
+    - chart
+    - lineage
+    - ai-reviewed
