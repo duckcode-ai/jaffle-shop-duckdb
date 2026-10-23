@@ -1,0 +1,33 @@
+name: top_beverage_customers
+block: top_beverage_customers
+domain: commerce
+description: "Top customers ranked by beverage revenue, with beverage order count and product variety. One row per customer."
+owner: "analytics@jaffle.shop"
+tags:
+  - beverage
+  - customer
+  - revenue
+  - ranking
+source:
+  provider: dql
+  objectType: block
+  objectId: top_beverage_customers
+reviewStatus: certified
+certification:
+  certifiedBy: analytics@jaffle.shop
+  certifiedAt: '2026-10-22T23:59:08.531Z'
+  via: block-studio
+  rules: oss
+  sourceSha256: c2cdee302d9e29377b3b1550e063a9c9aeabcb2620dba6621f9193b553c7a54c
+  checks:
+    - metadata
+    - validation
+    - run
+    - tests
+    - chart
+    - lineage
+    - ai-reviewed
+  warnings:
+    - >-
+      Block groups by an identity key: Ask can't use this saved query as a certified answer: it groups by customer_name only, and two entities can share a name. Add the entity's identifier column to
+      SELECT and GROUP BY.
