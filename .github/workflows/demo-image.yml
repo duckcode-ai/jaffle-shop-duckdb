@@ -31,9 +31,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      # The image installs this ZLens version. Passing it as a build argument
+      # rebuilds the setup layer when a new ZLens is published; otherwise the
+      # build cache would keep the version from the last build.
+      - id: zlens
+        run: echo "version=$(npm view @zlens/cli version)" >> "$GITHUB_OUTPUT"
       - uses: docker/build-push-action@v6
         with:
           context: .
+          build-args: |
+            ZLENS_VERSION=${{ steps.zlens.outputs.version }}
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |

@@ -42,9 +42,10 @@ Claude** and **Sign in with ChatGPT** finish: those sign-ins return your browser
 `localhost` on those ports.
 
 Either way, **Ask** needs an AI model: add one in **Settings → AI provider**. In a
-codespace, use an **API key** for now: **Sign in with Claude/ChatGPT** returns your
-browser to `localhost` on your own computer, which can't reach the codespace (the
-next ZLens release lets you paste that address instead).
+codespace, **Sign in with Claude/ChatGPT** ends on a `localhost` page that doesn't
+load, because it points at your own computer, not the codespace. Copy that page's
+address from the browser's address bar, paste it into the box under the sign-in
+button and click **Finish sign-in**. An API key works too.
 Everything else works without one. To use your own data, or keep your work,
 install the sample below.
 

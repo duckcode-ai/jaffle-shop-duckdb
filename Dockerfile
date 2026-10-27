@@ -16,6 +16,8 @@ RUN apt-get update \
 
 WORKDIR /app
 COPY . .
+# setup.sh installs this @zlens/cli version when set (the image workflow passes the latest).
+ARG ZLENS_VERSION
 RUN ./setup.sh && rm -rf /root/.npm /root/.cache
 
 # The sample is fully set up: record Guided Setup as reviewed (docker/mark-setup-done.sh).
