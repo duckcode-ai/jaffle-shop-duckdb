@@ -12,7 +12,9 @@ if [ -n "${CODESPACE_NAME:-}" ]; then
   export ZLENS_ALLOWED_ORIGINS
 fi
 cd /app
-nohup npx zlens notebook . --port "$port" --no-open > /tmp/zlens.log 2>&1 &
+# setsid: Codespaces stops everything the start command launched once the
+# command finishes; a new session keeps ZLens running after this script exits.
+setsid nohup npx zlens notebook . --port "$port" --no-open > /tmp/zlens.log 2>&1 < /dev/null &
 echo "ZLens is starting on port ${port}; it opens in a new tab when ready (log: /tmp/zlens.log)."
 
 # Everything is already set up in the image: once ZLens answers, mark Guided
