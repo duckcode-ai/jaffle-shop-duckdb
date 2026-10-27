@@ -33,13 +33,18 @@ your account; stop or delete the codespace from
 **With Docker (one command):**
 
 ```bash
-docker run --rm -p 127.0.0.1:3474:3474 ghcr.io/duckcode-ai/zlens-demo
+docker run --rm -p 127.0.0.1:3474:3474 -p 127.0.0.1:54545:54545 -p 127.0.0.1:1455:1455 ghcr.io/duckcode-ai/zlens-demo
 ```
 
-Open the link it prints (`http://localhost:3474/#dql_token=…`). Ctrl+C stops it;
-nothing you change is kept after it stops.
+Open the link it prints (`http://localhost:3474/…#dql_token=…`). Ctrl+C stops it;
+nothing you change is kept after it stops. Ports 54545 and 1455 let **Sign in with
+Claude** and **Sign in with ChatGPT** finish: those sign-ins return your browser to
+`localhost` on those ports.
 
-Either way, **Ask** needs an AI model: add one in **Settings → AI provider**.
+Either way, **Ask** needs an AI model: add one in **Settings → AI provider**. In a
+codespace, use an **API key** for now: **Sign in with Claude/ChatGPT** returns your
+browser to `localhost` on your own computer, which can't reach the codespace (the
+next ZLens release lets you paste that address instead).
 Everything else works without one. To use your own data, or keep your work,
 install the sample below.
 

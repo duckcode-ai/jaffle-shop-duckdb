@@ -1,6 +1,9 @@
 # ZLens demo: the Jaffle Shop sample with ZLens, ready to open.
 #
-#   docker run --rm -p 127.0.0.1:3474:3474 ghcr.io/duckcode-ai/zlens-demo
+#   docker run --rm -p 127.0.0.1:3474:3474 -p 127.0.0.1:54545:54545 -p 127.0.0.1:1455:1455 ghcr.io/duckcode-ai/zlens-demo
+#
+# 54545 and 1455 are where "Sign in with Claude" and "Sign in with ChatGPT"
+# return the browser after sign-in; without them, use an API key instead.
 #
 # The build runs ./setup.sh, so the image already holds the DuckDB database,
 # the dbt manifest, ZLens and the DuckDB driver. Starting the container only

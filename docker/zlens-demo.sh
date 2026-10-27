@@ -44,6 +44,8 @@ cat <<MSG
 
   It opens the Jaffle Shop sample: certified saved queries, an App, lineage
   and notebooks. Ask needs an AI model: add one in Settings → AI provider.
+  "Sign in with Claude/ChatGPT" needs -p 127.0.0.1:54545:54545 -p 127.0.0.1:1455:1455
+  on the docker run command; otherwise use an API key.
   Using another host port? Pass -e ZLENS_PORT=<port> and map <port>:<port>.
   Press Ctrl+C to stop. Nothing you change is kept after the container stops.
 
