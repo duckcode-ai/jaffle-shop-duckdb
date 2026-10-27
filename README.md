@@ -23,8 +23,10 @@ command line) are written in DQL, the ZLens query language.
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/duckcode-ai/jaffle-shop-duckdb?quickstart=1)
 
 Click the button and choose **Create codespace**. In about a minute ZLens opens
-in a new browser tab, with the certified saved queries, the App, lineage and
-notebooks below ready to explore. It runs on GitHub's free Codespaces hours for
+in a panel inside the codespace, and the terminal prints a link (Cmd/Ctrl+click)
+that opens it in its own tab, with the certified saved queries, the App, lineage
+and notebooks below ready to explore. Nothing opened? Click **Ports** at the
+bottom, then the globe next to **ZLens (3474)**. It runs on GitHub's free Codespaces hours for
 your account; stop or delete the codespace from
 [github.com/codespaces](https://github.com/codespaces) when you're done.
 

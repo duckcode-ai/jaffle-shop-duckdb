@@ -5,9 +5,13 @@
   "image": "ghcr.io/duckcode-ai/zlens-demo:latest",
   "hostRequirements": { "cpus": 2, "memory": "4gb" },
   "postStartCommand": "sh .devcontainer/start-zlens.sh",
+  // Prints a clickable link to the App in the terminal once ZLens answers.
+  "postAttachCommand": "sh .devcontainer/show-link.sh",
   "forwardPorts": [3474],
   "portsAttributes": {
-    "3474": { "label": "ZLens", "onAutoForward": "openBrowser" }
+    // openPreview opens ZLens inside the codespace window: a new browser tab
+    // would be blocked as a pop-up.
+    "3474": { "label": "ZLens", "onAutoForward": "openPreview" }
   },
   "customizations": {
     "codespaces": { "openFiles": ["README.md"] }
