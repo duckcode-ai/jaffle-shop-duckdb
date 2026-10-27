@@ -1,0 +1,15 @@
+{
+  "name": "ZLens: Jaffle Shop sample",
+  // The demo image already holds the built sample, ZLens and the DuckDB
+  // driver (see ../Dockerfile), so the codespace starts in about a minute.
+  "image": "ghcr.io/duckcode-ai/zlens-demo:latest",
+  "hostRequirements": { "cpus": 2, "memory": "4gb" },
+  "postStartCommand": "sh .devcontainer/start-zlens.sh",
+  "forwardPorts": [3474],
+  "portsAttributes": {
+    "3474": { "label": "ZLens", "onAutoForward": "openBrowser" }
+  },
+  "customizations": {
+    "codespaces": { "openFiles": ["README.md"] }
+  }
+}

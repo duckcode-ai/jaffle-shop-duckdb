@@ -16,6 +16,31 @@ command line) are written in DQL, the ZLens query language.
 > workspace in `dql/` without the domain, blocks, App and notebook below.
 > Install ZLens into this folder with `npm install` instead.
 
+## Try it without installing anything
+
+**In your browser (no install):**
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/duckcode-ai/jaffle-shop-duckdb?quickstart=1)
+
+Click the button and choose **Create codespace**. In about a minute ZLens opens
+in a new browser tab, with the certified saved queries, the App, lineage and
+notebooks below ready to explore. It runs on GitHub's free Codespaces hours for
+your account; stop or delete the codespace from
+[github.com/codespaces](https://github.com/codespaces) when you're done.
+
+**With Docker (one command):**
+
+```bash
+docker run --rm -p 127.0.0.1:3474:3474 ghcr.io/duckcode-ai/zlens-demo
+```
+
+Open the link it prints (`http://localhost:3474/#dql_token=…`). Ctrl+C stops it;
+nothing you change is kept after it stops.
+
+Either way, **Ask** needs an AI model: add one in **Settings → AI provider**.
+Everything else works without one. To use your own data, or keep your work,
+install the sample below.
+
 ## What you will explore
 
 The use case is **Growth & Beverage Insights**:
@@ -31,8 +56,8 @@ Review** App.
 
 ## Before you start
 
-- Python 3.9 to 3.13 for dbt (`python3 --version`). Python 3.14 also works
-  with the current dbt-duckdb release.
+- Python 3.9 to 3.14 for dbt (`python3 --version`). `./setup.sh` picks a
+  supported one for you.
 - Node.js 20, 22 or 24, with 24 LTS recommended (`node -v`). Node 25 and 26
   are not supported yet: ZLens's DuckDB driver has no prebuilt binary for them.
 - git
