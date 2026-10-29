@@ -66,8 +66,7 @@ Review** App.
 
 - Python 3.9 to 3.14 for dbt (`python3 --version`). `./setup.sh` picks a
   supported one for you.
-- Node.js 20, 22 or 24, with 24 LTS recommended (`node -v`). Node 25 and 26
-  are not supported yet: ZLens's DuckDB driver has no prebuilt binary for them.
+- Node.js 20, 22, 24 or 26, with 26 LTS recommended (`node -v`).
 - git
 
 ## 1. Build the dbt project
@@ -128,7 +127,7 @@ steps):
    features need a model: **Ask**, **Ask about this App**, the App's AI
    copilot, **Edit with AI** on tiles, Notebook AI, and describing an App in
    your own words. Without a provider ZLens hides them or says they need one.
-   See [Set up an AI provider](https://duckcode-ai-labs.github.io/zlens/get-started/ai-provider/).
+   See [Set up an AI provider](https://docs.zlens.app/get-started/ai-provider/).
    Click **Skip AI for now**.
 4. **Where do you want to start?** Click **Finish setup · Build an App**: it
    opens **Apps** with the new App form (see step 5 of the tour).
@@ -143,7 +142,7 @@ steps):
    the App.
 3. **Notebooks.** Open **welcome** (under **Domains → commerce**) and click
    **Run all**, or click **New Notebook** and run the query
-   from the [ZLens quickstart](https://duckcode-ai-labs.github.io/zlens/get-started/):
+   from the [ZLens quickstart](https://docs.zlens.app/get-started/):
 
    ```sql
    select customer_name, count_lifetime_orders, lifetime_spend
@@ -251,15 +250,18 @@ port).
 
 ## Troubleshooting
 
-- **`ZLens's DuckDB driver has no prebuilt binary for Node 26 yet`.** You are
-  on Node 25 or 26. Switch to Node 24 LTS or 22 (`nvm install 24`, or
-  `fnm use 24`), then run `npm run notebook` again: the driver installs on its
-  own.
+- **`ZLens could not load @duckdb/node-api`** (its binary for this computer is
+  missing). The DuckDB driver's binary comes as an optional dependency,
+  so it is missing after `--omit=optional`, or in a `.dql` folder copied from
+  another operating system. ZLens reinstalls it when it starts; by hand:
+  `npm --prefix .dql/connectors install @duckdb/node-api --include=optional`.
+  (Older ZLens used the `duckdb` package; you can delete
+  `.dql/connectors/node_modules/duckdb`.)
 - **`Trying to read a database file with version number 999, but we can only
   read versions between 64 and 67. The database file was created with an
   newer version of DuckDB.`** (in the Setup "Test" button, Settings or
   `npm run doctor`). `jaffle_shop.duckdb` was built by Python DuckDB 2.0, and
-  ZLens reads files from DuckDB 1.4. `requirements.txt` now pins
+  ZLens reads files from DuckDB 1.5 and older. `requirements.txt` pins
   `duckdb>=1.4,<1.5`; rerun `./setup.sh`, which reinstalls DuckDB 1.4 in
   `.venv`, moves the unreadable file to `jaffle_shop.from-newer-duckdb.duckdb`
   and rebuilds it. By hand: stop the workbench, then

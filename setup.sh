@@ -75,7 +75,8 @@ fi
 .venv/bin/python -m pip install --quiet --upgrade pip --progress-bar off
 .venv/bin/python -m pip install --quiet -r requirements.txt --progress-bar off
 
-# ZLens reads the database with DuckDB 1.4. An older setup may have installed
+# dbt builds the database with DuckDB 1.4, which every ZLens release reads
+# (current ZLens reads up to DuckDB 1.5). An older setup may have installed
 # DuckDB 2.0 into .venv, and a file written by 2.0 cannot be opened by 1.4
 # ("version number 999 ... created with an newer version of DuckDB").
 DUCKDB_PIN='duckdb>=1.4,<1.5'
@@ -116,7 +117,9 @@ npm install --no-package-lock --no-audit --no-fund
 if [ -n "$ZLENS_VERSION" ]; then
   npm install --no-save --no-package-lock --no-audit --no-fund "@zlens/cli@${ZLENS_VERSION}"
 fi
-npm install --prefix .dql/connectors --no-package-lock --no-audit --no-fund duckdb
+# ZLens's DuckDB driver, on the DuckDB 1.5 line (npm's latest is 2.0, whose
+# files 1.x cannot read). No install script runs and nothing is compiled.
+npm install --prefix .dql/connectors --no-package-lock --no-audit --no-fund '@duckdb/node-api@^1.5.6-r.1'
 
 echo "[4/4] Importing the dbt project into ZLens…"
 npx zlens --version
