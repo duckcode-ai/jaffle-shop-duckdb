@@ -1,0 +1,12 @@
+# ZLens certification receipts for the terms in the .dql file of the same name.
+# Written by Certify (Modeling → Terms & concepts, or zlens certify). Editing a term clears its receipt.
+terms:
+  Beverage:
+    certifiedBy: 232610070+duckcode-ai@users.noreply.github.com
+    certifiedByName: DuckCode AI Labs
+    certifiedAt: '2026-10-30T03:10:37.796Z'
+    via: cli
+    termSha256: 83b67a10ac92d5ea0894b3bcef8c44ec9c8e796aab92bf5e865dc4269f302b89
+    checks:
+      - has-owner
+      - has-definition
